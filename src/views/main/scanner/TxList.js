@@ -22,9 +22,8 @@ export default class TxList extends Component {
         loading: true
       });
 
-      Fetch.GET(`/api/scanner/transaction/?page_size=${state.pageSize}&page=${state.page+1}`)
+      Fetch.GET(`/api/transaction/?page_size=${state.pageSize}&page=${state.page+1}`)
       .then(res => {
-        console.log(res)
         //update안할때
         // if(this.state.transactions.length !== 0 && this.state.transactions[0].number === res.results[0].number){
         //   return;
@@ -58,7 +57,7 @@ export default class TxList extends Component {
                     },
                     {
                         Header: "Block",
-                        accessor: "related_block_number",
+                        accessor: "related_block",
                         Cell: ({row}) => (<Link to={`/main/scanner/Block/${row.related_block_number}`}>{row.related_block_number}</Link>),
                         width: 140
                     },
@@ -74,7 +73,7 @@ export default class TxList extends Component {
                     },
                     {
                         Header: "To",
-                        accessor: "to",
+                        accessor: "transaction_to",
                         width: 350
                     },
                     {
@@ -84,8 +83,13 @@ export default class TxList extends Component {
                     },
                     {
                         Header: "[Tx Fee]",
-                        accessor: "txFee",
-                        width: 150
+                        accessor: "gas",
+                        width: 150,
+                        Cell: ({row}) => {
+                          let gas = row._original.gas;
+                          let gas_price = row._original.gas_price;
+                          return (<span>{gas*gas_price}</span>)
+                        }
                     }
                 ]}
                 manual

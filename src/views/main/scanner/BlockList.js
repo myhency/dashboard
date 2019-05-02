@@ -27,11 +27,11 @@ export default class BlockList extends Component {
         //   if(this.state.blocks.length !== 0 && this.state.blocks[0].number === res.results[0].number){
         //     return;
         //   }
-
-          this.setState({
-            blocks: res.results,
-            pages: Math.ceil(res.count/state.pageSize)
-          })
+        
+            this.setState({
+                blocks: res.results,
+                pages: Math.ceil(res.count/state.pageSize)
+            })
         })
         .finally(() => {
             this.setState({
@@ -74,8 +74,17 @@ export default class BlockList extends Component {
                                 accessor: "gas_limit"
                             },
                             {
-                                Header: "Age.Gas Price",
-                                accessor: "avg_gas_price"
+                                Header: "Avg Gas Price",
+                                accessor: "related_transaction",
+                                Cell: ({row}) => {
+                                    let txGasPrice = 0
+                                    row.related_transaction.map((tx)=>{
+                                        txGasPrice += tx.gas_price
+                                    } )
+                                    return (
+                                        <span>{row.related_transaction.length == 0 ? 0 : txGasPrice/row.related_transaction.length}</span>
+                                    )
+                                }
                             },
                             {
                                 Header: "Reward",

@@ -38,7 +38,7 @@ export default class BlockInfo extends Component {
 
   getBlockInfo = () => {
     // console.log(this.state.blockNo);
-    Fetch.GET('/api/scanner/block/'+this.state.blockNo)
+    Fetch.GET('/api/block/'+this.state.blockNo)
     .then(res => {
       //update 안할 때
       if(res === undefined){
@@ -47,22 +47,22 @@ export default class BlockInfo extends Component {
 
       this.setState({
         passSec: 0,
-        blockHash: res.blockHash,
+        blockHash: res.block_hash,
         difficulty: res.difficulty,
-        gasLimit: res.gasLimit,
-        gasUsed: res.gasUsed,
+        gasLimit: res.gas_limit,
+        gasUsed: res.gas_used,
         timestamp: res.timestamp,
         transcationCount: res.transaction_count,
         miner: res.miner,
-        blockReward: res.block_reward,
-        parentHash: res.parentHash,
+        blockReward: res.reward,
+        parentHash: res.parent_hash,
         nonce: res.nonce,
         relatedTransaction: res.related_transaction,
         totalDifficulty: res.total_difficulty,
         size: res.size,
-        extraData: res.extraData,
-        nextblock: res.nextBlock,
-        preblock: res.preBlock
+        extraData: res.extra_data,
+        nextblock: res.next_block,
+        preblock: res.pre_block
       });
     })
     .catch(error => {
