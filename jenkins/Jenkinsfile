@@ -3,6 +3,7 @@ pipeline {
         dockerfile {
             filename 'Dockerfile.build'
             args '-p 3006:3006'
+            args '--name bass-portal-front-end'
         }
     }
     environment {
