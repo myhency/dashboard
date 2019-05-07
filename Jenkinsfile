@@ -1,6 +1,12 @@
 node {
     checkout scm
 
+    stage("Prod-like") {
+        steps {
+            echo ${env.DOCKER_TLS_VERIFY}
+        }
+    }
+
     def customImage = docker.build("bass-portal-front-end:${env.BUILD_ID}")
 
     customImage.inside {
