@@ -7,7 +7,7 @@ node {
         sh 'npm install'   
     }
 
-    docker.withRegistry('http://10.40.111.60:5000/baas-portal-front-end') {
+    docker.withRegistry('https://10.40.111.60:5000/baas-portal-front-end') {
         customImage.push()
     }
 }
