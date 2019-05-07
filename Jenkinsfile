@@ -1,13 +1,19 @@
 node {
     checkout scm
 
+    stage("Prod-like") {
+        steps {
+            echo ${env.DOCKER_TLS_VERIFY}
+        }
+    }
+
     def customImage = docker.build("bass-portal-front-end:${env.BUILD_ID}")
 
     customImage.inside {
         sh 'npm install'   
     }
 
-    docker.withRegistry('https://10.40.111.60:5000/baas-portal-front-end') {
+    docker.withRegistry('http://10.40.111.60:5000/baas-portal-front-end') {
         customImage.push()
     }
 }
