@@ -8,6 +8,10 @@ pipeline {
     }
     environment {
         CI = 'true'
+        registry = "10.40.111.60:5000/baas-portal-front"
+        registryCredential = ''
+        dockerImage = ''
+  
     }
     stages {
         stage('Build') { 
