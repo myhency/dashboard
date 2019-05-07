@@ -4,7 +4,7 @@ pipeline {
             image 'node:6-alpine' 
             args '-p 3006:3006'
             args '--name bass-portal-front-end'
-            label 'baas-portal-front'
+            // label 'baas-portal-front'
         }
     }
 
