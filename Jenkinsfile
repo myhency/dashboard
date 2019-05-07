@@ -3,7 +3,7 @@ node {
 
     stage("Prod-like") {
         steps {
-            echo '${env.DOCKER_TLS_VERIFY}'
+            sh "echo $DOCKER_TLS_VERIFY"
         }
     }
 
