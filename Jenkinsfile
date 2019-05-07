@@ -24,6 +24,16 @@ pipeline {
                 sh 'npm install'
             }
         }
+
+        stage('Deploy Image') {
+            steps{
+                script {
+                    docker.withRegistry('10.40.111.60:5000/baas-portal-front') {
+                        dockerImage.push()
+                   }
+                }
+            }
+        }
     }
 }
 
