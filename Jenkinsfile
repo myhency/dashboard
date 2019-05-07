@@ -1,3 +1,16 @@
+node {
+    checkout scm
+
+    def customImage = docker.build("bass-portal-front-end:${env.BUILD_ID}")
+
+    customImage.inside {
+        sh 'npm install'   
+    }
+
+    docker.withRegistry('10.40.111.60:5000/baas-portal-front-end') {
+        customImage.push()
+    }
+}
 // pipeline {
 //     agent {
 //         docker { 
@@ -28,7 +41,7 @@
 //         stage('Deploy Image') {
 //             steps{
 //                 script {
-//                     docker.withRegistry('10.40.111.60:5000/baas-portal-front') {
+//                     docker.withRegistry('10.40.111.60:5000/bass-portal-front-end') {
 //                         dockerImage.push()
 //                    }
 //                 }
@@ -49,43 +62,43 @@
 // //     }
 // // }
 
-pipeline {
-  environment {
-    registry = "10.40.111.60:5000/baas-portal-front"
-    registryCredential = ''
-    dockerImage = ''
-  }
-  agent any
+// pipeline {
+//   environment {
+//     registry = "10.40.111.60:5000/baas-portal-front"
+//     registryCredential = ''
+//     dockerImage = ''
+//   }
+//   agent any
   
-  tools {nodejs "node" }
-  stages {
+//   tools {nodejs "node" }
+//   stages {
     
-    stage('Build') {
-       steps {
-         sh 'npm install'
-       }
-    }
+//     stage('Build') {
+//        steps {
+//          sh 'npm install'
+//        }
+//     }
 
-    stage('Building image') {
-      steps{
-        script {
-          dockerImage = docker.build registry + ":$BUILD_NUMBER"
-        }
-      }
-    }
-    stage('Deploy Image') {
-      steps{
-         script {
-            docker.withRegistry( '', registryCredential ) {
-            dockerImage.push()
-          }
-        }
-      }
-    }
-    stage('Remove Unused docker image') {
-      steps{
-        sh "docker rmi $registry:$BUILD_NUMBER"
-      }
-    }
-  }
-}
+//     stage('Building image') {
+//       steps{
+//         script {
+//           dockerImage = docker.build registry + ":$BUILD_NUMBER"
+//         }
+//       }
+//     }
+//     stage('Deploy Image') {
+//       steps{
+//          script {
+//             docker.withRegistry( '', registryCredential ) {
+//             dockerImage.push()
+//           }
+//         }
+//       }
+//     }
+//     stage('Remove Unused docker image') {
+//       steps{
+//         sh "docker rmi $registry:$BUILD_NUMBER"
+//       }
+//     }
+//   }
+// }
