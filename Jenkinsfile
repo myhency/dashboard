@@ -11,8 +11,11 @@ node {
         sh 'npm install'   
     }
 
-    docker.withRegistry('http://10.40.111.60:5000/baas-portal-front-end') {
-        customImage.push()
+    // docker.withRegistry('http://10.40.111.60:5000/baas-portal-front-end') {
+    //     customImage.push()
+    // }
+    stage("Run container") {
+        sh "docker run bass-portal-front-end:${env.BUILD_ID}"
     }
 }
 // pipeline {
