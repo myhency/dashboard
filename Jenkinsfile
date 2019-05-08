@@ -4,6 +4,7 @@ node {
     def customImage = docker.build("bass-portal-front-end:${env.BUILD_ID}")
 
     customImage.inside {
+        sh 'pwd'
         sh 'npm install'
     }
 
