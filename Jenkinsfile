@@ -8,14 +8,15 @@ node {
     def customImage = docker.build("bass-portal-front-end:${env.BUILD_ID}")
 
     customImage.inside {
-        sh 'npm install'   
+        sh 'npm install'
+        sh 'npm start'   
     }
 
     // docker.withRegistry('http://10.40.111.60:5000/baas-portal-front-end') {
     //     customImage.push()
     // }
     stage("Run container") {
-        sh "docker run bass-portal-front-end:${env.BUILD_ID}"
+        sh "docker run -d --name bass-portal-front-end -p 3006:3006 bass-portal-front-end:${env.BUILD_ID}"
     }
 }
 // pipeline {
