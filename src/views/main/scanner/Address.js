@@ -26,11 +26,11 @@ export default class Address extends Component {
     }
 
     getAddress = () => {
-        Fetch.GET(`/api/scanner/address/${this.props.match.params.address}`)
+        Fetch.GET(`/api/address/${this.props.match.params.address}`)
         .then(res=>{
             this.setState({
                 balance: res.balance,
-                transaction_count: res.transactions
+                transaction_count: res.transaction_count
             })
         })
     }
@@ -41,7 +41,7 @@ export default class Address extends Component {
         loading: true
       });
 
-      Fetch.GET(`/api/scanner/transaction/?page_size=${state.pageSize}&page=${state.page+1}`)
+      Fetch.GET(`/api/address/${this.props.match.params.address}/?page_size=${state.pageSize}&page=${state.page+1}`)
       .then(res => {
         console.log(res)
         //update안할때

@@ -36,7 +36,7 @@ export default class TxInfo extends Component {
   }
 
   getTxInfo = () => {
-    Fetch.GET('/api/scanner/transaction/'+this.state.TxHash)
+    Fetch.GET('/api/transaction/'+this.state.TxHash)
     .then(res => {
       //update 안할 때
       if(res === undefined){
@@ -46,15 +46,14 @@ export default class TxInfo extends Component {
       this.setState({
         passSec: 0,
         status: res.status,
-        relatedBlock: res.related_block_number,
+        relatedBlock: res.related_block.number,
         timestamp: res.timestamp,
         txFrom: res.transaction_from,
-        txTo : res.to,
+        txTo : res.transaction_to,
         value: res.value,
-        txFee: res.txFee,
-        gasLimit: res.gasLimit,
-        gasUsedByTx: res.gasUsedByTx,
-        gasPrice: res.gasPrice,
+        gasLimit: res.gas,
+        gasUsedByTx: res.gas * res.gas_price,
+        gasPrice: res.gas_price,
         nonce: res.nonce,
         txInput: res.transaction_input
       });

@@ -26,6 +26,7 @@ import TxInfo from 'views/main/scanner/TxInfo';
 import Contract from 'views/main/scanner/Contract.js';
 import Address from 'views/main/scanner/Address.js';
 
+import APIGenerator from 'views/main/APIGenerator/Api_Generator.js';
 import DappSelect from 'views/main/DApp/selectDapp.js';
 import SupplyChain from 'views/main/DApp/supplyChain.js';
 
@@ -96,6 +97,13 @@ const mainRoutes = [
         name: 'Address',
         component: Address,
         sidebar: false
+    },
+    {
+        name: 'API Generator',
+        path: contextPath + 'api-generator',
+        component: APIGenerator,
+        icon: FiBox,
+        sidebar: true
     },
     {
         name: 'DApp Demo Space',
