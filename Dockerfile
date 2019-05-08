@@ -3,4 +3,4 @@ RUN apk add --update \
     python \
     make \
     g++
-
+CMD npm start
