@@ -59,7 +59,7 @@ class App extends Component {
                     <Switch>
                         <Route exact path="/" render={() =>
                             isAuthenticated ?
-                            <Redirect to="/main/home"/>
+                            <Redirect to="/main/dashboard"/>
                             : <Redirect to="/auth"/>
                         } />
                         <PrivateRoute path="/main" component={MainLayout} isAuthenticated={isAuthenticated} />

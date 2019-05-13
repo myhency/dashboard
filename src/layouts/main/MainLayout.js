@@ -248,7 +248,7 @@ class MainLayout extends Component {
                                     )
                                 }
                             })}
-                            <Redirect to="/main/home"/>
+                            <Redirect to="/main/dashboard"/>
                         </Switch>
                     </div>
 

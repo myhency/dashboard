@@ -28,7 +28,6 @@ class PrivateRoute extends Component {
         return (
             <Route {...rest} render={props => (
                 isAuthenticated ?
-                    // <Redirect to={{ pathname: '/main/home'}} />
                     <Component {...props} {...rest} />
                     : <Redirect to={{ pathname: '/auth/signIn', state: { from: props.location } }} />
             )} />

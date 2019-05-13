@@ -22,17 +22,17 @@ import { FaChartBar, FaEye, FaUserEdit } from 'react-icons/fa';
 const contextPath = '/main/';
 
 const mainRoutes = [
-    {
-        path: contextPath +'home',
-        name: 'Home',
-        component: Home,
-        sidebar: false
-    },
+    // {
+    //     path: contextPath +'home',
+    //     name: 'Home',
+    //     component: Home,
+    //     sidebar: false
+    // },
     {
         name: 'Dashboard',
         icon: FaChartBar,
         sidebar: true,
-        path: contextPath + 'dashboard/main',
+        path: contextPath + 'dashboard',
         component: Dashboardmain,
     },
     {

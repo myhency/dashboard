@@ -52,7 +52,7 @@ class FindHost extends Component {
             })
             .finally(() => {
                 this.props.dispatch(loadingStop());
-                this.props.history.push('/main/home/');
+                this.props.history.push('/main/dashboard/');
             })
         })
     }

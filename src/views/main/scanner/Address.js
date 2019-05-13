@@ -23,6 +23,7 @@ export default class Address extends Component {
 
     componentDidMount() {
         this.getAddress();
+        // this.getTransaction();
     }
 
     getAddress = () => {
@@ -30,7 +31,7 @@ export default class Address extends Component {
         .then(res=>{
             console.log("1");
             if(res.is_contract){
-                console.log("2");
+                console.log("24");
                 this.props.history.push(`/main/scanner/contract/${this.props.match.params.address}`)
             }
             this.setState({
@@ -46,14 +47,13 @@ export default class Address extends Component {
         loading: true
       });
 
-      Fetch.GET(`/api/address/${this.props.match.params.address}/?page_size=${state.pageSize}&page=${state.page+1}`)
+      Fetch.GET(`/api/address/transaction/${this.props.match.params.address}/?page_size=${state.pageSize}&page=${state.page+1}`)
       .then(res => {
         console.log(res)
         //update안할때
         // if(this.state.transactions.length !== 0 && this.state.transactions[0].number === res.results[0].number){
         //   return;
         // }
-
         this.setState({
           transactions: res.results,
           pages: Math.ceil(res.count/state.pageSize)
@@ -107,7 +107,7 @@ export default class Address extends Component {
                             },
                             {
                                 Header: "Block",
-                                accessor: "related_block_number",
+                                accessor: "related_block",
                                 Cell: ({row}) => (<Link to={`/main/scanner/block/${row.related_block_number}`}>{row.related_block_number}</Link>),
                                 width: 140
                             },
@@ -146,8 +146,8 @@ export default class Address extends Component {
                         pages={pages} // Display the total number of pages
                         loading={loading} // Display the loading overlay when we need it
                         onFetchData={this.getTransaction} // Request new data when things change
-                        defaultPageSize={15}
-                        pageSizeOptions={[15]}
+                        defaultPageSize={10}
+                        pageSizeOptions={[10]}
                     />
                   </ContentCard>
               </ContentCol>
