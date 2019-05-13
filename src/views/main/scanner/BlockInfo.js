@@ -106,7 +106,8 @@ export default class BlockInfo extends Component {
                 <td style={{width: '20%'}}>Block Height:</td>
                 <td style={{width: '80%'}}>
                   {blockNo}
-                  {preblock.length === 0 ? null :
+                  {preblock.length === 0 ?
+                  <Button color="link" style={{width: '48px'}}/> :
                   <Button 
                     variant='primary'
                     onClick={()=> this.mvBlock('previos')} 

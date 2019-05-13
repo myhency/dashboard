@@ -28,6 +28,11 @@ export default class Address extends Component {
     getAddress = () => {
         Fetch.GET(`/api/address/${this.props.match.params.address}`)
         .then(res=>{
+            console.log("1");
+            if(res.is_contract){
+                console.log("2");
+                this.props.history.push(`/main/scanner/contract/${this.props.match.params.address}`)
+            }
             this.setState({
                 balance: res.balance,
                 transaction_count: res.transaction_count

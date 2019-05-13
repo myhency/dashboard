@@ -3,7 +3,6 @@ import ContentRow from 'components/ContentRow';
 import ContentCol from 'components/ContentCol';
 import ContentCard from 'components/ContentCard';
 import { Col, Table, Button } from 'reactstrap';
-import Sweetalert from 'sweetalert2-react';
 
 
 export default class supplyChain extends Component {
@@ -75,11 +74,6 @@ export default class supplyChain extends Component {
                 <Button color='primary' onClick={this.togglekNewAccount}>
                   Create a Demo Account
                 </Button>
-                <Sweetalert
-                  show={this.state.newAccountPopup}
-                  onConfirm={()=>this.togglekNewAccount}
-                  showCancleButton
-                />
               </ContentCol>
             </ContentCard>
           </ContentCol>

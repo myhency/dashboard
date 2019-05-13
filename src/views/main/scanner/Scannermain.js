@@ -9,6 +9,7 @@ import {
     Card, CardBody, CardDeck, CardHeader, CardFooter } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import { FaArrowRight, icons } from 'react-icons/fa';
+import SweetAlert from 'sweetalert2';
 
 import Fetch from 'utils/Fetch.js';
 
@@ -20,7 +21,8 @@ export default class Scannermain extends Component {
     this.state={
       blocks: [],
       transactions: [],
-      link: this.props.location.pathname
+      link: this.props.location.pathname,
+      searchTxt: ''
     };
   }
 
@@ -57,6 +59,24 @@ export default class Scannermain extends Component {
     })
   }
 
+  search = (item) => {
+    Fetch.GET(`/api/search/${item}`)
+    .then(res =>{
+      //잘못된 serach
+      if(res.kinds == 'none'){
+        SweetAlert.fire(
+          'No Data Found!',
+          'Please check your input',
+          'error'
+        );
+      }
+      else{
+        this.props.history.push(`/main/scanner/${res.kinds}/${item}`);
+      }
+
+    })
+  }
+
   onClickAll = (string) => {
     this.props.history.push('/main/scanner/'+string);
   }
@@ -72,9 +92,11 @@ export default class Scannermain extends Component {
                   </ContentRow>
                   <Form>
                     <InputGroup>
-                      <Input id="BlockExplorer" placeholder="Search by Address / Txhash / Block" />
+                      <Input 
+                        id="BlockExplorer" placeholder="Search by Address / Txhash / Block" 
+                        onChange={(event) => {this.setState({searchTxt: event.target.value})}}/>
                       <InputGroupAddon addonType='append'>
-                        <Button>  Search  </Button>
+                        <Button onClick={()=>this.search(this.state.searchTxt)}>  Search  </Button>
                       </InputGroupAddon> 
                     </InputGroup>  
                   </Form>
@@ -84,7 +106,7 @@ export default class Scannermain extends Component {
               <CardDeck style={{width: '100%'}}>
                 <Card>
                   <CardHeader tag="h3">Latest Block</CardHeader>
-                  <CardBody style={{maxHeight: '600px', overflow: 'auto'}}>
+                  <CardBody style={{maxHeight: '560px', overflow: 'auto'}}>
                    <Table bordered style={{tableLayout: 'fixed'}}>
                     <thead style={{backgroundColor:'skyblue', textAlign: 'center'}}>
                       <tr>
@@ -118,7 +140,7 @@ export default class Scannermain extends Component {
                 </Card>
   `              <Card>
                   <CardHeader tag="h3">Transactions</CardHeader>
-                  <CardBody style={{maxHeight: '600px', overflow: 'auto'}}>
+                  <CardBody style={{maxHeight: '560px', overflow: 'auto'}}>
                    <Table bordered style={{tableLayout: 'fixed'}}>
                     <thead style={{backgroundColor:'skyblue', textAlign: 'center'}}>
                       <tr>
@@ -146,7 +168,7 @@ export default class Scannermain extends Component {
                                 </tbody>
                               </Table>
                             </td>
-                            <td>{tx.gas * tx.gas_price}</td>
+                            <td className="ellipsis">{tx.gas * tx.gas_price}</td>
                           </tr>
                         </tbody>);
                     })}
