@@ -147,7 +147,7 @@ class MainLayout extends Component {
                         <NavLink to="/main/components/" className={'homeButton'} tag={Link} style={{fontSize:'1rem', padding:'1.15rem 1.25rem', marginBottom:'1.5rem'}} onClick={isWindowSmall ? this.toggle : null}>
                             <span style={{fontSize:'1.2rem'}}>
                                 <IoIosCloud size={30} color={'white'} style={{marginRight:'.75rem'}}/>
-                                React Sample
+                                HMG BaaS Portal
                             </span>
                         </NavLink>
                         
