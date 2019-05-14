@@ -7,8 +7,10 @@ import { Table } from 'reactstrap';
 import ReactTable from 'react-table';
 import { Link } from 'react-router-dom';
 import Fetch from 'utils/Fetch'
+import { connect } from 'react-redux';
+import { setInfo } from 'store/modules/currentInfo';
 
-export default class Address extends Component {
+class Address extends Component {
     constructor(props) {
         super(props);
 
@@ -27,6 +29,8 @@ export default class Address extends Component {
     }
 
     getAddress = () => {
+        this.props.dispatch(setInfo(this.props.match.params.address));
+
         Fetch.GET(`/api/address/${this.props.match.params.address}`)
         .then(res=>{
             console.log("1");
@@ -43,7 +47,7 @@ export default class Address extends Component {
 
 
     getTransaction = (state, instance) => {
-      this.setState({
+        this.setState({
         loading: true
       });
 
@@ -55,7 +59,7 @@ export default class Address extends Component {
         //   return;
         // }
         this.setState({
-          transactions: res.results,
+          transactions: res.related_transaction,
           pages: Math.ceil(res.count/state.pageSize)
         })
       })
@@ -65,6 +69,7 @@ export default class Address extends Component {
         });
       })
     }
+
     
   render() {
     const { transactions, pages, loading, balance, transaction_count } = this.state;
@@ -102,7 +107,7 @@ export default class Address extends Component {
                             {
                                 Header: "TxHash",
                                 accessor: "transaction_hash",
-                                Cell: ({row}) => (<Link to={this.props.location.pathname + '/' + row.transaction_hash}>{row.transaction_hash}</Link>),
+                                Cell: ({row}) => (<Link to={`/main/scanner/transaction/${row.transaction_hash}`}>{row.transaction_hash}</Link>),
                                 width: 300
                             },
                             {
@@ -156,3 +161,5 @@ export default class Address extends Component {
     )
   }
 }
+
+export default connect(null)(Address);

@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react';
 import ContentRow from 'components/ContentRow';
 import ContentCol from 'components/ContentCol';
 import ContentCard from 'components/ContentCard';
-import { Table, Row, Col } from 'reactstrap';
+import { Table, Col } from 'reactstrap';
 import { FiBox } from 'react-icons/fi';
 import { MdTimer,MdHourglassEmpty } from 'react-icons/md';
 import { TiKeyOutline } from 'react-icons/ti';
@@ -59,6 +59,7 @@ class Monitoring extends Component {
             }
             newTime.push(moment(res.results[0].timestamp).diff(res.results[1].timestamp,'seconds'));
             let avgBlockTime = _.meanBy(newTime);
+            console.log(newTime);
 
             this.setState({
                 blockNo: bestBlock.number,
@@ -95,12 +96,12 @@ class Monitoring extends Component {
                         {/* <ContentCard inverse backgroundColor='#e06377' borderColor='#c83349'> */}
                         <ContentCard>
                             <ContentRow>
-                                <Col xl={5} lg={5} md={5} sm={5} xs={5} style={{textAlign:'center'}}>
+                                <Col xl={4} lg={4} md={4} sm={4} xs={4} style={{textAlign:'center', overflow: 'hidden'}}>
                                     <FiBox size={100} color="#e06377" />
                                 </Col>
-                                <Col xl={7} lg={7} md={7} sm={7} xs={7} style={{textAlign:'left', lineHeight:2}}>
-                                    <span style={{fontSize:'1.0rem'}}>BEST BLOCK</span><br/>
-                                    <span style={{fontSize:'2.0rem', fontWeight:'bold'}}># {blockNo === undefined ? '' : blockNo}</span>
+                                <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{textAlign:'left', lineHeight:2}}>
+                                    <span style={{fontSize:'0.8rem'}}>BEST BLOCK</span><br/>
+                                    <span style={{fontSize:'1.5rem', fontWeight:'bold'}}># {blockNo === undefined ? '' : blockNo}</span>
                                 </Col>
                             </ContentRow>
                         </ContentCard>
@@ -109,10 +110,10 @@ class Monitoring extends Component {
                         {/* <ContentCard inverse backgroundColor='#339AED' borderColor='#3B5998'> */}
                         <ContentCard>
                             <ContentRow>
-                                <Col xl={5} lg={5} md={5} sm={5} xs={5} style={{textAlign:'center'}}>
+                                <Col xl={4} lg={4} md={4} sm={4} xs={4} style={{textAlign:'center'}}>
                                     <MdTimer size={100} color='#339AED'/>
                                 </Col>
-                                <Col xl={7} lg={7} md={7} sm={7} xs={7} style={{textAlign:'left', lineHeight:2}}>
+                                <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{textAlign:'left', lineHeight:2}}>
                                     <span style={{fontSize:'1.0rem'}}>AVG BLOCK TIME</span><br/>
                                     <span style={{fontSize:'2.0rem', fontWeight:'bold'}}>{avgBlockTime} s</span>
                                 </Col>
@@ -123,10 +124,10 @@ class Monitoring extends Component {
                         {/* <ContentCard inverse backgroundColor='#8B9DC3' borderColor='#3B5998'> */}
                         <ContentCard>
                             <ContentRow>
-                                <Col xl={5} lg={5} md={5} sm={5} xs={5} style={{textAlign:'center'}}>
+                                <Col xl={4} lg={4} md={4} sm={4} xs={4} style={{textAlign:'center'}}>
                                     <MdHourglassEmpty size={100} color="#8B9DC3"/>
                                 </Col>
-                                <Col xl={7} lg={7} md={7} sm={7} xs={7} style={{textAlign:'left', lineHeight:2}}>
+                                <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{textAlign:'left', lineHeight:2}}>
                                     <span style={{fontSize:'1.0rem'}}>GAS PRICE</span><br/>
                                     <span style={{fontSize:'2.0rem', fontWeight:'bold'}}>{gasUsed === undefined ? '' : gasUsed} gwei</span>
                                 </Col>
@@ -137,12 +138,12 @@ class Monitoring extends Component {
                         {/* <ContentCard inverse backgroundColor='#34A853' borderColor='#A4C639'> */}
                         <ContentCard>
                             <ContentRow>
-                                <Col xl={5} lg={5} md={5} sm={5} xs={5} style={{textAlign:'center'}}>
+                                <Col xl={4} lg={4} md={4} sm={4} xs={4} style={{textAlign:'center'}}>
                                     <TiKeyOutline size={100} color='#34A853'/>
                                 </Col>
-                                <Col xl={7} lg={7} md={7} sm={7} xs={7} style={{textAlign:'left', lineHeight:2}}>
+                                <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{textAlign:'left', lineHeight:2}}>
                                     <span style={{fontSize:'1.0rem'}}>GAS LIMIT</span><br/>
-                                    <span style={{fontSize:'2.0rem', fontWeight:'bold'}}>{gasLimit === undefined ? '' : gasLimit} gas</span>
+                                    <span style={{fontSize:'1.5rem', fontWeight:'bold'}}>{gasLimit === undefined ? '' : gasLimit} gas</span>
                                 </Col>
                             </ContentRow>
                         </ContentCard>

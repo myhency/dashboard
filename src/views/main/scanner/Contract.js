@@ -3,18 +3,15 @@ import ContentRow from 'components/ContentRow';
 import ContentCol from 'components/ContentCol';
 import ContentCard from 'components/ContentCard';
 import classnames from 'classnames';
-import { 
-    Form, FormGroup,
-    Input, InputGroup, InputGroupAddon,
-    Button, Table,
-    Card, CardBody, CardDeck, CardHeader, CardFooter,
-    TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
+import { Table, TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
+import { connect } from 'react-redux';
+import { setInfo } from 'store/modules/currentInfo';
 
 import Tx from 'views/main/scanner/Contract_tx.js';
 import Code from 'views/main/scanner/Contract_code.js';
 import Event from 'views/main/scanner/Contract_event.js';
 
-export default class Contract extends Component {
+class Contract extends Component {
     constructor(props) {
         super(props);
 
@@ -22,6 +19,19 @@ export default class Contract extends Component {
         this.state = {
             activeTab: '1'
         }
+    }
+
+    componentDidMount() {
+        this.getContractInfo();
+        this.getContractTransaction();
+    }
+
+    getContractInfo(){
+
+    }
+
+    getContractTransaction(){
+        this.props.dispatch(setInfo(this.props.match.params.contract));
     }
 
     toggle(tab) {
@@ -120,3 +130,5 @@ export default class Contract extends Component {
     )
   }
 }
+
+export default connect(null)(Contract);

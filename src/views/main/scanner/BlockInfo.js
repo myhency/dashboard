@@ -4,8 +4,10 @@ import ContentCard from 'components/ContentCard';
 import { FaAngleLeft, FaAngleRight } from 'react-icons/fa';
 import Fetch from 'utils/Fetch.js';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { setInfo } from 'store/modules/currentInfo';
 
-export default class BlockInfo extends Component {
+class BlockInfo extends Component {
   constructor(props) {
     super(props);
 
@@ -38,6 +40,9 @@ export default class BlockInfo extends Component {
 
   getBlockInfo = () => {
     // console.log(this.state.blockNo);
+
+    this.props.dispatch(setInfo(this.state.blockNo));
+
     Fetch.GET('/api/block/'+this.state.blockNo)
     .then(res => {
       //update 안할 때
@@ -182,3 +187,5 @@ export default class BlockInfo extends Component {
     )
   }
 }
+
+export default connect(null)(BlockInfo);

@@ -19,6 +19,10 @@ import mainRoutes from 'routes/main';
 import UrlPattern from "url-pattern";
 import { signOut } from 'store/modules/auth';
 import Fetch from 'utils/Fetch';
+import { setInfo } from 'store/modules/currentInfo';
+import { FaCopy } from 'react-icons/fa';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import ReactTooltip from 'react-tooltip';
 
 class MainLayout extends Component {
     constructor(props) {
@@ -28,7 +32,9 @@ class MainLayout extends Component {
             active: false,
             toggleButtonStyle: 'black',
             currentPath: '',
+            currentInfo: '',
             isWindowSmall: false,
+
 
             userId: undefined
         };
@@ -36,11 +42,16 @@ class MainLayout extends Component {
 
     static getDerivedStateFromProps(props, state) {
         
-        let { currentPath, userId } = state;
+        let { currentPath, currentInfo, userId } = state;
         let isWindowSmall = false;
 
         if(currentPath !== props.location.pathname) {
             currentPath = props.location.pathname;
+            props.dispatch(setInfo(''));
+        }
+
+        if(currentInfo !== props.currentInfo) {
+            currentInfo = props.currentInfo;
         }
 
         if(props.windowWidth <= 768) {
@@ -54,7 +65,8 @@ class MainLayout extends Component {
         return {
             currentPath,
             isWindowSmall,
-            userId
+            userId,
+            currentInfo
         }
     }
 
@@ -138,7 +150,7 @@ class MainLayout extends Component {
     }
 
     render() {
-        const { active, toggleButtonStyle, currentPath, isWindowSmall, userId } = this.state;
+        const { active, toggleButtonStyle, currentPath, currentInfo, isWindowSmall, userId } = this.state;
         return (
             <Fragment>
                 {/* Sidebar */}
@@ -199,6 +211,17 @@ class MainLayout extends Component {
                     </NavbarBrand>
                     <NavbarBrand>
                         {this.getCurrentPageName(currentPath)}
+                        <span style={{fontSize: '1.0rem', color: 'gray', marginLeft: '20px'}}> 
+                            {this.getCurrentPageName(currentPath) === "Block" ? '#': ''} 
+                            {currentInfo}
+                        </span>
+                        {(this.getCurrentPageName(currentPath) === "Contract") || (this.getCurrentPageName(currentPath) === "Address") ?
+                            <span data-tip='Copy'>
+                                <CopyToClipboard text={currentInfo}> 
+                                    <FaCopy style={{marginLeft: '10px', color: 'black'}}/>
+                                </CopyToClipboard>
+                                <ReactTooltip/>
+                            </span> : null }
                     </NavbarBrand>
                     
                     <Nav className="ml-auto">
@@ -256,7 +279,7 @@ class MainLayout extends Component {
                     <div className="footer small" align="right">
                         <ul className="list-inline">
                             <li className="list-inline-item" style={{color:'#6C757D'}}>
-                                Developed by 권혁찬
+                                Developed by 블록체인기술팀
                             </li>
                         </ul>
                     </div>
@@ -270,6 +293,7 @@ class MainLayout extends Component {
 
 export default connect(
     state => ({
-        userId: state.auth.userId
+        userId: state.auth.userId,
+        currentInfo: state.currentInfo.info
     })
 )(withRouter(windowSize(MainLayout)))

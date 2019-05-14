@@ -1,6 +1,5 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom';
-import Home from 'views/main/Home';
 
 import Dashboardmain from 'views/main/dashboard/Dashboardmain';
 
@@ -50,7 +49,7 @@ const mainRoutes = [
     },
     {
         path: contextPath + 'scanner/block/:blockNo',
-        name: 'Block Info',
+        name: 'Block',
         component: BlockInfo,
         sidebar: false
     },

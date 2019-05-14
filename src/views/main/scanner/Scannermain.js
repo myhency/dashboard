@@ -103,8 +103,8 @@ export default class Scannermain extends Component {
                 </ContentCard>
             </ContentRow>
             <ContentRow>
-              <CardDeck style={{width: '100%'}}>
-                <Card>
+              <ContentCol xl={6} lg={12} md={12} sm={12} xs={12}>
+                <Card> 
                   <CardHeader tag="h3">Latest Block</CardHeader>
                   <CardBody style={{maxHeight: '560px', overflow: 'auto'}}>
                    <Table bordered style={{tableLayout: 'fixed'}}>
@@ -122,7 +122,7 @@ export default class Scannermain extends Component {
                         <tbody key={block.id}>
                           <tr>
                             <td><Link to={block_link}>{block.number}</Link></td>
-                            <td className="ellipsis"><Link to={miner_link}>{block.miner}</Link></td>
+                            <td className="ellipsis" style={{paddingTop: '10px', paddingBottom: '10px'}}><Link to={miner_link}>{block.miner}</Link></td>
                             <td>{block.gas_used}</td>
                           </tr>
                         </tbody>);
@@ -138,7 +138,9 @@ export default class Scannermain extends Component {
                     </Button>
                   </CardFooter>
                 </Card>
-  `              <Card>
+                </ContentCol>
+                <ContentCol xl={6} lg={12} md={12} sm={12} xs={12}>
+                  <Card>
                   <CardHeader tag="h3">Transactions</CardHeader>
                   <CardBody style={{maxHeight: '560px', overflow: 'auto'}}>
                    <Table bordered style={{tableLayout: 'fixed'}}>
@@ -183,7 +185,7 @@ export default class Scannermain extends Component {
                     </Button>
                   </CardFooter>
                 </Card>
-              </CardDeck>
+              </ContentCol>
            </ContentRow>
       </Fragment>
     )

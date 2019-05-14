@@ -19,6 +19,7 @@
     "react-chartjs-2": "^2.7.4",
     "react-copy-to-clipboard": "^5.0.1",
     "react-dom": "^16.4.2",
+    "react-dynamic-font": "^2.0.1",
     "react-files": "^2.4.8",
     "react-icons": "^3.5.0",
     "react-moment": "^0.9.2",

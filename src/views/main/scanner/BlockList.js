@@ -20,6 +20,7 @@ export default class BlockList extends Component {
         this.setState({
             loading: true
         });
+        console.log(state.pageSize);
 
         Fetch.GET(`/api/block/?page_size=${state.pageSize}&page=${state.page+1}`)
         .then(res => {
