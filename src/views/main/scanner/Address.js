@@ -3,12 +3,17 @@ import ContentRow from 'components/ContentRow';
 import ContentCol from 'components/ContentCol';
 import ContentCard from 'components/ContentCard';
 
-import { Table } from 'reactstrap';
+import classnames from 'classnames';
+import { Table, TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
 import ReactTable from 'react-table';
 import { Link } from 'react-router-dom';
 import Fetch from 'utils/Fetch'
 import { connect } from 'react-redux';
 import { setInfo } from 'store/modules/currentInfo';
+import { setPage } from 'store/modules/tempPageName';
+
+import Code from 'views/main/scanner/Contract_code.js';
+import Event from 'views/main/scanner/Contract_event.js';
 
 class Address extends Component {
     constructor(props) {
@@ -19,61 +24,187 @@ class Address extends Component {
             pages: 1,
             loading: false,
             balance: undefined,
-            transaction_count: undefined
+            transaction_count: undefined,
+            is_contract: false,
+            contract_deployer: undefined,
+            contract_deployed_at: undefined,
+            address: this.props.match.params.address,
+            byte_code: undefined,
+            activeTab: '1'
         };
     }
 
     componentDidMount() {
+        //For dividing page name
+        this.props.dispatch(setPage(undefined));
         this.getAddress();
-        // this.getTransaction();
     }
 
-    getAddress = () => {
-        this.props.dispatch(setInfo(this.props.match.params.address));
+    //Callback for table
+    getAddress = (callback) => {
+        
+        this.setState({
+            loading: true
+        });
 
-        Fetch.GET(`/api/address/${this.props.match.params.address}`)
+        Fetch.GET(`/api/address/${this.state.address}`)
         .then(res=>{
-            console.log("1");
-            if(res.is_contract){
-                console.log("24");
-                this.props.history.push(`/main/scanner/contract/${this.props.match.params.address}`)
-            }
             this.setState({
                 balance: res.balance,
-                transaction_count: res.transaction_count
+                transaction_count: res.transaction_count,
+                is_contract: res.is_contract
             })
+            
+            //Fetch Contract info
+            if(this.state.is_contract){
+                this.props.dispatch(setPage('Contract'));
+                Fetch.GET(`/api/contract/${this.state.address}`)
+                .then(res =>{
+                    this.setState({
+                        contract_deployer: res.creator_created_from,
+                        contract_deployed_at: res.creator_created_transaction,
+                        byte_code: res.byte_codes
+                    }, () => {
+                        if(callback) {
+                            callback();
+                        }
+                    })
+                }).finally(() => {
+                    this.setState({
+                        loading: false
+                    });
+                })
+            }else {
+                this.props.dispatch(setPage('Address'));
+                if(callback) {
+                    callback();
+                }
+            }
+            this.props.dispatch(setInfo(this.state.address));
+            
         })
     }
 
 
     getTransaction = (state, instance) => {
         this.setState({
-        loading: true
-      });
-
-      Fetch.GET(`/api/address/transaction/${this.props.match.params.address}/?page_size=${state.pageSize}&page=${state.page+1}`)
-      .then(res => {
-        console.log(res)
-        //update안할때
-        // if(this.state.transactions.length !== 0 && this.state.transactions[0].number === res.results[0].number){
-        //   return;
-        // }
-        this.setState({
-          transactions: res.related_transaction,
-          pages: Math.ceil(res.count/state.pageSize)
-        })
-      })
-      .finally(() => {
-        this.setState({
-            loading: false
+            loading: true
         });
-      })
+
+        Fetch.GET(`/api/address/?account=${this.state.address}&page_size=${state.pageSize}&page=${state.page+1}`)
+        .then(res => {
+            //update안할때
+            // if(this.state.transactions.length !== 0 && this.state.transactions[0].number === res.results[0].number){
+            //   return;
+            // }
+            this.setState({
+                transactions: res.results,
+                pages: Math.ceil(res.count/state.pageSize)
+            })
+        })
+        .finally(() => {
+            this.setState({
+                loading: false
+            });
+        })
+    }
+
+    //Tab toggle
+    toggle = (tab) => {
+        if (this.state.activeTab !== tab) {
+            this.setState({
+                activeTab: tab
+            });
+        }
+    }
+
+    //prop이 바뀜을 catch
+    componentDidUpdate(prevProps, prevState) {
+        let { address } = this.state;
+
+        if (prevProps.match.params.address !== address) {
+            address = prevProps.match.params.address;   
+            this.setState({
+                address
+            }, () => {
+                this.getAddress(() => {
+                    this.table.fireFetchData();
+                });
+            })
+        }
     }
 
     
   render() {
-    const { transactions, pages, loading, balance, transaction_count } = this.state;
-
+    const { transactions, pages, loading, balance, transaction_count
+        , is_contract, contract_deployer, contract_deployed_at, byte_code } = this.state;
+    
+    //Table component
+    const renderTable = () => {
+        return (
+            <ReactTable
+                columns={[
+                    {
+                        Header: "TxHash",
+                        accessor: "transaction_hash",
+                        Cell: ({row}) => (<Link to={`/main/scanner/transaction/${row.transaction_hash}`}>{row.transaction_hash}</Link>),
+                        width: 300
+                    },
+                    {
+                        Header: "Block",
+                        accessor: "related_block",
+                        Cell: ({row}) => (<Link to={`/main/scanner/block/${row.related_block.number}`}>{row.related_block.number}</Link>),
+                        width: 140
+                    },
+                    {
+                        Header: "Age",
+                        accessor: "Tx_age",
+                        width: 150
+                    },
+                    {
+                        Header: "From",
+                        accessor: "transaction_from",
+                        Cell: ({row}) => (<Link to={`/main/scanner/address/${row.transaction_from}`}>{row.transaction_from}</Link>),
+                        width: 300
+                    },
+                    {
+                        Header: "",
+                        width: 100
+                    },
+                    {
+                        Header: "To",
+                        accessor: "transaction_to",
+                        Cell: ({row}) => (<Link to={`/main/scanner/address/${row.transaction_to}`}>{row.transaction_to}</Link>),
+                        width: 300
+                    },
+                    {
+                        Header: "Value",
+                        accessor: "value",
+                        width: 100
+                    },
+                    {
+                        Header: "[Tx Fee]",
+                        accessor: "txFee",
+                        width: 150,
+                        Cell: ({row}) => {
+                            let gas = row._original.gas;
+                            let gas_price = row._original.gas_price;
+                            return (<span>{gas*gas_price}</span>)
+                        }
+                    }
+                ]}
+                manual // Forces table not to paginate or sort automatically, so we can handle it server-side
+                data={transactions}
+                pages={pages} // Display the total number of pages
+                loading={loading} // Display the loading overlay when we need it
+                onFetchData={this.getTransaction} // Request new data when things change
+                defaultPageSize={10}
+                pageSizeOptions={[10]}
+                ref={(instance) => { this.table = instance; }}
+            />
+        );
+    }
+        
     return (
       <Fragment>
           <ContentRow>
@@ -87,13 +218,19 @@ class Address extends Component {
                         </thead>
                         <tbody>
                             <tr>
-                                <td style={{width: '20%'}}>Balance:</td>
-                                <td style={{width: '80%'}}>{balance} Ether</td>
+                                <td style={{width: '10%'}}>Balance :</td>
+                                <td style={{width: '40%'}}>{balance} Ether</td>
+                                <td style={{width: '10%'}}>Transactions :</td>
+                                <td style={{width: '40%'}}>{transaction_count} txs</td>
                             </tr>
+                            { is_contract && ( 
                             <tr>
-                                <td>Transactions:</td>
-                                <td>{transaction_count} txs</td>
+                                <td>Deployer :</td>
+                                <td><Link to={`/main/scanner/address/${contract_deployer}`}>{contract_deployer}</Link></td>
+                                <td>Deployed at :</td>
+                                <td><Link to={`/main/scanner/transaction/${contract_deployed_at}`}>{contract_deployed_at}</Link></td>
                             </tr>
+                            )}
                         </tbody>
                     </Table>
                 </ContentCard>
@@ -101,60 +238,43 @@ class Address extends Component {
           </ContentRow>
           <ContentRow>
               <ContentCol>
-                  <ContentCard>
-                    <ReactTable
-                        columns={[
-                            {
-                                Header: "TxHash",
-                                accessor: "transaction_hash",
-                                Cell: ({row}) => (<Link to={`/main/scanner/transaction/${row.transaction_hash}`}>{row.transaction_hash}</Link>),
-                                width: 300
-                            },
-                            {
-                                Header: "Block",
-                                accessor: "related_block",
-                                Cell: ({row}) => (<Link to={`/main/scanner/block/${row.related_block_number}`}>{row.related_block_number}</Link>),
-                                width: 140
-                            },
-                            {
-                                Header: "Age",
-                                accessor: "Tx_age",
-                                width: 150
-                            },
-                            {
-                                Header: "From",
-                                accessor: "transaction_from",
-                                width: 300
-                            },
-                            {
-                                Header: "",
-                                width: 100
-                            },
-                            {
-                                Header: "To",
-                                accessor: "to",
-                                width: 300
-                            },
-                            {
-                                Header: "Value",
-                                accessor: "value",
-                                width: 100
-                            },
-                            {
-                                Header: "[Tx Fee]",
-                                accessor: "txFee",
-                                width: 150
-                            }
-                        ]}
-                        manual // Forces table not to paginate or sort automatically, so we can handle it server-side
-                        data={transactions}
-                        pages={pages} // Display the total number of pages
-                        loading={loading} // Display the loading overlay when we need it
-                        onFetchData={this.getTransaction} // Request new data when things change
-                        defaultPageSize={10}
-                        pageSizeOptions={[10]}
-                    />
-                  </ContentCard>
+                  {is_contract ? 
+                    <Fragment> 
+                        <Nav tabs>
+                            <NavItem style={{ width: '33%' }}>
+                                <NavLink
+                                className={classnames({ active: this.state.activeTab === '1' })}
+                                onClick={() => { this.toggle('1'); }}>
+                                    Transactions
+                                </NavLink>
+                            </NavItem>
+                            <NavItem style={{ width: '33%' }}>
+                                <NavLink
+                                className={classnames({ active: this.state.activeTab === '2' })}
+                                onClick={() => { this.toggle('2'); }}>
+                                    Code
+                                </NavLink>
+                            </NavItem>
+                            <NavItem style={{ width: '34%' }}>
+                                <NavLink
+                                className={classnames({ active: this.state.activeTab === '3' })}
+                                onClick={() => { this.toggle('3'); }}>
+                                    Events
+                                </NavLink>
+                            </NavItem>
+                        </Nav>
+                        <TabContent activeTab={this.state.activeTab} style={{ height: '522px'}}>
+                            <TabPane tabId='1'>
+                                <ContentCard style={{margin: '0', border: 0, height: '520px'}}> {renderTable()}</ContentCard>
+                            </TabPane>
+                            <TabPane tabId='2'><Code byteCode={byte_code}/></TabPane>
+                            <TabPane tabId='3'><Event/></TabPane>
+                        </TabContent>
+                    </Fragment>
+                    : <ContentCard>
+                        {renderTable()}
+                    </ContentCard>
+                }
               </ContentCol>
           </ContentRow>
       </Fragment>

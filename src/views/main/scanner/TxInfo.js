@@ -163,7 +163,7 @@ export default class TxInfo extends Component {
               </tr>
               <tr>
                 <td>Input Data:</td>
-                <td><Input readOnly type="textarea" placeholder={txInput} rows={5}/></td>
+                <td><Input readOnly type="textarea" value={txInput} rows={5}/></td>
               </tr>
             </tbody>
           </Table>

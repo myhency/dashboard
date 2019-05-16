@@ -1,4 +1,4 @@
-const FETCH_TIMEOUT = 5000;
+const FETCH_TIMEOUT = 10000;
 
 const GET = (url, options) => {
     

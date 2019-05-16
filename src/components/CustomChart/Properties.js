@@ -57,7 +57,10 @@ export const chartContents = {
             },
             responsiveAnimationDuration: 0, // animation duration after a resize
             maintainAspectRatio: false,
-            stacked: true
+            stacked: true,
+            legend: {
+                display: false
+            }
         }
     }
 

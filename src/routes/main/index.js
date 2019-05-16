@@ -8,7 +8,6 @@ import BlockList from 'views/main/scanner/BlockList';
 import BlockInfo from 'views/main/scanner/BlockInfo';
 import TxList from 'views/main/scanner/TxList';
 import TxInfo from 'views/main/scanner/TxInfo';
-import Contract from 'views/main/scanner/Contract.js';
 import Address from 'views/main/scanner/Address.js';
 
 import APIGenerator from 'views/main/APIGenerator/Api_Generator.js';
@@ -63,12 +62,6 @@ const mainRoutes = [
         path: contextPath + 'scanner/transaction/:transactionHash',
         name: 'Transaction Details',
         component: TxInfo,
-        sidebar: false
-    },
-    {
-        path: contextPath + 'scanner/contract/:contract',
-        name: 'Contract',
-        component: Contract,
         sidebar: false
     },
     {

@@ -20,6 +20,7 @@ import UrlPattern from "url-pattern";
 import { signOut } from 'store/modules/auth';
 import Fetch from 'utils/Fetch';
 import { setInfo } from 'store/modules/currentInfo';
+import { setPage } from 'store/modules/tempPageName';
 import { FaCopy } from 'react-icons/fa';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import ReactTooltip from 'react-tooltip';
@@ -33,6 +34,7 @@ class MainLayout extends Component {
             toggleButtonStyle: 'black',
             currentPath: '',
             currentInfo: '',
+            tempPageName: undefined,
             isWindowSmall: false,
 
 
@@ -42,16 +44,21 @@ class MainLayout extends Component {
 
     static getDerivedStateFromProps(props, state) {
         
-        let { currentPath, currentInfo, userId } = state;
+        let { currentPath, currentInfo, userId, tempPageName } = state;
         let isWindowSmall = false;
 
         if(currentPath !== props.location.pathname) {
             currentPath = props.location.pathname;
             props.dispatch(setInfo(''));
+            props.dispatch(setPage(undefined));
         }
 
         if(currentInfo !== props.currentInfo) {
             currentInfo = props.currentInfo;
+        }
+
+        if(tempPageName !== props.tempPageName) {
+            tempPageName = props.tempPageName;
         }
 
         if(props.windowWidth <= 768) {
@@ -66,7 +73,8 @@ class MainLayout extends Component {
             currentPath,
             isWindowSmall,
             userId,
-            currentInfo
+            currentInfo,
+            tempPageName
         }
     }
 
@@ -74,6 +82,10 @@ class MainLayout extends Component {
         for(var i=0; i<mainRoutes.length; i++) {
             const route = mainRoutes[i];
         
+            if(this.state.tempPageName !== undefined) {
+                return this.state.tempPageName;
+            }
+
             if(route.path) {
                 const routePattern = new UrlPattern(route.path);
                 if(routePattern.match(currentPath) !== null) {
@@ -212,16 +224,16 @@ class MainLayout extends Component {
                     <NavbarBrand>
                         {this.getCurrentPageName(currentPath)}
                         <span style={{fontSize: '1.0rem', color: 'gray', marginLeft: '20px'}}> 
-                            {this.getCurrentPageName(currentPath) === "Block" ? '#': ''} 
                             {currentInfo}
                         </span>
-                        {(this.getCurrentPageName(currentPath) === "Contract") || (this.getCurrentPageName(currentPath) === "Address") ?
+                        {(this.getCurrentPageName(currentPath) === "Address") || (this.getCurrentPageName(currentPath) === "Contract") ?
                             <span data-tip='Copy'>
                                 <CopyToClipboard text={currentInfo}> 
                                     <FaCopy style={{marginLeft: '10px', color: 'black'}}/>
                                 </CopyToClipboard>
                                 <ReactTooltip/>
-                            </span> : null }
+                            </span> : null 
+                        }
                     </NavbarBrand>
                     
                     <Nav className="ml-auto">
@@ -294,6 +306,7 @@ class MainLayout extends Component {
 export default connect(
     state => ({
         userId: state.auth.userId,
-        currentInfo: state.currentInfo.info
+        currentInfo: state.currentInfo.info,
+        tempPageName: state.tempPageName.pageName
     })
 )(withRouter(windowSize(MainLayout)))
