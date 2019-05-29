@@ -77,14 +77,18 @@ class BlockInfo extends Component {
 
   //prop이 바뀜을 catch
   static getDerivedStateFromProps(props, state) {
-    if (props.match.params.blockNo !== state.blockNo) {
-      return{
-        blockNo: props.match.params.blockNo
-      };
+    let { blockNo } = state;
+
+    if (props.match.params.blockNo !== blockNo) {
+      blockNo = props.match.params.blockNo
     }
-    return null;
+    return {
+      ...state,
+      blockNo
+    }
   }
 
+  //state 바뀐 후 function call
   componentDidUpdate(prevProps, prevState) {
     if (prevState.blockNo !== this.state.blockNo) {
       this.getBlockInfo();

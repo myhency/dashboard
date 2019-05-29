@@ -43,10 +43,6 @@ class Address extends Component {
     //Callback for table
     getAddress = (callback) => {
         
-        this.setState({
-            loading: true
-        });
-
         Fetch.GET(`/api/address/${this.state.address}`)
         .then(res=>{
             this.setState({
@@ -69,10 +65,6 @@ class Address extends Component {
                             callback();
                         }
                     })
-                }).finally(() => {
-                    this.setState({
-                        loading: false
-                    });
                 })
             }else {
                 this.props.dispatch(setPage('Address'));
@@ -87,6 +79,7 @@ class Address extends Component {
 
 
     getTransaction = (state, instance) => {
+        console.log('getTrasddofaidsfadsji');
         this.setState({
             loading: true
         });
@@ -101,6 +94,9 @@ class Address extends Component {
                 transactions: res.results,
                 pages: Math.ceil(res.count/state.pageSize)
             })
+        })
+        .catch(error => {
+            console.log(error);
         })
         .finally(() => {
             this.setState({
@@ -119,22 +115,28 @@ class Address extends Component {
     }
 
     //prop이 바뀜을 catch
-    componentDidUpdate(prevProps, prevState) {
-        let { address } = this.state;
+    static getDerivedStateFromProps(props, state) {
+        let { address } = state;
 
-        if (prevProps.match.params.address !== address) {
-            address = prevProps.match.params.address;   
-            this.setState({
-                address
-            }, () => {
-                this.getAddress(() => {
-                    this.table.fireFetchData();
-                });
-            })
+        if (props.match.params.address !== address) {
+            address = props.match.params.address
+        }
+
+        return {
+            ...state,
+            address
         }
     }
 
-    
+    //state 바뀐 후 function call
+    componentDidUpdate(prevProps, prevState) {
+        console.log('componentDidUpdate');
+        if (prevState.address !== this.state.address) {
+            this.getAddress();
+            this.table.fireFetchData();
+        }
+    }
+
   render() {
     const { transactions, pages, loading, balance, transaction_count
         , is_contract, contract_deployer, contract_deployed_at, byte_code } = this.state;
@@ -193,6 +195,7 @@ class Address extends Component {
                         }
                     }
                 ]}
+                
                 manual // Forces table not to paginate or sort automatically, so we can handle it server-side
                 data={transactions}
                 pages={pages} // Display the total number of pages
@@ -238,16 +241,18 @@ class Address extends Component {
           </ContentRow>
           <ContentRow>
               <ContentCol>
-                  {is_contract ? 
-                    <Fragment> 
-                        <Nav tabs>
-                            <NavItem style={{ width: '33%' }}>
-                                <NavLink
-                                className={classnames({ active: this.state.activeTab === '1' })}
-                                onClick={() => { this.toggle('1'); }}>
-                                    Transactions
-                                </NavLink>
-                            </NavItem>
+                <Fragment> 
+                    <Nav tabs>
+                        <NavItem style={{ width: '33%' }}>
+                            <NavLink
+                            className={classnames({ active: this.state.activeTab === '1' })}
+                            onClick={() => { this.toggle('1'); }}>
+                                Transactions
+                            </NavLink>
+                        </NavItem>
+                        {is_contract ?
+                        <Fragment>
+
                             <NavItem style={{ width: '33%' }}>
                                 <NavLink
                                 className={classnames({ active: this.state.activeTab === '2' })}
@@ -262,19 +267,22 @@ class Address extends Component {
                                     Events
                                 </NavLink>
                             </NavItem>
-                        </Nav>
-                        <TabContent activeTab={this.state.activeTab} style={{ height: '522px'}}>
-                            <TabPane tabId='1'>
-                                <ContentCard style={{margin: '0', border: 0, height: '520px'}}> {renderTable()}</ContentCard>
-                            </TabPane>
+                        </Fragment>
+                        : null
+                        }
+                    </Nav>
+                    <TabContent activeTab={this.state.activeTab} style={{ height: '522px'}}>
+                        <TabPane tabId='1'>
+                            <ContentCard style={{margin: '0', border: 0, height: '520px'}}> {renderTable()}</ContentCard>
+                        </TabPane>
+                        {is_contract ? 
+                        <Fragment>
                             <TabPane tabId='2'><Code byteCode={byte_code}/></TabPane>
                             <TabPane tabId='3'><Event/></TabPane>
-                        </TabContent>
-                    </Fragment>
-                    : <ContentCard>
-                        {renderTable()}
-                    </ContentCard>
-                }
+                        </Fragment>
+                        : null }
+                    </TabContent>
+                </Fragment>
               </ContentCol>
           </ContentRow>
       </Fragment>
