@@ -9,10 +9,11 @@ import { TiKeyOutline } from 'react-icons/ti';
 import _ from 'lodash';
 import moment from 'moment';
 
+
 import Fetch from 'utils/Fetch.js';
 import CustomChart from 'components/CustomChart/CustomChart.js';
 import { chartContents } from 'components/CustomChart/Properties.js';
-import node from './front_node.png';
+import D3component from './nodenetwork/d3component';
 
 class Monitoring extends Component {
 
@@ -154,7 +155,7 @@ class Monitoring extends Component {
                         <ContentCard >
                             <ContentRow>
                                 <ContentCol>
-                                    <img src={node} style={{width: '100%'}}/>
+                                    <D3component />
                                 </ContentCol>
                             </ContentRow>
                         </ContentCard>
