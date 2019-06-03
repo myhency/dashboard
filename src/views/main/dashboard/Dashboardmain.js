@@ -45,7 +45,7 @@ class Monitoring extends Component {
     }
 
     getBestBlockInfo = () => {
-        Fetch.GET("/api/block/?page_size=10&page=1")
+        Fetch.GET('/api/block/?page_size=10&page=1')
         .then(res => {
             let bestBlock = res.results[0];
 
