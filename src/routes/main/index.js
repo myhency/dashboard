@@ -10,10 +10,6 @@ import TxList from 'views/main/scanner/TxList';
 import TxInfo from 'views/main/scanner/TxInfo';
 import Address from 'views/main/scanner/Address.js';
 
-import APIGenerator from 'views/main/APIGenerator/Api_Generator.js';
-import DappSelect from 'views/main/DApp/selectDapp.js';
-import SupplyChain from 'views/main/DApp/supplyChain.js';
-
 import { FiPackage, FiFile, FiImage, FiBox, FiBookOpen } from 'react-icons/fi';
 import { FaChartBar, FaEye, FaUserEdit } from 'react-icons/fa';
 
@@ -69,26 +65,6 @@ const mainRoutes = [
         name: 'Address',
         component: Address,
         sidebar: false
-    },
-    {
-        name: 'API Generator',
-        path: contextPath + 'api-generator',
-        component: APIGenerator,
-        icon: FiBox,
-        sidebar: true
-    },
-    {
-        name: 'DApp Demo Space',
-        icon: FiBox,
-        sidebar: true,
-        path: contextPath + 'dapp/select',
-        component: DappSelect
-    },
-    {
-        name: 'Supply Chain',
-        sidebar: false,
-        path: contextPath + 'dapp/supplychain',
-        component: SupplyChain
     },
 ]
 
