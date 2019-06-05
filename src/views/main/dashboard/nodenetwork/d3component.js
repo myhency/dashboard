@@ -27,7 +27,7 @@ let simulation = d3.forceSimulation()
     )
     .force("center", d3.forceCenter(620 / 2, 450 / 2));
 
-class D3componentControl extends Component {
+class D3component extends Component {
     constructor(props) {
         super(props)
     }
@@ -78,6 +78,10 @@ class D3componentControl extends Component {
             .data(graph.nodes)
             .enter().append("image")
             .attr("xlink:href", function (d) { return d.img; })
+            .call(d3.drag()
+                .on("start", this.dragstarted)
+                .on("drag", this.dragged)
+                .on("end", this.dragended));
 
 
 
@@ -151,28 +155,30 @@ class D3componentControl extends Component {
 
     render() {
         return (
-            <svg width="620" height="450"  //켄버스 크기
-                ref={handle => (this.svg = d3.select(handle))}>
-            </svg>
-        )
-    }
-}
-
-class D3component extends React.Component {
-    constructor(props) {
-        super(props)
-    }
-
-    render() {
-        return (
-            <div>
-                <div className='container'>
-                    <D3componentControl />
-                </div>
+            <div className='container'>
+                <svg width="620" height="450"  //켄버스 크기
+                    ref={handle => (this.svg = d3.select(handle))}>
+                </svg>
             </div>
         )
     }
 }
+
+// class D3component extends React.Component {
+//     constructor(props) {
+//         super(props)
+//     }
+
+//     render() {
+//         return (
+//             <div>
+//                 <div className='container'>
+//                     <D3componentControl />
+//                 </div>
+//             </div>
+//         )
+//     }
+// }
 
 export default D3component;
 

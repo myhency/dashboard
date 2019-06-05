@@ -13,14 +13,21 @@ class NodeNetwork extends Component {
             show: false
         }
 
-        this.movingTx = [];
-
-        this.isOn = true;
-
         socket = io.connect(process.env.REACT_APP_BAAS_SOCKET, {
             query: {token: sessionStorage.getItem("token")}
         });
     }
+
+    componentDidMount() {
+        socket.on('connect', function() {
+            socket.emit("requestNodeList")
+        })
+    }
+
+    componentWillUnmount() {
+        socket.disconnect();
+    }
 }
+
 
 export default NodeNetwork;
