@@ -13,8 +13,6 @@ import moment from 'moment';
 import io from 'socket.io-client';
 
 import Fetch from 'utils/Fetch.js';
-import CustomChart from 'components/CustomChart/CustomChart.js';
-import { chartContents } from 'components/CustomChart/Properties.js';
 import D3component from './nodenetwork/d3component';
 
 let socket;
@@ -36,11 +34,7 @@ class Monitoring extends Component {
           d3card : undefined
         };
 
-        socket = io.connect(process.env.REACT_APP_BAAS_SOCKET, {
-            query: {token: sessionStorage.getItem("token")}
-        });
-
-        
+        socket = io.connect(process.env.REACT_APP_BAAS_SOCKET);
 
     }
 
@@ -51,7 +45,14 @@ class Monitoring extends Component {
         // web socket 연결 
         socket.on('connect', function() {
             socket.emit("requestNodeList")
-        })
+        });
+
+        socket.on('responseNodeList', (data) => {
+            this.setState({
+                node: data,
+                isMining: true
+            })
+        });
 
         //1초에 한번씩 백엔드에 요청
         this.intervalId_getBestBlockInfo = setInterval(this.getBestBlockInfo, 1000);
@@ -114,9 +115,9 @@ class Monitoring extends Component {
     
     
     render() {
-        const { blockNo, avgBlockTime, gasLimit, gasUsed, d3card } = this.state;
-        console.log(d3card);
-        
+        const { blockNo, avgBlockTime, gasLimit, gasUsed, d3card, node } = this.state;
+        console.log(node);
+
         return (
             <Fragment>
                 <ContentRow>
@@ -180,7 +181,7 @@ class Monitoring extends Component {
                 <ContentRow>
                     <ContentCol xl={6} lg={12} md={12} sm={12} xs={12} >
                         <ContentCard >
-                            <D3component ref='D3' cardPosition={d3card}/>
+                            <D3component ref='D3' cardPosition={d3card} node={node}/>
                         </ContentCard>
                     </ContentCol>
                     <ContentCol xl={6} lg={12} md={12} sm={12} xs={12}>
