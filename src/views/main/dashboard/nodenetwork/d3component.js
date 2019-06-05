@@ -35,7 +35,7 @@ class D3componentControl extends Component {
 
     updateTime() {
         const dt = new Date(this.props.time)
-        console.log(dt);
+        // console.log(dt);
         // const hourAngle = dt.getHours() * 30 + 
         //     Math.floor(dt.getMinutes() / 12) * 6  
         // this.moveHand('H', hourAngle)
@@ -213,7 +213,7 @@ class D3componentControl extends Component {
     render() {
 
         return (
-            <svg width="100%" height="100%"//width="620" height="450"  //켄버스 크기
+            <svg width="100%" style={{minHeight:'450px'}}//width="620" height="450"  //켄버스 크기
                 ref={handle => (this.svg = d3.select(handle))}>
             </svg>
         )
@@ -299,6 +299,22 @@ class D3component extends React.Component {
         )
     }
 }
+
+// class D3component extends React.Component {
+//     constructor(props) {
+//         super(props)
+//     }
+
+//     render() {
+//         return (
+//             <div>
+//                 <div className='container'>
+//                     <D3componentControl />
+//                 </div>
+//             </div>
+//         )
+//     }
+// }
 
 export default D3component;
 

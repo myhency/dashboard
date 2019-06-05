@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from 'react';
+import ReactDOM from 'react-dom';
 import ContentRow from 'components/ContentRow';
 import ContentCol from 'components/ContentCol';
 import ContentCard from 'components/ContentCard';
@@ -6,14 +7,15 @@ import { Table, Col } from 'reactstrap';
 import { FiBox } from 'react-icons/fi';
 import { MdTimer,MdHourglassEmpty } from 'react-icons/md';
 import { TiKeyOutline } from 'react-icons/ti';
+import { Bar } from 'react-chartjs-2';
 import _ from 'lodash';
 import moment from 'moment';
-
+import io from 'socket.io-client';
 
 import Fetch from 'utils/Fetch.js';
-import CustomChart from 'components/CustomChart/CustomChart.js';
-import { chartContents } from 'components/CustomChart/Properties.js';
 import D3component from './nodenetwork/d3component';
+
+let socket;
 
 class Monitoring extends Component {
 
@@ -26,20 +28,44 @@ class Monitoring extends Component {
           gasUsed: undefined,
           timestamp: undefined,
           avgBlockTime: undefined,
-          timePass: []
+          timePass: [],
+          node: [],
+          pendingTx: [],
+          d3card : undefined
         };
+
+        socket = io.connect(process.env.REACT_APP_BAAS_SOCKET);
+
     }
 
     componentDidMount() {
         this.getBestBlockInfo();
         this.getCurrentTime();
 
+        // web socket 연결 
+        socket.on('connect', function() {
+            socket.emit("requestNodeList")
+        });
+
+        socket.on('responseNodeList', (data) => {
+            this.setState({
+                node: data,
+                isMining: true
+            })
+        });
+
         //1초에 한번씩 백엔드에 요청
         this.intervalId_getBestBlockInfo = setInterval(this.getBestBlockInfo, 1000);
         this.intervalId_getCurrentTime = setInterval(this.getCurrentTime, 1000);  
+        this.setState({
+            d3card: ReactDOM.findDOMNode(this.refs['D3']).getBoundingClientRect()
+        });
+        
+
     }
 
     componentWillUnmount() {
+        socket.disconnect();
         clearInterval(this.intervalId_getBestBlockInfo);
         clearInterval(this.intervalId_getCurrentTime);
     }
@@ -85,11 +111,13 @@ class Monitoring extends Component {
             passSec: this.state.passSec + 1
           });
         }
-      }
-
+    }
+    
+    
     render() {
-        const { blockNo, avgBlockTime, gasLimit, gasUsed } = this.state;
-        
+        const { blockNo, avgBlockTime, gasLimit, gasUsed, d3card, node } = this.state;
+        console.log(node);
+
         return (
             <Fragment>
                 <ContentRow>
@@ -152,12 +180,8 @@ class Monitoring extends Component {
                 </ContentRow>
                 <ContentRow>
                     <ContentCol xl={6} lg={12} md={12} sm={12} xs={12} >
-                        <ContentCard>
-                            <ContentRow>
-                                <ContentCol style={{height:'450px'}}>
-                                    <D3component />
-                                </ContentCol>
-                            </ContentRow>
+                        <ContentCard >
+                            <D3component ref='D3' cardPosition={d3card} node={node}/>
                         </ContentCard>
                     </ContentCol>
                     <ContentCol xl={6} lg={12} md={12} sm={12} xs={12}>
@@ -206,27 +230,82 @@ class Monitoring extends Component {
                         </ContentRow>
                         <ContentRow>
                             <ContentCol xl={12}>
-                                {/* <ContentCard inverse backgroundColor='#e06377' borderColor='#c83349'> */}
-                                <CustomChart
+                                {/* <CustomChart
                                     title='Transactions Per Block'
                                     category='During 5 min'
                                     content={chartContents.barDifficulty}
-                                    interval={10} />
-                                {/* <ContentCard>
-                                    <ContentRow>
-                                        <Col xl={6} lg={6} md={6} sm={6} xs={6} style={{textAlign:'left'}}>
-                                            <span style={{fontSize:'1.0rem'}}>Transaction Per Block</span><br/>
-                                            <CustomChart
-                                                category='During 5 min'
-                                                content={chartContents.barDifficulty}
-                                                interval={10}
-                                                // color='green'
-                                                // criticalValue={10}
-                                                // criticalColor='blue'
-                                            />
-                                        </Col>
-                                    </ContentRow> 
-                                </ContentCard>*/}
+                                    interval={10} /> */}
+                                    <Bar
+                                    data={{
+                                        labels: [
+                                            "January",
+                                            "February",
+                                            "March",
+                                            "April",
+                                            "May",
+                                            "June",
+                                            "July"
+                                        ],
+                                        datasets: [
+                                            {
+                                                label: "First dataset",
+                                                data: [
+                                                    20, 4, 8, 5, 15, 5, 9
+                                                ],
+                                                // fill: false,
+                                                // backgroundColor: '#b7d7e8',
+                                                borderColor: '#87bdd8',
+                                                borderWidth: 2,
+                                                pointBackgroundColor: '#87bdd8',
+                                                pointBorderColor: '#fff',
+                                                pointBorderWidth: 1
+                                            },
+                                            {
+                                                label: "Second dataset",
+                                                data: [
+                                                    8, 2, 15, 9, 6, 5, 1
+                                                ],
+                                                // fill: false,
+                                                // backgroundColor: '#e06377',
+                                                borderColor: '#c83349',
+                                                borderWidth: 2,
+                                                pointBackgroundColor: '#c83349',
+                                                pointBorderColor: '#fff',
+                                                pointBorderWidth: 1
+                                            }
+                                        ]
+                                    }}
+                                    
+                                    options={{
+                                        scales: {
+                                            xAxes: [
+                                                {
+                                                    display: true,
+                                                    scaleLabel: {
+                                                        show: true,
+                                                        labelString: 'Month'
+                                                    }
+                                                }
+                                            ],
+                                            yAxes: [
+                                                {
+                                                    display: true,
+                                                    scaleLabel: {
+                                                        show: true,
+                                                        labelString: 'Value'
+                                                    },
+                                                    ticks: {
+                                                        suggestedMin: 0,
+                                                        suggestedMax: 10
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }}
+
+                                    // legend={false}
+                                />
+
                             </ContentCol>
                         </ContentRow>
                     </ContentCol>
