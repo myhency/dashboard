@@ -32,7 +32,8 @@ class Monitoring extends Component {
           avgBlockTime: undefined,
           timePass: [],
           node: [],
-          pendingTx: []
+          pendingTx: [],
+          d3card : undefined
         };
 
         socket = io.connect(process.env.REACT_APP_BAAS_SOCKET, {
@@ -55,8 +56,11 @@ class Monitoring extends Component {
         //1초에 한번씩 백엔드에 요청
         this.intervalId_getBestBlockInfo = setInterval(this.getBestBlockInfo, 1000);
         this.intervalId_getCurrentTime = setInterval(this.getCurrentTime, 1000);  
+        this.setState({
+            d3card: ReactDOM.findDOMNode(this.refs['D3']).getBoundingClientRect()
+        });
+        
 
-        console.log(ReactDOM.findDOMNode(this.refs['D3']));
     }
 
     componentWillUnmount() {
@@ -110,8 +114,8 @@ class Monitoring extends Component {
     
     
     render() {
-        const { blockNo, avgBlockTime, gasLimit, gasUsed } = this.state;
-        
+        const { blockNo, avgBlockTime, gasLimit, gasUsed, d3card } = this.state;
+        console.log(d3card);
         
         return (
             <Fragment>
@@ -175,8 +179,8 @@ class Monitoring extends Component {
                 </ContentRow>
                 <ContentRow>
                     <ContentCol xl={6} lg={12} md={12} sm={12} xs={12} >
-                        <ContentCard ref='D3'>
-                            <D3component/>
+                        <ContentCard >
+                            <D3component ref='D3' cardPosition={d3card}/>
                         </ContentCard>
                     </ContentCol>
                     <ContentCol xl={6} lg={12} md={12} sm={12} xs={12}>
