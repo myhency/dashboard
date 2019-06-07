@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 import React, { Component } from 'react';
-
+import _ from "lodash";
 
 
 let simulation = d3.forceSimulation()
@@ -15,32 +15,108 @@ let simulation = d3.forceSimulation()
 
 let angle = 0;
 
-class D3componentControl extends Component {
+class D3component extends Component {
     
     constructor(props) {
         super(props)
-
-
+        
+        this.state = {
+            node : props.node,
+            // graph: {
+            //     "nodes": 
+            //     [
+                    // { "id": "C", "group": 3, "img": "/img/node_normal.png" },
+                    // { "id": "A", "group": 1, "img": "/img/node_normal.png" },
+                    // { "id": "D", "group": 4, "img": "/img/node_normal.png" },
+                    // { "id": "B", "group": 2, "img": "/img/node_normal.png" },
+                    // { "id": "E", "group": 5, "img": "/img/node_normal.png" },
+                    // { "id": "F", "group": a1, "img": "/img/node_normal.png" },
+                    // { "id": "g", "group": 2, "img": "/img/node_normal.png" },
+                    // { "id": "h", "group": 3, "img": "/img/node_normal.png" },
+                    // { "id": "i", "group": 4, "img": "/img/node_normal.png" },
+                    // { "id": "j", "group": 5, "img": "/img/node_normal.png" },
+                    // { "id": "k", "group": 1, "img": "/img/node_normal.png" },
+                    // { "id": "l", "group": 2, "img": "/img/node_normal.png" },
+                    // { "id": "m", "group": 3, "img": "/img/node_normal.png" },
+                    // { "id": "n", "group": 4, "img": "/img/node_normal.png" },
+                    // { "id": "o", "group": 5, "img": "/img/node_normal.png" }
+                // ],
+                // "links": [
+                    // { "source": "A", "target": "B", "value": 1 },
+                    // { "source": "B", "target": "C", "value": 1 },
+                    // { "source": "C", "target": "D", "value": 1 },
+                    // { "source": "D", "target": "E", "value": 1 },
+                    // { "source": "E", "target": "F", "value": 1 },
+                    // { "source": "F", "target": "g", "value": 1 },
+                    // { "source": "g", "target": "h", "value": 1 },
+                    // { "source": "h", "target": "i", "value": 1 },
+                    // { "source": "i", "target": "j", "value": 1 },
+                    // { "source": "j", "target": "k", "value": 1 },
+                    // { "source": "k", "target": "l", "value": 1 },
+                    // { "source": "l", "target": "m", "value": 1 },
+                    // { "source": "m", "target": "n", "value": 1 },
+                    // { "source": "n", "target": "o", "value": 1 },
+                    // { "source": "o", "target": "A", "value": 1 },
+                    // { "source": "A", "target": "C", "value": 1 },
+                    // { "source": "B", "target": "D", "value": 1 },
+                    // { "source": "C", "target": "E", "value": 1 },
+                    // { "source": "D", "target": "F", "value": 1 },
+                    // { "source": "E", "target": "g", "value": 1 },
+                    // { "source": "g", "target": "h", "value": 1 },
+                    // { "source": "h", "target": "i", "value": 1 },
+                    // { "source": "i", "target": "j", "value": 1 },
+                    // { "source": "j", "target": "k", "value": 1 },
+                    // { "source": "k", "target": "l", "value": 1 },
+                    // { "source": "l", "target": "m", "value": 1 },
+                    // { "source": "m", "target": "n", "value": 1 },
+                    // { "source": "n", "target": "o", "value": 1 },
+                    // { "source": "o", "target": "A", "value": 1 },
+                    // { "source": "F", "target": "B", "value": 1 },
+            //     ]
+            // }
+        }
     }
 
     componentDidMount() {
-        this.drawFrame();
-        this.updateTime();
-
+        
+        setInterval(() => {
+            this.updateTime();
+        }, 100);
+        
     }
 
-    componentDidUpdate() {
-        this.updateTime()
+    static getDerivedStateFromProps(nextProps, prevState) {
+        console.log('getDerivedStateFromProps');
+        
+        let { node } = prevState;
+
+        if(!_.isEqual(nextProps.node, node)) {
+            console.log(nextProps.node);
+            return {
+                node: nextProps.node
+            }
+        }
+        else {
+            return null;
+        }
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        console.log('componentDidUP');
+        
+        if(!_.isEqual(prevState.node, this.state.node) && this.state.node.length > 0) {
+            this.drawFrame();
+            console.log('draw');
+        }
     }
 
     updateTime() {
-        const dt = new Date(this.props.time)
         // console.log(dt);
         // const hourAngle = dt.getHours() * 30 + 
         //     Math.floor(dt.getMinutes() / 12) * 6  
         // this.moveHand('H', hourAngle)
         // this.moveHand('M', dt.getMinutes() * 6, 3)
-        angle = angle + 0.1;
+        angle = angle + 5;
         if(angle > 360) {
             angle = 0;
         }
@@ -78,10 +154,18 @@ class D3componentControl extends Component {
     // }
 
     drawFrame() {
+        console.log('drawFram!!!!!!!!!!');
+
+        let links = [];
+        
+        let nodes = _.map(this.state.node, (node) => {
+            return {id: node.id, group:1, img: "/img/node_normal.png"};
+        });
+
         let link = this.svg.append("g")
             .style("stroke", "#aaa")
             .selectAll("line")
-            .data(this.props.graph.links)
+            .data(links)
             .enter().append("line");
 
         // let node = this.svg.append("g")
@@ -111,7 +195,7 @@ class D3componentControl extends Component {
         let node = this.svg.append("g")
             .attr("class", "images")
             .selectAll("g.images")
-            .data(this.props.graph.nodes)
+            .data(nodes)
             .enter().append("image")
             .attr("xlink:href", function (d) { return d.img; })
             .call(d3.drag()
@@ -122,7 +206,7 @@ class D3componentControl extends Component {
         let label = this.svg.append("g")
             .attr("class", "labels")
             .selectAll("text")
-            .data(this.props.graph.nodes)
+            .data(nodes)
             .enter().append("text")
             .attr("class", "label")
             .attr("class", "fa")
@@ -146,12 +230,12 @@ class D3componentControl extends Component {
 
 
         simulation
-            .nodes(this.props.graph.nodes)
+            .nodes(nodes)
             .on("tick", ticked)
         // .on("tick", ()=>simulation.alphaTarget(0.8).restart());
 
         simulation.force("link")
-            .links(this.props.graph.links);
+            .links(links);
 
         function ticked() {
             link
@@ -233,90 +317,23 @@ class D3componentControl extends Component {
     }
 }
 
-class D3component extends React.Component {
-    constructor(props) {
-        super(props)
-        this.tzOffset = (new Date()).getTimezoneOffset()
-        this.state = {
-            graph: {
-                "nodes": [
-                    { "id": "C", "group": 3, "img": "/img/node_normal.png" },
-                    { "id": "A", "group": 1, "img": "/img/node_normal.png" },
-                    { "id": "D", "group": 4, "img": "/img/node_normal.png" },
-                    { "id": "B", "group": 2, "img": "/img/node_normal.png" },
-                    { "id": "E", "group": 5, "img": "/img/node_normal.png" },
-                    { "id": "F", "group": 1, "img": "/img/node_normal.png" },
-                    { "id": "g", "group": 2, "img": "/img/node_normal.png" },
-                    { "id": "h", "group": 3, "img": "/img/node_normal.png" },
-                    { "id": "i", "group": 4, "img": "/img/node_normal.png" },
-                    { "id": "j", "group": 5, "img": "/img/node_normal.png" },
-                    { "id": "k", "group": 1, "img": "/img/node_normal.png" },
-                    { "id": "l", "group": 2, "img": "/img/node_normal.png" },
-                    { "id": "m", "group": 3, "img": "/img/node_normal.png" },
-                    { "id": "n", "group": 4, "img": "/img/node_normal.png" },
-                    { "id": "o", "group": 5, "img": "/img/node_normal.png" }
-                ],
-                "links": [
-                    { "source": "A", "target": "B", "value": 1 },
-                    { "source": "B", "target": "C", "value": 1 },
-                    { "source": "C", "target": "D", "value": 1 },
-                    { "source": "D", "target": "E", "value": 1 },
-                    { "source": "E", "target": "F", "value": 1 },
-                    { "source": "F", "target": "g", "value": 1 },
-                    { "source": "g", "target": "h", "value": 1 },
-                    { "source": "h", "target": "i", "value": 1 },
-                    { "source": "i", "target": "j", "value": 1 },
-                    { "source": "j", "target": "k", "value": 1 },
-                    { "source": "k", "target": "l", "value": 1 },
-                    { "source": "l", "target": "m", "value": 1 },
-                    { "source": "m", "target": "n", "value": 1 },
-                    { "source": "n", "target": "o", "value": 1 },
-                    { "source": "o", "target": "A", "value": 1 },
-                    { "source": "A", "target": "C", "value": 1 },
-                    { "source": "B", "target": "D", "value": 1 },
-                    { "source": "C", "target": "E", "value": 1 },
-                    { "source": "D", "target": "F", "value": 1 },
-                    { "source": "E", "target": "g", "value": 1 },
-                    { "source": "g", "target": "h", "value": 1 },
-                    { "source": "h", "target": "i", "value": 1 },
-                    { "source": "i", "target": "j", "value": 1 },
-                    { "source": "j", "target": "k", "value": 1 },
-                    { "source": "k", "target": "l", "value": 1 },
-                    { "source": "l", "target": "m", "value": 1 },
-                    { "source": "m", "target": "n", "value": 1 },
-                    { "source": "n", "target": "o", "value": 1 },
-                    { "source": "o", "target": "A", "value": 1 },
-                    { "source": "F", "target": "B", "value": 1 },
-                ]
-            },
-            time: this.getUTC()
-        }
-    }
 
-    websocket() {
-        //받아와
-        //받아온 값을 state에 저장해
-    }
+// class D3component extends React.Component {
+   
+//     componentDidMount() {
+        
+//     }
 
-    componentDidMount() {
-        setInterval(() => {
-            this.setState({ time: this.getUTC() })
-        }, 100)
-    }
+    
+    
 
-    getUTC() {
-        return Date.now() + this.tzOffset * 60 * 1000
-    }
-
-
-
-    render() {
-        const localTime = tzDelta => this.state.time + tzDelta * 60 * 1000
-        return (
-            <D3componentControl graph={this.state.graph} time={localTime(60)} />
-        )
-    }
-}
+//     render() {
+//         const localTime = tzDelta => this.state.time + tzDelta * 60 * 1000
+//         return (
+//             <D3componentControl graph={this.state.graph} time={localTime(60)} />
+//         )
+//     }
+// }
 
 export default D3component;
 

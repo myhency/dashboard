@@ -49,8 +49,7 @@ class Monitoring extends Component {
 
         socket.on('responseNodeList', (data) => {
             this.setState({
-                node: data,
-                isMining: true
+                node: data
             })
         });
 
@@ -86,7 +85,7 @@ class Monitoring extends Component {
             }
             newTime.push(moment(res.results[0].timestamp).diff(res.results[1].timestamp,'seconds'));
             let avgBlockTime = _.meanBy(newTime);
-            console.log(newTime);
+            //console.log(newTime);
 
             this.setState({
                 blockNo: bestBlock.number,
@@ -116,7 +115,7 @@ class Monitoring extends Component {
     
     render() {
         const { blockNo, avgBlockTime, gasLimit, gasUsed, d3card, node } = this.state;
-        console.log(node);
+        //console.log(node);
 
         return (
             <Fragment>
