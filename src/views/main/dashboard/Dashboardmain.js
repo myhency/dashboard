@@ -129,8 +129,8 @@ class Monitoring extends Component {
                                     <FiBox size={100} color="#e06377" />
                                 </Col>
                                 <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{textAlign:'left', lineHeight:2}}>
-                                    <span style={{fontSize:'0.9rem'}}>BEST BLOCK</span><br/>
-                                    <span style={{fontSize:'1.75rem', fontWeight:'bold'}}># {blockNo === undefined ? '' : blockNo}</span>
+                                    <span style={{fontSize:'0.9rem', color:"#FFFFFF"}}>BEST BLOCK</span><br/>
+                                    <span style={{fontSize:'1.75rem', fontWeight:'bold',color:"#FFFFFF"}}># {blockNo === undefined ? '' : blockNo}</span>
                                 </Col>
                             </ContentRow>
                         </ContentCard>

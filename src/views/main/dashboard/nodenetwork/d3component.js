@@ -45,7 +45,8 @@ class D3componentControl extends Component {
             angle = 0;
         }
         this.moveNodes('g', angle)
-        this.moveNodes('g.nodes', angle)
+        this.moveNodes('g.images', angle)
+        // this.moveNodes('g.nodes', angle)
         this.moveNodes('g.labels', angle)
     }
 
@@ -96,17 +97,27 @@ class D3componentControl extends Component {
         //         .on("drag", this.dragged)
         //         .on("end", this.dragended));
 
+        // let node = this.svg.append("g")
+        //     .attr("class", "nodes")
+        //     .selectAll("circle")
+        //     .data(this.props.graph.nodes)
+        //     .enter().append("circle")
+        //     .attr("r", 2)
+        //     .call(d3.drag()
+        //         .on("start", this.dragstarted)
+        //         .on("drag", this.dragged)
+        //         .on("end", this.dragended))
+
         let node = this.svg.append("g")
-            .attr("class", "nodes")
-            .selectAll("circle")
+            .attr("class", "images")
+            .selectAll("g.images")
             .data(this.props.graph.nodes)
-            .enter().append("circle")
-            .attr("r", 2)
+            .enter().append("image")
+            .attr("xlink:href", function (d) { return d.img; })
             .call(d3.drag()
                 .on("start", this.dragstarted)
                 .on("drag", this.dragged)
                 .on("end", this.dragended))
-        // .call(d3.);
 
         let label = this.svg.append("g")
             .attr("class", "labels")
@@ -158,12 +169,14 @@ class D3componentControl extends Component {
             //     .attr("y", function (d) { return d.y - 15; });
 
             node
-                .attr("r", 16)
-                .style("fill", "#efefef")
-                .style("stroke", "#424242")
-                .style("stroke-width", "1px")
-                .attr("cx", function (d) { return d.x + 5; })
-                .attr("cy", function (d) { return d.y - 3; });
+                // .attr("r", 16)
+                // .style("fill", "#efefef")
+                // .style("stroke", "#424242")
+                // .style("stroke-width", "1px")
+                // .attr("cx", function (d) { return d.x + 5; })
+                // .attr("cy", function (d) { return d.y - 3; });
+                .attr("x", function (d) { return d.x-20; })
+                .attr("y", function (d) { return d.y-20; });
 
             label
                 .attr("x", function (d) { return d.x; })
@@ -213,7 +226,7 @@ class D3componentControl extends Component {
     render() {
 
         return (
-            <svg width="100%" style={{minHeight:'450px'}}//width="620" height="450"  //켄버스 크기
+            <svg width="100%" height="450"//width="620" height="450"  //켄버스 크기
                 ref={handle => (this.svg = d3.select(handle))}>
             </svg>
         )
@@ -227,21 +240,21 @@ class D3component extends React.Component {
         this.state = {
             graph: {
                 "nodes": [
-                    { "id": "A", "group": 1, "img": "http://marvel-force-chart.surge.sh/marvel_force_chart_img/top_hulk.png" },
-                    { "id": "B", "group": 2, "img": "http://marvel-force-chart.surge.sh/marvel_force_chart_img/top_hulk.png" },
-                    { "id": "C", "group": 3, "img": "http://marvel-force-chart.surge.sh/marvel_force_chart_img/top_hulk.png" },
-                    { "id": "D", "group": 4, "img": "http://marvel-force-chart.surge.sh/marvel_force_chart_img/top_hulk.png" },
-                    { "id": "E", "group": 5, "img": "http://marvel-force-chart.surge.sh/marvel_force_chart_img/top_hulk.png" },
-                    { "id": "F", "group": 1, "img": "http://marvel-force-chart.surge.sh/marvel_force_chart_img/top_hulk.png" },
-                    { "id": "g", "group": 2, "img": "http://marvel-force-chart.surge.sh/marvel_force_chart_img/top_hulk.png" },
-                    { "id": "h", "group": 3, "img": "http://marvel-force-chart.surge.sh/marvel_force_chart_img/top_hulk.png" },
-                    { "id": "i", "group": 4, "img": "http://marvel-force-chart.surge.sh/marvel_force_chart_img/top_hulk.png" },
-                    { "id": "j", "group": 5, "img": "http://marvel-force-chart.surge.sh/marvel_force_chart_img/top_hulk.png" },
-                    { "id": "k", "group": 1, "img": "http://marvel-force-chart.surge.sh/marvel_force_chart_img/top_hulk.png" },
-                    { "id": "l", "group": 2, "img": "http://marvel-force-chart.surge.sh/marvel_force_chart_img/top_hulk.png" },
-                    { "id": "m", "group": 3, "img": "http://marvel-force-chart.surge.sh/marvel_force_chart_img/top_hulk.png" },
-                    { "id": "n", "group": 4, "img": "http://marvel-force-chart.surge.sh/marvel_force_chart_img/top_hulk.png" },
-                    { "id": "o", "group": 5, "img": "http://marvel-force-chart.surge.sh/marvel_force_chart_img/top_hulk.png" }
+                    { "id": "C", "group": 3, "img": "/img/node_normal.png" },
+                    { "id": "A", "group": 1, "img": "/img/node_normal.png" },
+                    { "id": "D", "group": 4, "img": "/img/node_normal.png" },
+                    { "id": "B", "group": 2, "img": "/img/node_normal.png" },
+                    { "id": "E", "group": 5, "img": "/img/node_normal.png" },
+                    { "id": "F", "group": 1, "img": "/img/node_normal.png" },
+                    { "id": "g", "group": 2, "img": "/img/node_normal.png" },
+                    { "id": "h", "group": 3, "img": "/img/node_normal.png" },
+                    { "id": "i", "group": 4, "img": "/img/node_normal.png" },
+                    { "id": "j", "group": 5, "img": "/img/node_normal.png" },
+                    { "id": "k", "group": 1, "img": "/img/node_normal.png" },
+                    { "id": "l", "group": 2, "img": "/img/node_normal.png" },
+                    { "id": "m", "group": 3, "img": "/img/node_normal.png" },
+                    { "id": "n", "group": 4, "img": "/img/node_normal.png" },
+                    { "id": "o", "group": 5, "img": "/img/node_normal.png" }
                 ],
                 "links": [
                     { "source": "A", "target": "B", "value": 1 },
@@ -280,6 +293,11 @@ class D3component extends React.Component {
         }
     }
 
+    websocket() {
+        //받아와
+        //받아온 값을 state에 저장해
+    }
+
     componentDidMount() {
         setInterval(() => {
             this.setState({ time: this.getUTC() })
@@ -299,22 +317,6 @@ class D3component extends React.Component {
         )
     }
 }
-
-// class D3component extends React.Component {
-//     constructor(props) {
-//         super(props)
-//     }
-
-//     render() {
-//         return (
-//             <div>
-//                 <div className='container'>
-//                     <D3componentControl />
-//                 </div>
-//             </div>
-//         )
-//     }
-// }
 
 export default D3component;
 
