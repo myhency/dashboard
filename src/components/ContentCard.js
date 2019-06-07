@@ -3,7 +3,8 @@ import { Card, CardHeader, CardBody } from 'reactstrap';
 
 const ContentCard = (props) => {
     let ContentCardStyle = {
-        marginBottom:'1rem'
+        marginBottom:'1rem',
+        background: '#1C1C1D'
     };
 
     let ContentCardProp = {
@@ -11,11 +12,11 @@ const ContentCard = (props) => {
     };
 
     let CardHeaderStyle ={
-        background:'#F0F3F5'
+        background:'#1C1C1D'
     };
 
     let CardBodyStyle = {
-
+        background:'#1C1C1D'
     };
 
     if(props.inverse) {

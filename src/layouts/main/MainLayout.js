@@ -217,9 +217,9 @@ class MainLayout extends Component {
                 </div>
 
                 {/* Header */}
-                <Navbar id="header" className={active ? 'active' : null} color="light" light>
+                <Navbar id="header" className={active ? 'active' : null} color="dark" dark>
                     <NavbarBrand onClick={this.toggle} onMouseEnter={this.onMouseEnterToggle} onMouseLeave={this.onMouseLeaveToggle} style={{cursor:'pointer'}}>
-                        <FiAlignLeft size={25} color={toggleButtonStyle}/>
+                        <FiAlignLeft size={25} color={'#FFFFFF'}/>
                     </NavbarBrand>
                     <NavbarBrand>
                         {this.getCurrentPageName(currentPath)}
