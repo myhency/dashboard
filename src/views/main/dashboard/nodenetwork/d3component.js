@@ -64,7 +64,6 @@ class D3component extends Component {
 
         if (!_.isEqual(prevState.node, this.state.node) && this.state.node.length > 0) {
             this.drawFrame();
-            console.log('draw');
         }
     }
 

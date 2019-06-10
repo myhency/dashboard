@@ -31,7 +31,8 @@ class Monitoring extends Component {
           timePass: [],
           node: [],
           pendingTx: [],
-          d3card : undefined
+          d3card : undefined,
+          nodeStatus: []
         };
 
         socket = io.connect(process.env.REACT_APP_BAAS_SOCKET);
@@ -52,6 +53,14 @@ class Monitoring extends Component {
                 node: data
             })
         });
+
+        socket.on('nodeStatus', (data) => {
+            this.setState({
+                nodeStatus: data
+            })
+            console.log(this.state.nodeStatus);
+        });
+
 
         //1초에 한번씩 백엔드에 요청
         this.intervalId_getBestBlockInfo = setInterval(this.getBestBlockInfo, 1000);
