@@ -86,7 +86,7 @@ class D3component extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        console.log('getDerivedStateFromProps');
+        //console.log('getDerivedStateFromProps');
         
         let { node } = prevState;
 
@@ -102,11 +102,10 @@ class D3component extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        console.log('componentDidUP');
+        //console.log('componentDidUP');
         
         if(!_.isEqual(prevState.node, this.state.node) && this.state.node.length > 0) {
             this.drawFrame();
-            console.log('draw');
         }
     }
 
@@ -154,8 +153,7 @@ class D3component extends Component {
     // }
 
     drawFrame() {
-        console.log('drawFram!!!!!!!!!!');
-
+        
         let links = [];
         
         let nodes = _.map(this.state.node, (node) => {
