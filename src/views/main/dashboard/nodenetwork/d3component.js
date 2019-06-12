@@ -1,6 +1,7 @@
 import * as d3 from "d3";
 import React, { Component } from 'react';
 import _ from "lodash";
+import { func } from "prop-types";
 
 
 
@@ -25,7 +26,7 @@ class D3component extends Component {
             node: [],
             angle : 0,      // Node 회전 각도
             numOfNodes: 0,
-            simulation: undefined
+            simulation: {}
         }
 
         // this.simulation = d3.forceSimulation()
@@ -59,13 +60,26 @@ class D3component extends Component {
 
     static getDerivedStateFromProps(nextProps, prevState) {
         console.log('getDerivedStateFromProps');
-
+        console.log(nextProps);
+        // console.log(state.node);
         let { node } = prevState;
+        // let { node } = state;
+        console.log();
 
         if (!_.isEqual(nextProps.node, node)) {
-            console.log(nextProps.node)
+            console.log(nextProps.node);
+            console.log(node);
             return {
-                node: nextProps.node
+                node: nextProps.node,
+                numOfNodes: nextProps.node.length,
+                simulation: d3.forceSimulation()
+                    .force("link", d3.forceLink().id(function (d) { return d.id; }))
+                    .force('charge', d3.forceManyBody()
+                        .strength(nextProps.node.length * (-1000))
+                        .theta(0.2)
+                        .distanceMax(150)
+                    )
+                    .force("center", d3.forceCenter(620 / 2, 450 / 2))
             }
         }
         else {
@@ -106,6 +120,7 @@ class D3component extends Component {
 
     drawFrame() {
         console.log('drawFram');
+        
 
         let links = [];
         // { "source": "A", "target": "B", "value": 1 },
@@ -147,11 +162,11 @@ class D3component extends Component {
             .attr('font-size', function (d) { return '20px' })
             .text(function (d) { return d.id });
 
-        this.simulation
+        this.state.simulation
             .nodes(nodes)
             .on("tick", ticked)
 
-        this.simulation
+        this.state.simulation
             .force("link")
             .links(links);
 
