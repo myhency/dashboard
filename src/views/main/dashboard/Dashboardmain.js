@@ -52,6 +52,7 @@ class Monitoring extends Component {
             this.setState({
                 node: data
             })
+            console.log(this.state.node);
         });
 
         socket.on('nodeStatus', (data) => {
