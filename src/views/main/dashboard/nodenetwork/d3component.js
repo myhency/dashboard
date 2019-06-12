@@ -18,28 +18,42 @@ class D3component extends Component {
 
     constructor(props) {
         console.log("constructor")
+        console.log(props.node)
         super(props)
 
         this.state = {
-            node: props.node,
-            angle : 0       // Node 회전 각도
+            node: [],
+            angle : 0,      // Node 회전 각도
+            numOfNodes: 0,
+            simulation: undefined
         }
 
-        this.simulation = d3.forceSimulation()
-            .force("link", d3.forceLink().id(function (d) { return d.id; }))
-            .force('charge', d3.forceManyBody()
-                .strength(-2000)
-                .theta(0.2)
-                .distanceMax(150)
-            )
-            .force("center", d3.forceCenter(620 / 2, 450 / 2));
+        // this.simulation = d3.forceSimulation()
+        //     .force("link", d3.forceLink().id(function (d) { return d.id; }))
+        //     .force('charge', d3.forceManyBody()
+        //         .strength(this.state.node.length * (-1000))
+        //         .theta(0.2)
+        //         .distanceMax(150)
+        //     )
+        //     .force("center", d3.forceCenter(620 / 2, 450 / 2));
+        // this.simulation = undefined;
     }
 
     componentDidMount() {
         console.log('componentDidMount');
+        // console.log(this.props.node.length)
+        // this.setState({numOfNodes:this.props.node.length});
+        // this.simulation = d3.forceSimulation()
+        //     .force("link", d3.forceLink().id(function (d) { return d.id; }))
+        //     .force('charge', d3.forceManyBody()
+        //         .strength(this.state.node.length * (-1000))
+        //         .theta(0.2)
+        //         .distanceMax(150)
+        //     )
+        //     .force("center", d3.forceCenter(620 / 2, 450 / 2));
         setInterval(() => {
             this.updateTime();
-        }, 1000);
+        }, 100);
 
     }
 
