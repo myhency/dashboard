@@ -138,7 +138,8 @@ class Monitoring extends Component {
                                     <FiBox size={100} color="#e06377" />
                                 </Col>
                                 <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{textAlign:'left', lineHeight:2}}>
-                                    <span style={{fontSize:'0.9rem', color:"#FFFFFF"}}>BEST BLOCK</span><br/>
+                                    {/* <span class='dash-upper-line-card' style={{fontSize:'0.9rem', color:"#FFFFFF"}}>BEST BLOCK</span><br/> */}
+                                    <span class='dash-upper-line-card' >BEST BLOCK</span><br/>
                                     <span style={{fontSize:'1.75rem', fontWeight:'bold',color:"#FFFFFF"}}># {blockNo === undefined ? '' : blockNo}</span>
                                 </Col>
                             </ContentRow>
@@ -152,8 +153,8 @@ class Monitoring extends Component {
                                     <MdTimer size={100} color='#339AED'/>
                                 </Col>
                                 <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{textAlign:'left', lineHeight:2}}>
-                                    <span style={{fontSize:'0.9rem'}}>AVG BLOCK TIME</span><br/>
-                                    <span style={{fontSize:'1.75rem', fontWeight:'bold'}}>{avgBlockTime} s</span>
+                                    <span style={{fontSize:'0.9rem',color:"#FFFFFF"}}>AVG BLOCK TIME</span><br/>
+                                    <span style={{fontSize:'1.75rem', fontWeight:'bold',color:"#FFFFFF"}}>{avgBlockTime} s</span>
                                 </Col>
                             </ContentRow>
                         </ContentCard>
@@ -166,8 +167,8 @@ class Monitoring extends Component {
                                     <MdHourglassEmpty size={100} color="#8B9DC3"/>
                                 </Col>
                                 <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{textAlign:'left', lineHeight:2}}>
-                                    <span style={{fontSize:'0.9rem'}}>GAS PRICE</span><br/>
-                                    <span style={{fontSize:'1.75rem', fontWeight:'bold'}}>{gasUsed === undefined ? '' : gasUsed} gwei</span>
+                                    <span style={{fontSize:'0.9rem',color:"#FFFFFF"}}>GAS PRICE</span><br/>
+                                    <span style={{fontSize:'1.75rem', fontWeight:'bold',color:"#FFFFFF"}}>{gasUsed === undefined ? '' : gasUsed} gwei</span>
                                 </Col>
                             </ContentRow>
                         </ContentCard>
@@ -180,8 +181,8 @@ class Monitoring extends Component {
                                     <TiKeyOutline size={100} color='#34A853'/>
                                 </Col>
                                 <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{textAlign:'left', lineHeight:2}}>
-                                    <span style={{fontSize:'0.9rem'}}>GAS LIMIT</span><br/>
-                                    <span style={{fontSize:'1.75rem', fontWeight:'bold'}}>{gasLimit === undefined ? '' : gasLimit} gas</span>
+                                    <span style={{fontSize:'0.9rem',color:"#FFFFFF"}}>GAS LIMIT</span><br/>
+                                    <span style={{fontSize:'1.75rem', fontWeight:'bold',color:"#FFFFFF"}}>{gasLimit === undefined ? '' : gasLimit} gas</span>
                                 </Col>
                             </ContentRow>
                         </ContentCard>
