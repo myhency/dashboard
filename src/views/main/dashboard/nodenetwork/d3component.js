@@ -24,37 +24,20 @@ class D3component extends Component {
 
         this.state = {
             node: [],
-            angle : 0,      // Node 회전 각도
+            angle : 0,      // 그림 회전 각도
             numOfNodes: 0,
-            simulation: {}
+            simulation: {},
+            xcenter: 0,
+            ycenter: 0,
+            nodeImgSize: 0
         }
-
-        // this.simulation = d3.forceSimulation()
-        //     .force("link", d3.forceLink().id(function (d) { return d.id; }))
-        //     .force('charge', d3.forceManyBody()
-        //         .strength(this.state.node.length * (-1000))
-        //         .theta(0.2)
-        //         .distanceMax(150)
-        //     )
-        //     .force("center", d3.forceCenter(620 / 2, 450 / 2));
-        // this.simulation = undefined;
     }
 
     componentDidMount() {
         console.log('componentDidMount');
-        // console.log(this.props.node.length)
-        // this.setState({numOfNodes:this.props.node.length});
-        // this.simulation = d3.forceSimulation()
-        //     .force("link", d3.forceLink().id(function (d) { return d.id; }))
-        //     .force('charge', d3.forceManyBody()
-        //         .strength(this.state.node.length * (-1000))
-        //         .theta(0.2)
-        //         .distanceMax(150)
-        //     )
-        //     .force("center", d3.forceCenter(620 / 2, 450 / 2));
         setInterval(() => {
-            this.updateTime();
-        }, 100);
+            this.updateTime();          // 그림을 몇초마다 리프레쉬할지 정함
+        }, 10);
 
     }
 
@@ -75,11 +58,16 @@ class D3component extends Component {
                 simulation: d3.forceSimulation()
                     .force("link", d3.forceLink().id(function (d) { return d.id; }))
                     .force('charge', d3.forceManyBody()
-                        .strength(nextProps.node.length * (-1000))
+                        .strength(nextProps.node.length * (-2000))
                         .theta(0.2)
                         .distanceMax(150)
                     )
-                    .force("center", d3.forceCenter(620 / 2, 450 / 2))
+                    .force("center", d3.forceCenter()
+                        .x(nextProps.cardPosition.width/2)
+                        .y(nextProps.cardPosition.height/2)), // center of the picture
+                xcenter: nextProps.cardPosition.width/2,      // rotational center of the picture
+                ycenter: nextProps.cardPosition.height/2,
+                nodeImgSize: nextProps.cardPosition.width * nextProps.cardPosition.height * 0.0003
             }
         }
         else {
@@ -98,9 +86,9 @@ class D3component extends Component {
     updateTime() {
         console.log("updateTime");
         this.setState({
-            angle:this.state.angle + 5
+            angle:this.state.angle + 0.07     //그림을 얼마만큼 회전시킬지 정함
         });
-        if (this.state.angle > 360) {
+        if (this.state.angle > 360) {    //그림이 한 바퀴 다 돌면 다시 0도 부터 시작함
             this.setState({
                 angle: 0
             });
@@ -112,14 +100,16 @@ class D3component extends Component {
 
     moveNodes(type, pAngle) {
         console.log("moveNodes");
-        const center = 600 / 2
-        const transform = `rotate(${pAngle},${center},${center})`
+        let xcenter = this.state.xcenter;
+        let ycenter = this.state.ycenter;
+        const transform = `rotate(${pAngle},${xcenter},${ycenter})`
         this.svg.select(type)
             .attr('transform', () => transform)
     }
 
     drawFrame() {
         console.log('drawFram');
+        console.log(this.state.nodeImgSize);
         
 
         let links = [];
@@ -131,7 +121,7 @@ class D3component extends Component {
         }
 
         let nodes = _.map(this.state.node, (node) => {
-            return { id: node.id, group: 1, img: "/img/node_normal.png" };
+            return { id: node.id, group: 1, img: "/img/blockchain_green.svg" };
         });
 
         let link = this.svg.append("g")
@@ -147,10 +137,12 @@ class D3component extends Component {
             .data(nodes)
             .enter().append("image")
             .attr("xlink:href", function (d) { return d.img; })
-            .call(d3.drag()
-                .on("start", this.dragstarted)
-                .on("drag", this.dragged)
-                .on("end", this.dragended))
+            .attr("width", this.state.nodeImgSize)
+            .attr("height", this.state.nodeImgSize);
+            // .call(d3.drag()
+            //     .on("start", this.dragstarted)
+            //     .on("drag", thicenters.dragged)
+            //     .on("end", this.dragended))
 
         let label = this.svg.append("g")
             .attr("class", "labels")
@@ -179,8 +171,8 @@ class D3component extends Component {
                 .attr("y2", function (d) { return d.target.y; });
 
             node
-                .attr("x", function (d) { return d.x - 20; })
-                .attr("y", function (d) { return d.y - 20; });
+                .attr("x", function (d) { return d.x-50; })
+                .attr("y", function (d) { return d.y-50; });
 
             label
                 .attr("x", function (d) { return d.x; })
