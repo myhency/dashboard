@@ -16,6 +16,9 @@ import io from 'socket.io-client';
 import Fetch from 'utils/Fetch.js';
 import D3component from './nodenetwork/d3component';
 
+// import gasPriceImg from '/img/gas_price.svg';
+// import gasLimitImg from '/public/img/gas_limit.svg';
+
 let socket;
 
 class Monitoring extends Component {
@@ -47,6 +50,7 @@ class Monitoring extends Component {
     componentDidMount() {
         this.getDashboardInfo();
         this.getCurrentTime();
+        
 
         // web socket 연결 
         socket.on('connect', function() {
@@ -67,10 +71,17 @@ class Monitoring extends Component {
             console.log(this.state.nodeStatus);
         });
 
+        socket.on('pendingTransaction', (data) => {
+            this.setState({
+                pendingTx: data
+            })
+        });
 
         //1초에 한번씩 백엔드에 요청
         this.intervalId_getInfo = setInterval(this.getDashboardInfo, 1000);
         this.intervalId_getCurrentTime = setInterval(this.getCurrentTime, 1000); 
+        this.intervalId_getPendingTx = setInterval(() => socket.emit("requestPendingTx"), 1000);
+
         
         window.addEventListener('resize', this.updatePosition.bind(this));
         this.setState({
@@ -84,7 +95,8 @@ class Monitoring extends Component {
         socket.disconnect();
         clearInterval(this.intervalId_getInfo);
         clearInterval(this.intervalId_getCurrentTime);
-        window.removeEventListener();
+        clearInterval(this.getPendingTx);
+        window.removeEventListener('resize', this.updatePosition.bind(this));
     }
 
     getDashboardInfo = () => {
@@ -102,8 +114,6 @@ class Monitoring extends Component {
             let labels = [];
             for(var i = 1; i<61; i++) {
                 newTime.push(moment(res.results[i-1].timestamp).diff(res.results[i].timestamp,'seconds'));
-                console.log(res.results[i].number);
-                console.log(moment(res.results[i-1].timestamp).diff(res.results[i].timestamp,'seconds'));
                 tpb.push(res.results[i].transaction_count);
                 labels.push(res.results[i].number);
             }
@@ -181,7 +191,6 @@ class Monitoring extends Component {
         })
     }
 
-
     updatePosition() {
         this.setState({
             d3card: ReactDOM.findDOMNode(this.refs['D3']).getBoundingClientRect()
@@ -191,9 +200,8 @@ class Monitoring extends Component {
     
     render() {
         const { blockNo, avgBlockTime, gasLimit, gasUsed, passSec, difficulty, 
-            d3card, node, tbpLabels, txPerBlock, timePass } = this.state;
-        console.log('render');
-
+            d3card, node, tbpLabels, txPerBlock, timePass, pendingTx } = this.state;
+        
         return (
             <Fragment>
                 <ContentRow>
@@ -206,7 +214,7 @@ class Monitoring extends Component {
                                 </Col>
                                 <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{textAlign:'left', lineHeight:2}}>
                                     {/* <span class='dash-upper-line-card' style={{fontSize:'0.9rem', color:"#FFFFFF"}}>BEST BLOCK</span><br/> */}
-                                    <span class='dash-upper-line-card' >BEST BLOCK</span><br/>
+                                    <span className='dash-upper-line-card' >BEST BLOCK</span><br/>
                                     <span style={{fontSize:'1.75rem', fontWeight:'bold',color:"#FFFFFF"}}># {blockNo === undefined ? '' : blockNo}</span>
                                 </Col>
                             </ContentRow>
@@ -268,7 +276,7 @@ class Monitoring extends Component {
                                 <ContentCard style={{maxHeight: '130px'}}>
                                     <ContentRow>
                                         <Col xl={4} lg={4} md={4} sm={4} xs={4} style={{textAlign:'center'}}>
-                                            <MdHourglassEmpty size={100} color="#8B9DC3"/>
+                                            <img src="/img/gas_price.svg" width="100%"/>
                                         </Col>
                                         <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{textAlign:'left', lineHeight:2}}>
                                             <span style={{fontSize:'0.9rem',color:"#FFFFFF"}}>GAS PRICE</span><br/>
@@ -282,7 +290,7 @@ class Monitoring extends Component {
                                 <ContentCard style={{maxHeight: '130px'}}>
                                     <ContentRow>
                                         <Col xl={4} lg={4} md={4} sm={4} xs={4} style={{textAlign:'center'}}>
-                                            <TiKeyOutline size={100} color='#34A853'/>
+                                            <img src="/img/gas_limit.svg" width="100%"/>
                                         </Col>
                                         <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{textAlign:'left', lineHeight:2}}>
                                             <span style={{fontSize:'0.9rem',color:"#FFFFFF"}}>GAS LIMIT</span><br/>
@@ -296,40 +304,26 @@ class Monitoring extends Component {
                             <ContentCol>
                                 <ContentCard>
                                     <Col style={{textAlign:'left', marginBottom: '10px'}}>
-                                        <span style={{fontSize:'1.0rem'}}>Pending Transactions</span>
+                                        <span style={{fontSize:'1.0rem', color: '#ffffff'}}>Pending Transactions</span>
                                     </Col>
                                     <Col>
                                         <Table bordered>
                                             <thead style={{backgroundColor:'skyblue', textAlign: 'center'}}>
                                                 <tr>
                                                     <th style={{width:'20%'}}>Pending..</th>
-                                                    <th style={{width:'80%'}}>txId</th>
+                                                    <th style={{width:'80%'}}>txHash</th>
                                                 </tr>
                                             </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td>&nbsp;</td>
-                                                    <td>&nbsp;</td>
-                                                </tr>
-                                            </tbody>
-                                            <tbody>
-                                                <tr>
-                                                    <td>&nbsp;</td>
-                                                    <td>&nbsp;</td>
-                                                </tr>
-                                            </tbody>
-                                            <tbody>
-                                                <tr>
-                                                    <td>&nbsp;</td>
-                                                    <td>&nbsp;</td>
-                                                </tr>
-                                            </tbody>
-                                            <tbody>
-                                                <tr>
-                                                    <td>&nbsp;</td>
-                                                    <td>&nbsp;</td>
-                                                </tr>
-                                            </tbody>
+                                            { pendingTx.map((txHash,i) => {
+                                                return (
+                                                    <tbody>
+                                                        <tr>
+                                                            <td></td>
+                                                            <td>{txHash}</td>
+                                                        </tr>
+                                                    </tbody>
+                                                );
+                                            })}
                                         </Table>
                                     </Col>
                                 </ContentCard>
@@ -385,7 +379,9 @@ class Monitoring extends Component {
                                     ]
                                 }
                             }}
-                            legend={false}
+                            legend={{
+                                display: false
+                            }}
                         />
                     </ContentCol>
                     <ContentCol xl={6}>
@@ -434,7 +430,9 @@ class Monitoring extends Component {
                                     ]
                                 }
                             }}
-                            legend={false}
+                            legend={{
+                                display: false
+                            }}
                         />
                     </ContentCol>
                 </ContentRow>
