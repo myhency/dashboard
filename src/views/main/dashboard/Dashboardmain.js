@@ -44,16 +44,17 @@ class Monitoring extends Component {
         };
 
         socket = io.connect(process.env.REACT_APP_BAAS_SOCKET);
+        window.addEventListener('resize', this.updatePosition.bind(this));
 
     }
 
     componentDidMount() {
         this.getDashboardInfo();
         this.getCurrentTime();
-        
+        this.updatePosition();
 
         // web socket 연결 
-        socket.on('connect', function() {
+        socket.on('connect', function () {
             socket.emit("requestNodeList")
         });
 
@@ -83,7 +84,7 @@ class Monitoring extends Component {
         this.intervalId_getPendingTx = setInterval(() => socket.emit("requestPendingTx"), 1000);
 
         
-        window.addEventListener('resize', this.updatePosition.bind(this));
+        // window.addEventListener('resize', this.updatePosition.bind(this));
         this.setState({
             d3card: ReactDOM.findDOMNode(this.refs['D3']).getBoundingClientRect()
         });
@@ -133,19 +134,28 @@ class Monitoring extends Component {
                 tbpLabels: labels
             });
 
-        })
-        .catch(error => {
-            console.log(error);
-        })
+                this.setState({
+                    blockNo: bestBlock.number,
+                    gasLimit: bestBlock.gas_limit,
+                    gasUsed: bestBlock.gas_used,
+                    timestamp: bestBlock.timestamp,
+                    avgBlockTime: avgBlockTime,
+                    timePass: newTime
+                });
+
+            })
+            .catch(error => {
+                console.log(error);
+            })
     }
 
     getCurrentTime = () => {
-        if(this.state.passSec === undefined) {
-          return;
-        }else {
-          this.setState({
-            passSec: this.state.passSec + 1
-          });
+        if (this.state.passSec === undefined) {
+            return;
+        } else {
+            this.setState({
+                passSec: this.state.passSec + 1
+            });
         }
     }
 
@@ -192,12 +202,16 @@ class Monitoring extends Component {
     }
 
     updatePosition() {
-        this.setState({
-            d3card: ReactDOM.findDOMNode(this.refs['D3']).getBoundingClientRect()
-        });
+        if (ReactDOM.findDOMNode(this.refs['D3']) !== null) {
+
+            this.setState({
+                d3card: ReactDOM.findDOMNode(this.refs['D3']).getBoundingClientRect()
+            });
+        }
+        
     }
 
-    
+
     render() {
         const { blockNo, avgBlockTime, gasLimit, gasUsed, passSec, difficulty, 
             d3card, node, tbpLabels, txPerBlock, timePass, pendingTx } = this.state;
@@ -207,15 +221,15 @@ class Monitoring extends Component {
                 <ContentRow>
                     <ContentCol xl={3} lg={6} md={6} sm={12} xs={12}>
                         {/* <ContentCard inverse backgroundColor='#e06377' borderColor='#c83349'> */}
-                        <ContentCard style={{maxHeight: '130px'}}>
+                        <ContentCard style={{ maxHeight: '130px' }}>
                             <ContentRow>
-                                <Col xl={4} lg={4} md={4} sm={4} xs={4} style={{textAlign:'center'}}>
+                                <Col xl={4} lg={4} md={4} sm={4} xs={4} style={{ textAlign: 'center' }}>
                                     <FiBox size={100} color="#e06377" />
                                 </Col>
-                                <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{textAlign:'left', lineHeight:2}}>
+                                <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{ textAlign: 'left', lineHeight: 2 }}>
                                     {/* <span class='dash-upper-line-card' style={{fontSize:'0.9rem', color:"#FFFFFF"}}>BEST BLOCK</span><br/> */}
-                                    <span className='dash-upper-line-card' >BEST BLOCK</span><br/>
-                                    <span style={{fontSize:'1.75rem', fontWeight:'bold',color:"#FFFFFF"}}># {blockNo === undefined ? '' : blockNo}</span>
+                                    <span className='dash-upper-line-card-title' >BEST BLOCK</span><br />
+                                    <span className='dash-upper-line-card-value'># {blockNo === undefined ? '' : blockNo}</span>
                                 </Col>
                             </ContentRow>
                         </ContentCard>
@@ -229,8 +243,8 @@ class Monitoring extends Component {
                                 </Col>
                                 <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{textAlign:'left', lineHeight:2}}>
                                     {/* <span class='dash-upper-line-card' style={{fontSize:'0.9rem', color:"#FFFFFF"}}>BEST BLOCK</span><br/> */}
-                                    <span style={{fontSize:'0.9rem',color:"#FFFFFF"}} >LAST BLOCK</span><br/>
-                                    <span style={{fontSize:'1.75rem', fontWeight:'bold',color:"#FFFFFF"}}>{passSec === undefined ? '' : passSec} s ago</span>
+                                    <span className='dash-upper-line-card-title' >LAST BLOCK</span><br/>
+                                    <span className='dash-upper-line-card-value'>{passSec === undefined ? '' : passSec} s ago</span>
                                 </Col>
                             </ContentRow>
                         </ContentCard>
@@ -243,22 +257,22 @@ class Monitoring extends Component {
                                     <MdTimer size={100} color='#339AED'/>
                                 </Col>
                                 <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{textAlign:'left', lineHeight:2}}>
-                                    <span style={{fontSize:'0.9rem',color:"#FFFFFF"}}>AVG BLOCK TIME</span><br/>
-                                    <span style={{fontSize:'1.75rem', fontWeight:'bold',color:"#FFFFFF"}}>{avgBlockTime} s</span>
+                                    <span className='dash-upper-line-card-title'>AVG BLOCK TIME</span><br/>
+                                    <span className='dash-upper-line-card-value'>{avgBlockTime} s</span>
                                 </Col>
                             </ContentRow>
                         </ContentCard>
                     </ContentCol>
                     <ContentCol xl={3} lg={6} md={6} sm={12} xs={12}>
                         {/* <ContentCard inverse backgroundColor='#34A853' borderColor='#A4C639'> */}
-                        <ContentCard style={{maxHeight: '130px'}}>
+                        <ContentCard style={{ maxHeight: '130px' }}>
                             <ContentRow>
-                                <Col xl={4} lg={4} md={4} sm={4} xs={4} style={{textAlign:'center'}}>
-                                    <TiKeyOutline size={100} color='#34A853'/>
+                                <Col xl={4} lg={4} md={4} sm={4} xs={4} style={{ textAlign: 'center' }}>
+                                    <TiKeyOutline size={100} color='#34A853' />
                                 </Col>
                                 <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{textAlign:'left', lineHeight:2}}>
-                                    <span style={{fontSize:'0.9rem',color:"#FFFFFF"}}>DIFFICULTY</span><br/>
-                                    <span style={{fontSize:'1.75rem', fontWeight:'bold',color:"#FFFFFF"}}>{difficulty === undefined ? '' : difficulty} H</span>
+                                    <span className='dash-upper-line-card-title'>DIFFICULTY</span><br/>
+                                    <span className='dash-upper-line-card-value'>{difficulty === undefined ? '' : difficulty} H</span>
                                 </Col>
                             </ContentRow>
                         </ContentCard>
@@ -267,7 +281,7 @@ class Monitoring extends Component {
                 <ContentRow>
                     <ContentCol xl={6} lg={12} md={12} sm={12} xs={12} >
                         <ContentCard >
-                            <D3component ref='D3' cardPosition={d3card} node={node}/>
+                            <D3component ref='D3' cardPosition={d3card} node={node} />
                         </ContentCard>
                     </ContentCol>
                     <ContentCol xl={6} lg={12} md={12} sm={12} xs={12}>
@@ -279,8 +293,8 @@ class Monitoring extends Component {
                                             <img src="/img/gas_price.svg" width="100%"/>
                                         </Col>
                                         <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{textAlign:'left', lineHeight:2}}>
-                                            <span style={{fontSize:'0.9rem',color:"#FFFFFF"}}>GAS PRICE</span><br/>
-                                            <span style={{fontSize:'1.75rem', fontWeight:'bold',color:"#FFFFFF"}}>{gasUsed === undefined ? '' : gasUsed} gwei</span>
+                                            <span className='dash-upper-line-card-title'>GAS PRICE</span><br/>
+                                            <span className='dash-upper-line-card-value'>{gasUsed === undefined ? '' : gasUsed} gwei</span>
                                         </Col>
                                     </ContentRow>
                                 </ContentCard>
@@ -293,8 +307,8 @@ class Monitoring extends Component {
                                             <img src="/img/gas_limit.svg" width="100%"/>
                                         </Col>
                                         <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{textAlign:'left', lineHeight:2}}>
-                                            <span style={{fontSize:'0.9rem',color:"#FFFFFF"}}>GAS LIMIT</span><br/>
-                                            <span style={{fontSize:'1.75rem', fontWeight:'bold',color:"#FFFFFF"}}>{gasLimit === undefined ? '' : gasLimit} gas</span>
+                                            <span className='dash-upper-line-card-title'>GAS LIMIT</span><br/>
+                                            <span className='dash-upper-line-card-value'>{gasLimit === undefined ? '' : gasLimit} gas</span>
                                         </Col>
                                     </ContentRow>
                                 </ContentCard>
@@ -303,12 +317,12 @@ class Monitoring extends Component {
                         <ContentRow>
                             <ContentCol>
                                 <ContentCard>
-                                    <Col style={{textAlign:'left', marginBottom: '10px'}}>
-                                        <span style={{fontSize:'1.0rem', color: '#ffffff'}}>Pending Transactions</span>
+                                    <Col style={{ textAlign: 'left', marginBottom: '10px' }}>
+                                        <span className='dash-upper-line-card-title'>Pending Transactions</span>
                                     </Col>
                                     <Col>
                                         <Table bordered>
-                                            <thead style={{backgroundColor:'skyblue', textAlign: 'center'}}>
+                                            <thead style={{ backgroundColor: 'skyblue', textAlign: 'center' }}>
                                                 <tr>
                                                     <th style={{width:'20%'}}>Pending..</th>
                                                     <th style={{width:'80%'}}>txHash</th>
@@ -333,7 +347,7 @@ class Monitoring extends Component {
                 </ContentRow>
                 <ContentRow>
                     <ContentCol xl={6}>
-                        <span style={{fontSize:'1rem',color:"#FFFFFF"}}>Transaction Per Block</span><br/><br/>
+                        <span className='dash-upper-line-card-title'>Transaction Per Block</span><br/><br/>
                         <Bar
                             data={{
                                 labels: tbpLabels,
@@ -385,7 +399,7 @@ class Monitoring extends Component {
                         />
                     </ContentCol>
                     <ContentCol xl={6}>
-                        <span style={{fontSize:'1rem',color:"#FFFFFF"}}>Block Generation Time</span><br/><br/>
+                        <span className='dash-upper-line-card-title'>Block Generation Time</span><br/><br/>
                         <Line
                             data={{
                                 labels: tbpLabels,
