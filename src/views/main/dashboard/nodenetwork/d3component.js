@@ -56,6 +56,7 @@ class D3component extends Component {
             && cardPosition != undefined)) {
             // console.log(nextProps.node);
             // console.log(node);
+            console.log(nextProps.cardPosition.width * nextProps.cardPosition.height * 0.0003)
             return {
                 node: nextProps.node,
                 numOfNodes: nextProps.node.length,
@@ -169,6 +170,7 @@ class D3component extends Component {
 
         function ticked() {
             //console.log("ticked");
+            
             link
                 .attr("x1", function (d) { return d.source.x; })
                 .attr("y1", function (d) { return d.source.y; })
