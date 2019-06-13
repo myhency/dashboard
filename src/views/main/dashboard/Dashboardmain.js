@@ -65,7 +65,9 @@ class Monitoring extends Component {
 
         //1초에 한번씩 백엔드에 요청
         this.intervalId_getBestBlockInfo = setInterval(this.getBestBlockInfo, 1000);
-        this.intervalId_getCurrentTime = setInterval(this.getCurrentTime, 1000);  
+        this.intervalId_getCurrentTime = setInterval(this.getCurrentTime, 1000); 
+        
+        window.addEventListener('resize', this.updatePosition.bind(this));
         this.setState({
             d3card: ReactDOM.findDOMNode(this.refs['D3']).getBoundingClientRect()
         });
@@ -77,6 +79,7 @@ class Monitoring extends Component {
         socket.disconnect();
         clearInterval(this.intervalId_getBestBlockInfo);
         clearInterval(this.intervalId_getCurrentTime);
+        window.addEventListener('resize', this.updatePosition.bind(this));
     }
 
     getBestBlockInfo = () => {
@@ -121,11 +124,19 @@ class Monitoring extends Component {
           });
         }
     }
-    
+
+    updatePosition() {
+        this.setState({
+            d3card: ReactDOM.findDOMNode(this.refs['D3']).getBoundingClientRect()
+        });
+        console.log('Resize!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+        console.log(this.state.d3card);
+    }
+
     
     render() {
         const { blockNo, avgBlockTime, gasLimit, gasUsed, d3card, node } = this.state;
-        //console.log(node);
+        console.log('render');
 
         return (
             <Fragment>
@@ -193,6 +204,7 @@ class Monitoring extends Component {
                         <ContentCard >
                             <D3component ref='D3' cardPosition={d3card} node={node}/>
                         </ContentCard>
+                        {/* {console.log(ReactDOM.findDOMNode(this.refs['D3']).getClientRects())} */}
                     </ContentCol>
                     <ContentCol xl={6} lg={12} md={12} sm={12} xs={12}>
                         <ContentRow>

@@ -18,8 +18,8 @@ import { func } from "prop-types";
 class D3component extends Component {
 
     constructor(props) {
-        console.log("constructor")
-        console.log(props.node)
+        // console.log("constructor")
+        // console.log(props.node)
         super(props)
 
         this.state = {
@@ -29,12 +29,13 @@ class D3component extends Component {
             simulation: {},
             xcenter: 0,
             ycenter: 0,
-            nodeImgSize: 0
+            nodeImgSize: 0,
+            cardPosition: undefined
         }
     }
 
     componentDidMount() {
-        console.log('componentDidMount');
+        // console.log('componentDidMount');
         setInterval(() => {
             this.updateTime();          // 그림을 몇초마다 리프레쉬할지 정함
         }, 10);
@@ -42,16 +43,19 @@ class D3component extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        console.log('getDerivedStateFromProps');
-        console.log(nextProps);
+        // console.log('getDerivedStateFromProps');
+        // console.log(nextProps);
         // console.log(state.node);
-        let { node } = prevState;
+        let { node, cardPosition } = prevState;
+        
         // let { node } = state;
-        console.log();
+        // console.log();
 
-        if (!_.isEqual(nextProps.node, node)) {
-            console.log(nextProps.node);
-            console.log(node);
+        if (!_.isEqual(nextProps.node, node) 
+        || (!_.isEqual(nextProps.cardPosition, cardPosition)
+            && cardPosition != undefined)) {
+            // console.log(nextProps.node);
+            // console.log(node);
             return {
                 node: nextProps.node,
                 numOfNodes: nextProps.node.length,
@@ -67,7 +71,8 @@ class D3component extends Component {
                         .y(nextProps.cardPosition.height/2)), // center of the picture
                 xcenter: nextProps.cardPosition.width/2,      // rotational center of the picture
                 ycenter: nextProps.cardPosition.height/2,
-                nodeImgSize: nextProps.cardPosition.width * nextProps.cardPosition.height * 0.0003
+                nodeImgSize: nextProps.cardPosition.width * nextProps.cardPosition.height * 0.0003,
+                cardPosition: nextProps.cardPosition
             }
         }
         else {
@@ -76,15 +81,15 @@ class D3component extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        console.log('componentDidUP');
-
-        if (!_.isEqual(prevState.node, this.state.node) && this.state.node.length > 0) {
+        if ( (!_.isEqual(prevState.node, this.state.node) && this.state.node.length > 0)
+        || (!_.isEqual(prevState.cardPosition, this.state.cardPosition) && this.state.cardPosition != undefined) ) {
+            // console.log('componentDidUpdate')
             this.drawFrame();
         }
     }
 
     updateTime() {
-        console.log("updateTime");
+        // console.log("updateTime");
         this.setState({
             angle:this.state.angle + 0.07     //그림을 얼마만큼 회전시킬지 정함
         });
@@ -99,7 +104,7 @@ class D3component extends Component {
     }
 
     moveNodes(type, pAngle) {
-        console.log("moveNodes");
+        // console.log("moveNodes");
         let xcenter = this.state.xcenter;
         let ycenter = this.state.ycenter;
         const transform = `rotate(${pAngle},${xcenter},${ycenter})`
@@ -108,8 +113,8 @@ class D3component extends Component {
     }
 
     drawFrame() {
-        console.log('drawFram');
-        console.log(this.state.nodeImgSize);
+        // console.log('drawFram');
+        // console.log(this.state.nodeImgSize);
         
 
         let links = [];
@@ -163,7 +168,7 @@ class D3component extends Component {
             .links(links);
 
         function ticked() {
-            console.log("ticked");
+            //console.log("ticked");
             link
                 .attr("x1", function (d) { return d.source.x; })
                 .attr("y1", function (d) { return d.source.y; })
@@ -182,7 +187,7 @@ class D3component extends Component {
     }
 
     dragstarted = (d) => {
-        console.log("dragstarted")
+        //console.log("dragstarted")
         if (!d3.event.active) this.simulation.alphaTarget(0.8).restart()
     }
 
@@ -196,8 +201,6 @@ class D3component extends Component {
 
 
     render() {
-        console.log("render")
-
         return (
             <svg width="100%" height="450"//width="620" height="450"  //켄버스 크기
                 ref={handle => (this.svg = d3.select(handle))}>
