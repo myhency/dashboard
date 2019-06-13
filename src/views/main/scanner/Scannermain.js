@@ -88,7 +88,7 @@ export default class Scannermain extends Component {
            <ContentRow>
                 <ContentCard style={{width:'100%', paddingLeft:'15px', pddingRight: '15px', marginRight: '25px'}}>
                   <ContentRow>
-                    <h3>Block Explorer</h3>
+                    <h3 style={{color:"#FFFFFF"}}>Block Explorer</h3>
                   </ContentRow>
                   <Form>
                     <InputGroup>
