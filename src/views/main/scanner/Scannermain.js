@@ -60,6 +60,7 @@ export default class Scannermain extends Component {
   }
 
   search = (item) => {
+    console.log('search');
     Fetch.GET(`/api/search/${item}`)
     .then(res =>{
       //잘못된 serach
@@ -81,6 +82,14 @@ export default class Scannermain extends Component {
     this.props.history.push('/main/scanner/'+string);
   }
 
+  handleKeyPress = (event) => {
+    if(event.key === 'Enter' && this.state.searchTxt.length > 0) {
+      event.preventDefault();
+      console.log('serch');
+      this.search(this.state.searchTxt);
+    }
+  }
+
 
   render() {
     return (
@@ -94,9 +103,10 @@ export default class Scannermain extends Component {
                     <InputGroup>
                       <Input 
                         id="BlockExplorer" placeholder="Search by Address / Txhash / Block" 
-                        onChange={(event) => {this.setState({searchTxt: event.target.value})}}/>
+                        onChange={(event) => {this.setState({searchTxt: event.target.value})}}
+                        onKeyPress={this.handleKeyPress}/>
                       <InputGroupAddon addonType='append'>
-                        <Button onClick={()=>this.search(this.state.searchTxt)}>  Search  </Button>
+                        <Button type='submit' onClick={()=>this.search(this.state.searchTxt)}>  Search  </Button>
                       </InputGroupAddon> 
                     </InputGroup>  
                   </Form>
@@ -131,7 +141,7 @@ export default class Scannermain extends Component {
                    </CardBody>
                   <CardFooter>
                     <Button 
-                      outline color="primary" 
+                      outline color="primary" type='button'
                       block style={{alignContent: 'bottom'}}
                       onClick={() => {this.onClickAll('block')}}>
                       View All Blocks
@@ -179,7 +189,7 @@ export default class Scannermain extends Component {
                   <CardFooter>
                     <Button 
                       outline color="primary" 
-                      block
+                      block type='button'
                       onClick={() => {this.onClickAll('transaction')}}>
                       View All Transactions
                     </Button>

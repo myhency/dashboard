@@ -49,15 +49,12 @@ class D3component extends Component {
         // console.log(state.node);
         let { node, cardPosition } = prevState;
 
-        // let { node } = state;
-        // console.log();
-
         if (!_.isEqual(nextProps.node, node)
             || (!_.isEqual(nextProps.cardPosition, cardPosition)
                 && cardPosition != undefined)) {
             // console.log(nextProps.node);
             // console.log(node);
-            console.log(nextProps.cardPosition.width * nextProps.cardPosition.height * 0.0003)
+            //console.log(nextProps.cardPosition.width * nextProps.cardPosition.height * 0.0003)
             return {
                 node: nextProps.node,
                 numOfNodes: nextProps.node.length,
