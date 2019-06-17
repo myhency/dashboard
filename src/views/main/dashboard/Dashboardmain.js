@@ -78,6 +78,8 @@ class Monitoring extends Component {
             })
         });
 
+        
+
         //1초에 한번씩 백엔드에 요청
         this.intervalId_getInfo = setInterval(this.getDashboardInfo, 1000);
         this.intervalId_getCurrentTime = setInterval(this.getCurrentTime, 1000); 

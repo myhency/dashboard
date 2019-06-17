@@ -147,6 +147,7 @@ class D3component extends Component {
         let link = this.svg.append("g")
             .attr("class", "stroke")
             .style("stroke", "#fff")
+            .attr("stroke-width", 1)
             .selectAll("line")
             .data(links)
             .enter().append("line");
