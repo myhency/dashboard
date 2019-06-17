@@ -90,6 +90,9 @@ class Monitoring extends Component {
             })
         });
 
+<<<<<<< HEAD
+        
+=======
         socket.on('blockMiner', (data) => {
             this.setState({
                 miningBlock: data
@@ -103,6 +106,7 @@ class Monitoring extends Component {
             });
             console.log(this.state.uncleState);
         });
+>>>>>>> bbf5c99f61fc506c5bc8165c2b3cd4fb881b50d7
 
         //1초에 한번씩 백엔드에 요청
         this.intervalId_getInfo = setInterval(this.getDashboardInfo, 1000);
