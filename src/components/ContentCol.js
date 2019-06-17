@@ -29,6 +29,10 @@ const ContentCol = (props) => {
         ContentColStyle.flexBasis = 'auto';
     }
 
+    if(props.noMarginBottom) {
+        ContentColStyle.marginBottom = '0px'
+    }
+
     return (
         <Col xl={props.xl} lg={props.lg} md={props.md} sm={props.sm} xs={props.xs} widths={props.widths} className={props.className} style={{...props.style, ...ContentColStyle}}>
             {props.children}

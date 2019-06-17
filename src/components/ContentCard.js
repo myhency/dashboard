@@ -39,6 +39,10 @@ const ContentCard = (props) => {
         CardHeaderStyle = props.headerStyle;
     }
 
+    if(props.noMarginBottom) {
+        ContentCardStyle.marginBottom = '0px'
+    }
+
     return (
         <Card {...ContentCardProp} style={{...props.style, ...ContentCardStyle}}>
             {props.title !== undefined ? 

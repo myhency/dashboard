@@ -4,7 +4,7 @@ import ContentCol from 'components/ContentCol';
 import ContentCard from 'components/ContentCard';
 
 import classnames from 'classnames';
-import { Table, TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
+import { Table, TabContent, TabPane, Nav, NavItem, NavLink, Badge } from 'reactstrap';
 import ReactTable from 'react-table';
 import { Link } from 'react-router-dom';
 import Fetch from 'utils/Fetch'
@@ -171,7 +171,12 @@ class Address extends Component {
                     },
                     {
                         Header: "",
-                        width: 100
+                        width: 100,
+                        Cell: ({row}) => (
+                            row.transaction_from === this.state.address ?
+                            <Badge color='danger' style ={{width: '50px'}}> Out </Badge>:
+                            <Badge color='success' style ={{width: '50px'}}> in </Badge>
+                        ),
                     },
                     {
                         Header: "To",
@@ -216,7 +221,7 @@ class Address extends Component {
                     <Table style={{margin: '0'}}>
                         <thead>
                             <tr>
-                                <th colSpan='2' >Overview</th>
+                                <th colSpan='4' >Overview</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -252,7 +257,6 @@ class Address extends Component {
                         </NavItem>
                         {is_contract ?
                         <Fragment>
-
                             <NavItem style={{ width: '33%' }}>
                                 <NavLink
                                 className={classnames({ active: this.state.activeTab === '2' })}
