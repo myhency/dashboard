@@ -262,7 +262,7 @@ class Monitoring extends Component {
 
         // Transaction per Block Color
         var tpbColor = [];
-        tpbColor = txPerBlock.map((value) => value > 20 ? '#F74B4B' : value > 10 ? '#FD8900' : value > 5 ? '#FFD162' : value > 3 ? '#7BCC3A' : '#0F9EDB');
+        tpbColor = txPerBlock.map((value) => value > 20 ? '#F74B4B' : value > 10 ? '#FD8900' : value > 5 ? '#FFD162' : value > 2 ? '#7BCC3A' : '#0F9EDB');
         
         // Block Generation Time color
         var bgtColor = [];
@@ -415,41 +415,32 @@ class Monitoring extends Component {
                                         }
                                     ]
                                 }}
-                                height={30}
+                                height={40}
                                 options={{
                                     scales: {
                                         xAxes: [
                                             {
-                                                display: false,
-                                                scaleLabel: {
-                                                    show: true,
-                                                    labelString: 'Block number'
-                                                },
+                                                // display: false,
                                                 gridLines: {
-                                                    display: true,
-                                                    drawBorder: true,
-                                                    color: 'red',
-                                                    lineWidth: 10,
-                                                    // zeroLineWidth
+                                                    display:false,
+                                                    color:'white'
+                                                },
+                                                ticks: {
+                                                    display: false
                                                 }
                                             }
                                         ],
                                         yAxes: [
                                             {
-                                                display: true,
-                                                scaleLabel: {
-                                                    show: true,
-                                                    labelString: 'Transaction count'
-                                                },
+                                                // display: false,
                                                 ticks: {
                                                     suggestedMin: 0,
                                                     suggestedMax: 5,
                                                     interval: 1
                                                 },
                                                 gridLines: {
-                                                    display: false,
-                                                    drawBorder: true,
-                                                    color: 'white',
+                                                    display:false,
+                                                    color:'white'
                                                 }
                                             }
                                         ]
