@@ -4,10 +4,6 @@ import ContentRow from 'components/ContentRow';
 import ContentCol from 'components/ContentCol';
 import ContentCard from 'components/ContentCard';
 import { Table, Col } from 'reactstrap';
-import { FaSlidersH } from 'react-icons/fa';
-import { FiBox, FiSliders } from 'react-icons/fi';
-import { MdTimer,MdHourglassEmpty } from 'react-icons/md';
-import { TiKeyOutline } from 'react-icons/ti';
 import { Bar, Line } from 'react-chartjs-2';
 import _ from 'lodash';
 import moment from 'moment';
@@ -74,7 +70,6 @@ class Monitoring extends Component {
         socket.on('pendingTransaction', (data) => {
             let pendingTimeTx = [];
             let prevList = this.state.pendingTx;
-            
             // 최근에 온게 리스트 앞쪽에 오도록
             for(var i = data.length-1; i>=0; i--) {
                 let txHash = data[i];
@@ -90,9 +85,6 @@ class Monitoring extends Component {
             })
         });
 
-<<<<<<< HEAD
-        
-=======
         socket.on('blockMiner', (data) => {
             this.setState({
                 miningBlock: data
@@ -106,7 +98,6 @@ class Monitoring extends Component {
             });
             console.log(this.state.uncleState);
         });
->>>>>>> bbf5c99f61fc506c5bc8165c2b3cd4fb881b50d7
 
         //1초에 한번씩 백엔드에 요청
         this.intervalId_getInfo = setInterval(this.getDashboardInfo, 1000);
@@ -144,12 +135,12 @@ class Monitoring extends Component {
             let newTime = [];
             let tpb = [];
             let labels = [];
-            for(var i = 1; i<61; i++) {
+
+            for(var i = res.results.length-1; i> 0; i--) {
                 newTime.push(moment(res.results[i-1].timestamp).diff(res.results[i].timestamp,'seconds'));
                 tpb.push(res.results[i].transaction_count);
                 labels.push(res.results[i].number);
             }
-            
             let avgBlockTime = _.meanBy(newTime).toFixed(3);
             
             let bestBlock = res.results[0];
@@ -191,10 +182,9 @@ class Monitoring extends Component {
     }
 
     updateDashboardInfo =() => {
-        Fetch.GET('/api/block/?page_size=1&page=1')
+        Fetch.GET('/api/block/?page_size=2&page=1')
         .then(res => {
             let bestBlock = res.results[0];
-
             // update 안할 때
             if(this.state.blockNo === bestBlock.number) {
                 return;
@@ -202,19 +192,20 @@ class Monitoring extends Component {
 
             let newTime = this.state.timePass;
             let tpb = this.state.txPerBlock;
-            let labels = this.state.labels;
+            let labels = this.state.tbpLabels;
             
             newTime.splice(0,1);
             tpb.splice(0,1);
             labels.splice(0,1);
 
-            newTime.push(moment(newTime[newTime.length-1]).diff(bestBlock.timestamp,'seconds'));
+            console.log(moment(bestBlock.timestamp).diff(res.results[1].timestamp,'seconds'));
+            newTime.push(moment(bestBlock.timestamp).diff(res.results[1].timestamp,'seconds'));
             tpb.push(bestBlock.transaction_count);
             labels.push(bestBlock.number);
             
             let avgBlockTime = _.meanBy(newTime).toFixed(3);
             
-            this.setState({
+            this.setState({    
                 blockNo: bestBlock.number,
                 gasLimit: bestBlock.gas_limit,
                 gasUsed: bestBlock.gas_used,
@@ -267,11 +258,6 @@ class Monitoring extends Component {
         // Transaction per Block Color
         var tpbColor = [];
         tpbColor = txPerBlock.map((value) => value > 20 ? '#F74B4B' : value > 10 ? '#FD8900' : value > 5 ? '#FFD162' : value > 2 ? '#7BCC3A' : '#0F9EDB');
-        
-        // Block Generation Time color
-        var bgtColor = [];
-        bgtColor = timePass.map((value) => value > 3600 ? 'red' : value > 600 ? 'orange' : '0F9EDB');
-
 
         return (
             <Fragment>
@@ -376,7 +362,7 @@ class Monitoring extends Component {
                             </ContentCol>
                         </ContentRow>
                         <ContentRow>
-                            <ContentCol noMarginBottom={true}>
+                            <ContentCol>
                                 <ContentCard style={{height: '330px', overflow: 'auto'}}>
                                     <Col style={{ textAlign: 'left', marginBottom: '10px' }}>
                                         <span className='dash-upper-line-card-title'>Pending Transactions</span>
@@ -399,8 +385,8 @@ class Monitoring extends Component {
                         </ContentRow>
                     </ContentCol>
                 </ContentRow>
-                <ContentRow style={{marginTop: '5px'}}>
-                    <ContentCol xl={6}>
+                <ContentRow>
+                    <ContentCol xl={6} noMarginBottom={true}>
                         <ContentCard>
                             <span className='dash-upper-line-card-title'>Transaction Per Block</span><br/><br/>
                             <Bar
@@ -456,7 +442,7 @@ class Monitoring extends Component {
                             />
                         </ContentCard>
                     </ContentCol>
-                    <ContentCol xl={6}>
+                    <ContentCol xl={6} noMarginBottom={true}>
                         <ContentCard>
                             <span className='dash-upper-line-card-title'>Block Generation Time</span><br/><br/>
                             <Line
@@ -468,35 +454,37 @@ class Monitoring extends Component {
                                             data: timePass,
                                             // fill: false,
                                             // backgroundColor: '#b7d7e8',
-                                            borderColor: '#87bdd8',
+                                            borderColor: '#FFD162',
                                             borderWidth: 2,
                                             pointRadius: 0,
                                             pointHoverBorderWidth: 1
                                         }
                                     ]
                                 }}
-                                height={30}
+                                height={40}
                                 options={{
                                     scales: {
                                         xAxes: [
                                             {
-                                                display: false,
-                                                scaleLabel: {
-                                                    show: false,
-                                                    labelString: 'Block number'
+                                                gridLines: {
+                                                    display:false,
+                                                    color:'white'
+                                                },
+                                                ticks: {
+                                                    display: false
                                                 }
                                             }
                                         ],
                                         yAxes: [
                                             {
                                                 display: true,
-                                                scaleLabel: {
-                                                    show: false,
-                                                    labelString: 'Generation time'
-                                                },
                                                 ticks: {
                                                     suggestedMin: 0,
-                                                    suggestedMax: 500
+                                                    suggestedMax: 60
+                                                },
+                                                gridLines: {
+                                                    display:false,
+                                                    color:'white'
                                                 }
                                             }
                                         ]

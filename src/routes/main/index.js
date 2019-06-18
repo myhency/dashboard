@@ -10,8 +10,8 @@ import TxList from 'views/main/scanner/TxList';
 import TxInfo from 'views/main/scanner/TxInfo';
 import Address from 'views/main/scanner/Address.js';
 
-import { FiPackage, FiFile, FiImage, FiBox, FiBookOpen } from 'react-icons/fi';
-import { FaChartBar, FaEye, FaUserEdit } from 'react-icons/fa';
+import { FiFile, FiImage, FiBox, FiBookOpen } from 'react-icons/fi';
+import { FaChartBar, FaEye, FaSearch } from 'react-icons/fa';
 
 const contextPath = '/main/';
 
@@ -31,7 +31,7 @@ const mainRoutes = [
     },
     {
         name: 'Scanner',
-        icon: FaChartBar,
+        icon: FaSearch,
         sidebar: true,
         path: contextPath + 'scanner',
         component: Scanner

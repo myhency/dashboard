@@ -26,7 +26,7 @@ $theme-color: #30C0AA;
 @import './font.scss';
 
 .footer {
-    border-top: 1px solid #e1e4e8;
+    border-top: 0px;
     padding-top: 20px;
     padding-bottom: 20px;
     padding-right: 20px;
@@ -257,6 +257,42 @@ a.homeButton {
     
 }
 
+.ReactTable .-next {
+    background-color: transparent;
+}
+
+.ReactTable .-previous {
+    background-color: transparent;
+}
+
+.ReactTable .-pagination {
+    color: white;
+}
+
+.ReactTable .-pagination .-btn {
+    background-color:#191919 !important;
+    color: white;
+}
+
+.ReactTable .-pagination .-btn[disabled] {
+    background-color:transparent !important;
+    color: black;
+}
+
+.ReactTable .-pagination .-btn:hover {
+    background-color: gainsboro !important;
+    color: black !important;
+}
+
+.ReactTable .-pagination .-btn[disabled]:hover {
+    // background-color: gainsboro;
+    // background-color: transparent;
+    background-color: transparent !important;
+}
+
+// .ReactTable .-btn {
+//     color: white;
+// }
 
 
 /* ---------------------------------------------------

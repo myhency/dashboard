@@ -229,7 +229,7 @@ class MainLayout extends Component {
                         {(this.getCurrentPageName(currentPath) === "Address") || (this.getCurrentPageName(currentPath) === "Contract") ?
                             <span data-tip='Copy'>
                                 <CopyToClipboard text={currentInfo}> 
-                                    <FaCopy style={{marginLeft: '10px', color: 'black'}}/>
+                                    <FaCopy style={{marginLeft: '10px', color: 'white'}}/>
                                 </CopyToClipboard>
                                 <ReactTooltip/>
                             </span> : null 

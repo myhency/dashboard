@@ -79,7 +79,6 @@ class Address extends Component {
 
 
     getTransaction = (state, instance) => {
-        console.log('getTrasddofaidsfadsji');
         this.setState({
             loading: true
         });
@@ -130,7 +129,6 @@ class Address extends Component {
 
     //state 바뀐 후 function call
     componentDidUpdate(prevProps, prevState) {
-        console.log('componentDidUpdate');
         if (prevState.address !== this.state.address) {
             this.getAddress();
             this.table.fireFetchData();
@@ -158,16 +156,21 @@ class Address extends Component {
                         Cell: ({row}) => (<Link to={`/main/scanner/block/${row.related_block.number}`}>{row.related_block.number}</Link>),
                         width: 140
                     },
+                    // {
+                    //     Header: "Age",
+                    //     accessor: "Tx_age",
+                    //     width: 150
+                    // },
                     {
-                        Header: "Age",
-                        accessor: "Tx_age",
-                        width: 150
+                        Header: "Timestamp",
+                        accessor: "timestamp",
+                        width: 200
                     },
                     {
                         Header: "From",
                         accessor: "transaction_from",
                         Cell: ({row}) => (<Link to={`/main/scanner/address/${row.transaction_from}`}>{row.transaction_from}</Link>),
-                        width: 300
+                        width: 290
                     },
                     {
                         Header: "",
@@ -182,7 +185,7 @@ class Address extends Component {
                         Header: "To",
                         accessor: "transaction_to",
                         Cell: ({row}) => (<Link to={`/main/scanner/address/${row.transaction_to}`}>{row.transaction_to}</Link>),
-                        width: 300
+                        width: 290
                     },
                     {
                         Header: "Value",
@@ -192,7 +195,7 @@ class Address extends Component {
                     {
                         Header: "[Tx Fee]",
                         accessor: "txFee",
-                        width: 150,
+                        width: 120,
                         Cell: ({row}) => {
                             let gas = row._original.gas;
                             let gas_price = row._original.gas_price;
@@ -207,8 +210,9 @@ class Address extends Component {
                 loading={loading} // Display the loading overlay when we need it
                 onFetchData={this.getTransaction} // Request new data when things change
                 defaultPageSize={10}
-                pageSizeOptions={[10]}
+                showPageSizeOptions={false}
                 ref={(instance) => { this.table = instance; }}
+                sortable={false}
             />
         );
     }
