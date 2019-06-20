@@ -11,6 +11,8 @@ import Fetch from 'utils/Fetch'
 import { connect } from 'react-redux';
 import { setInfo } from 'store/modules/currentInfo';
 import { setPage } from 'store/modules/tempPageName';
+import moment from 'moment';
+import ReactTooltip from 'react-tooltip';
 
 import Code from 'views/main/scanner/Contract_code.js';
 import Event from 'views/main/scanner/Contract_event.js';
@@ -30,7 +32,8 @@ class Address extends Component {
             contract_deployed_at: undefined,
             address: this.props.match.params.address,
             byte_code: undefined,
-            activeTab: '1'
+            activeTab: '1',
+            timestamp: new Date()
         };
     }
 
@@ -38,6 +41,7 @@ class Address extends Component {
         //For dividing page name
         this.props.dispatch(setPage(undefined));
         this.getAddress();
+        console.log(this.state.timestamp);
     }
 
     //Callback for table
@@ -156,15 +160,37 @@ class Address extends Component {
                         Cell: ({row}) => (<Link to={`/main/scanner/block/${row.related_block.number}`}>{row.related_block.number}</Link>),
                         width: 140
                     },
-                    // {
-                    //     Header: "Age",
-                    //     accessor: "Tx_age",
-                    //     width: 150
-                    // },
                     {
-                        Header: "Timestamp",
+                        Header: "Age",
                         accessor: "timestamp",
-                        width: 200
+                        width: 150,
+                        Cell: ({row}) => {
+                            var age = moment(this.state.timestamp).diff(row.timestamp, 'seconds');
+                            console.log(this.state.timestamp);
+                            console.log(row.timestamp);
+                            if(age < 60) {
+                                age = age + 'sec';
+                            }
+                            else if(age < 3600) {
+                                age = Math.floor(age/60) + 'min';
+                            }
+                            else if(age < 84600) {
+                                age = Math.floor(age/3600) + 'hour';
+                            }
+                            else if(age < 2538000) {
+                                age = Math.floor(age/84600) + 'day';
+                            }
+                            else {
+                                return (<span>{row.timestamp}</span>)
+                            }
+
+                            return (
+                                <Fragment>
+                                    <span data-tip={row.timestamp}>{age} ago</span>
+                                    <ReactTooltip/>
+                                </Fragment>
+                            )
+                        }
                     },
                     {
                         Header: "From",
@@ -193,7 +219,7 @@ class Address extends Component {
                         width: 100
                     },
                     {
-                        Header: "[Tx Fee]",
+                        Header: "Tx Fee",
                         accessor: "txFee",
                         width: 120,
                         Cell: ({row}) => {

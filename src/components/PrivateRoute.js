@@ -7,6 +7,7 @@ class PrivateRoute extends Component {
         this.state = {
             isAuthenticated: props.isAuthenticated
         }
+        console.log(props.isAuthenticated)
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -16,7 +17,10 @@ class PrivateRoute extends Component {
         if(isAuthenticated !== props.isAuthenticated) {
             isAuthenticated = props.isAuthenticated;
         }
-
+        
+        console.log('dassdadsf');
+        console.log(props.isAuthenticated)
+        console.log(isAuthenticated);
         return {
             isAuthenticated
         }

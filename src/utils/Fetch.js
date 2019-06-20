@@ -1,4 +1,20 @@
+import Swal from "sweetalert2";
+
 const FETCH_TIMEOUT = 10000;
+
+const onUnauthenticated = () => {
+    sessionStorage.clear();
+    window.location.href = '/auth/signIn';
+};
+
+const onGatewayTimeout = () => {
+    Swal.fire({
+        type: 'error',
+        title: 'Server Connection Error',
+        allowOutsideClick: false
+    });
+};
+
 
 const GET = (url, options) => {
     
@@ -27,8 +43,17 @@ const GET = (url, options) => {
                 if(response.ok) {
                     resolve(response.json());
                 }else {
+                    if(response.status === 401) {
+                        onUnauthenticated();
+                        return;
+                    }
+                    if(response.status === 504) {
+                        onGatewayTimeout();
+                        return;
+                    }
                     reject(response);
                 }
+
             }
         })
         .catch((error) => {
@@ -65,8 +90,17 @@ const POST = (url, params, options) => {
                 if(response.ok) {
                     resolve(response.json());
                 }else {
+                    if(response.status === 401) {
+                        onUnauthenticated();
+                        return;
+                    }
+                    if(response.status === 504) {
+                        onGatewayTimeout();
+                        return;
+                    }
                     reject(response);
                 }
+
             }
         })
         .catch((error) => {
@@ -103,8 +137,17 @@ const PUT = (url, params, options) => {
                 if(response.ok) {
                     resolve(response.json());
                 }else {
+                    if(response.status === 401) {
+                        onUnauthenticated();
+                        return;
+                    }
+                    if(response.status === 504) {
+                        onGatewayTimeout();
+                        return;
+                    }
                     reject(response);
                 }
+
             }
         })
         .catch((error) => {
@@ -143,8 +186,17 @@ const DELETE = (url, params, options) => {
                 if(response.ok) {
                     resolve(response);
                 }else {
+                    if(response.status === 401) {
+                        onUnauthenticated();
+                        return;
+                    }
+                    if(response.status === 504) {
+                        onGatewayTimeout();
+                        return;
+                    }
                     reject(response);
                 }
+
             }
         })
         .catch((error) => {

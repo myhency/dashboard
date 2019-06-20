@@ -16,7 +16,7 @@ const ContentCard = (props) => {
     };
 
     let CardBodyStyle = {
-        background:'#1C1C1D'
+        background:'#090909'
     };
 
     if(props.inverse) {

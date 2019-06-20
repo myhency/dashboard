@@ -25,7 +25,7 @@ class App extends Component {
             isAuthenticated = true;
             props.dispatch(signIn(userId));
         }
-        
+
         this.state = {
             isLoading: false,
             isAuthenticated
@@ -36,8 +36,6 @@ class App extends Component {
         let { isLoading, isAuthenticated } = state;
         
         if(props.userId !== undefined) {
-            isAuthenticated = true;
-        } else {
             isAuthenticated = true;
         }
 
@@ -60,7 +58,7 @@ class App extends Component {
                     <Switch>
                         <Route exact path="/" render={() =>
                             isAuthenticated ?
-                            <Redirect to="/main/dashboard"/>
+                            <Redirect to="/main"/>
                             : <Redirect to="/auth"/>
                         } />
                         <PrivateRoute path="/main" component={MainLayout} isAuthenticated={isAuthenticated} />

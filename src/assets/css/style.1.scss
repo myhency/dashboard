@@ -4,7 +4,7 @@ $footer-height: 57px;
 $authHeader-height: 57px;
 
 $sidebar-text-color: #69bff8;
-$sidebar-background-color: #1C1C1D;
+$sidebar-background-color: #070707;
 $sidebar-menu-color: #E9ECEF;
 $sidebar-menu-hover-color: #273440;
 $sidebar-selected-border-color: #fff;
@@ -47,7 +47,8 @@ button.-btn {
 
 body {
     font-family: 'Noto Sans KR', Roboto,-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif;
-    background: #171717;
+    // background: #171717
+    background: black;
     font-weight: 300;
 }
 
@@ -58,11 +59,13 @@ body {
 }
 
 a {
-    color: rgb(192, 192, 192);;
+    // color: rgb(192, 192, 192);;
+    color: white;
 }
 
 a:hover {
-    color: white;
+    // color: white;
+    color: rgb(192, 192, 192);;
 }
 
 .btn-outline-primary {
@@ -249,12 +252,12 @@ a.homeButton {
     text-align: center;
     padding-left: 10px;
     padding-right: 10px;
-    background-color: $table-background-color;
+    background-color: #262626;
     color: white;
 }
 
-.ReactTable .rt-thead .rt-resizable-header-content {
-    
+.ReactTable .rt-thead {
+    background-color: $table-background-color;
 }
 
 .ReactTable .-next {
@@ -419,12 +422,12 @@ a.homeButton {
     Content card
 ----------------------------------------------------- */
 .ContentCard {
-    background-color: $table-background-color;
+    background-color: #ffff;
 }
 
 .dash-upper-line-card-title {
     font-size:1.2rem;
-    color: #FFFFFF;
+    color: #AAAAAA;
 }
 
 .dash-upper-line-card-value {
@@ -439,4 +442,14 @@ a.homeButton {
 
 .card-header {
     color: #FFFFFF;
+}
+
+/* ---------------------------------------------------
+    Login page background
+----------------------------------------------------- */
+.bg {
+    background-image: url('/img/login_page.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+
 }

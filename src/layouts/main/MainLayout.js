@@ -144,21 +144,21 @@ class MainLayout extends Component {
     }
 
     signOut = () => {
-        sessionStorage.removeItem('userId');
+        sessionStorage.clear();
         this.props.dispatch(signOut());
         this.props.history.push('/auth/signIn');
 
-        const url = '/auth/signInOut/';
-        Fetch.GET(url)
-        .then(res => {
-            console.log('logout');
-        })
-        .catch(error => {
-            alert(error);
-        })
-        .finally(() => {
-            console.log('logout')
-        })
+        // const url = '/auth/signInOut/';
+        // Fetch.GET(url)
+        // .then(res => {
+        //     console.log('logout');
+        // })
+        // .catch(error => {
+        //     alert(error);
+        // })
+        // .finally(() => {
+        //     console.log('logout')
+        // })
     }
 
     render() {

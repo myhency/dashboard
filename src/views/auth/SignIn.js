@@ -16,6 +16,8 @@ import { loadingStart, loadingStop } from 'store/modules/loading';
 import Fetch from 'utils/Fetch';
 import jQuery from "jquery";
 
+// import Background from '/img/login_page.jpeg';
+
 window.$ = window.jQuery = jQuery;
 
 class SignIn extends Component {
@@ -40,7 +42,6 @@ class SignIn extends Component {
 
         let token = '';
         let redirect_url = '';
-
 
 
         // csrf 생성을 위한 장고 cookie 얻기
@@ -78,56 +79,65 @@ class SignIn extends Component {
             }
         }
                 
-        this.props.dispatch(loadingStart())
-        .then(() => {
-            // post에 param 전달
-            Fetch.POST(url, params, django)
-            .then((res) => {
-                token = res.result.data.token;
-                redirect_url = res.result.redirect_url;
-            })
-            .catch(error => {
-                alert(error);
-            })
-            .finally(() => {
-                this.props.dispatch(loadingStop());
-                if(token !== undefined) {
-                    // TODO res에서 받아오는 url로 push 할 것
-                    if(redirect_url === 'http://10.40.104.49:8000/api/users/') {
-                        this.props.history.push('/auth/initAdmin/');
-                    } else {
-                        this.props.history.push('/main/dashboard/main');
-                    }
-                } else {
-                    alert('Please Checkup Again')
-                }
-            })
-        })
-
-    
-
         
 
-        // const { userId, password } = this.state;
-        // let isInvalidUserId = false;
-        // let isInvalidPassword = false;
 
-        // if(userId === '') {
-        //     isInvalidUserId = true;
-        // }
+        let isInvalidUserId = false;
+        let isInvalidPassword = false;
 
-        // if(password === '') {
-        //     isInvalidPassword = true;
-        // }
+        if(userId === '') {
+            isInvalidUserId = true;
+        }
 
-        // this.setState({
-        //     isInvalidUserId,
-        //     isInvalidPassword
-        // });
+        if(password === '') {
+            isInvalidPassword = true;
+        }
+    
+        this.setState({
+            isInvalidUserId,
+            isInvalidPassword
+        });
 
-        // if(isInvalidUserId || isInvalidPassword) {
-        //     return;
-        // }
+        if(isInvalidUserId || isInvalidPassword) {
+            return;
+        }
+        
+
+        // 서버와 통신하여 로그인 성공/실패 판단
+        // this.props.dispatch(loadingStart())
+        // .then(() => {
+        //     // post에 param 전달
+        //     Fetch.POST(url, params, django)
+        //     .then((res) => {
+        //         token = res.result.data.token;
+        //         redirect_url = res.result.redirect_url;
+        //     })
+        //     .catch(error => {
+        //         alert(error);
+        //     })
+        //     .finally(() => {
+        //         this.props.dispatch(loadingStop());
+        //         if(token !== undefined) {
+        //             // TODO res에서 받아오는 url로 push 할 것
+        //             if(redirect_url === 'http://10.40.104.49:8000/api/users/') {
+        //                 this.props.history.push('/auth/initAdmin/');
+        //             } else {
+        //                 this.props.history.push('/main/dashboard/main');
+        //             }
+        //         } else {
+        //             alert('Please Checkup Again')
+        //         }
+        //     })
+        // })
+
+
+        // 로그인 성공 시
+        sessionStorage.setItem('userId', userId);
+        this.props.dispatch(signIn(userId));
+        this.props.history.push('/main');
+
+
+
 
         // const url = '/auth/signInOut/';
         // const params = {
@@ -206,14 +216,16 @@ class SignIn extends Component {
         })
     }
 
+    
     render() {
         const { isInvalidUserId, isInvalidPassword } = this.state;
+
         return (
             <Fragment>
                 <ContentCard>
                     <ContentRow>
                         <ContentCol>
-                            <h3>First Sign in</h3>
+                            <h3 style={{color: 'white'}}>HMG BaaS</h3>
                         </ContentCol>
                     </ContentRow>
                     <Form style={{marginBottom:'1rem'}}>
