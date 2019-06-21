@@ -217,7 +217,7 @@ class MainLayout extends Component {
                 </div>
 
                 {/* Header */}
-                <Navbar id="header" className={active ? 'active' : null} color="dark" dark>
+                <Navbar id="header" className={active ? 'active' : null}>
                     <NavbarBrand onClick={this.toggle} onMouseEnter={this.onMouseEnterToggle} onMouseLeave={this.onMouseLeaveToggle} style={{cursor:'pointer'}}>
                         <FiAlignLeft size={25} color={'#FFFFFF'}/>
                     </NavbarBrand>
@@ -241,17 +241,17 @@ class MainLayout extends Component {
                         </Navbar>
                         <UncontrolledDropdown>
                             <DropdownToggle nav style={{color:'black'}}>
-                                <IoMdContact color='#0070d9' size={30}/>{' '}
-                                {userId}
+                                <IoMdContact color='#0F9EDB' size={30}/>{' '}
+                                <span style={{color: 'white'}}>{userId}</span>
                             </DropdownToggle>
                             <DropdownMenu right>
-                                <DropdownItem>
+                                {/* <DropdownItem>
                                     Option 1
                                 </DropdownItem>
                                 <DropdownItem>
                                     Option 2
                                 </DropdownItem>
-                                <DropdownItem divider />
+                                <DropdownItem divider /> */}
                                 <DropdownItem onClick={this.signOut}>
                                     Sign out
                                 </DropdownItem>

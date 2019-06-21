@@ -6,17 +6,17 @@ $authHeader-height: 57px;
 $sidebar-text-color: #69bff8;
 $sidebar-background-color: #070707;
 $sidebar-menu-color: #E9ECEF;
-$sidebar-menu-hover-color: #273440;
+$sidebar-menu-hover-color: #171717;
 $sidebar-selected-border-color: #fff;
 $sidebar-submenu-color: #CED4DA;
 $sidebar-submenu-background-color: #2a3948;
 $sidebar-submenu-hover-color: #E9ECEF;
-$sidebar-submenu-hover-background-color: #273440;
+$sidebar-submenu-hover-background-color: #171717;
 $sidebar-menu-active-color: #E9ECEF;
-$sidebar-menu-active-background-color: #273440;
+$sidebar-menu-active-background-color: #171717;
 
-$table-background-color: #1c242b;
-$table-border-color: #252b31;
+$table-background-color: black;
+$table-border-color: #1C1C1D;
 $table-font-color: rgb(192, 192, 192);
 
 $navbar-color: #FFFFFF;
@@ -141,8 +141,8 @@ a:hover {
     opacity: 1;
     z-index: 998;
     justify-content: left;
-    border-bottom: 1px solid #dee2e6;
-
+    background-color: #171717;
+    
     &.active {
         width: 100%;
     }
@@ -426,18 +426,20 @@ a.homeButton {
 }
 
 .dash-upper-line-card-title {
-    font-size:1.2rem;
+    font-size:1.1rem;
     color: #AAAAAA;
+    font-family: arial black;
 }
 
 .dash-upper-line-card-value {
      font-size:1.75rem;
-    font-weight:bold;
-    color: #FFFFFF;
+    // font-weight:bold;
+    // color: #FFFFFF;
 }
 
 .card {
-    background-color: #1C1C1D;
+    background-color: #090909;
+    border: 1px solid #1C1C1D;
 }
 
 .card-header {

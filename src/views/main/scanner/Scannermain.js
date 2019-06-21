@@ -85,7 +85,6 @@ export default class Scannermain extends Component {
   handleKeyPress = (event) => {
     if(event.key === 'Enter' && this.state.searchTxt.length > 0) {
       event.preventDefault();
-      console.log('serch');
       this.search(this.state.searchTxt);
     }
   }
@@ -95,10 +94,9 @@ export default class Scannermain extends Component {
     return (
       <Fragment>
            <ContentRow>
-                <ContentCard style={{width:'100%', paddingLeft:'15px', pddingRight: '15px', marginRight: '25px'}}>
-                  <ContentRow>
-                    <h3 style={{color:"#FFFFFF"}}>Block Explorer</h3>
-                  </ContentRow>
+              <ContentCol>
+                <ContentCard>
+                  <h3 style={{color:"#FFFFFF"}}>Block Explorer</h3>
                   <Form>
                     <InputGroup>
                       <Input 
@@ -111,6 +109,7 @@ export default class Scannermain extends Component {
                     </InputGroup>  
                   </Form>
                 </ContentCard>
+              </ContentCol>
             </ContentRow>
             <ContentRow>
               <ContentCol xl={6} lg={12} md={12} sm={12} xs={12}>
@@ -125,18 +124,18 @@ export default class Scannermain extends Component {
                         <th style={{width:'16%'}}>Eth</th>
                       </tr>
                     </thead>
+                    <tbody>
                     {this.state.blocks.map((block) => {
                       let block_link = `/main/scanner/block/${block.number}`;
                       let miner_link = `/main/scanner/address/${block.miner}`
                       return ( 
-                        <tbody key={block.id}>
-                          <tr>
+                          <tr key={block.id}>
                             <td><Link to={block_link}>{block.number}</Link></td>
                             <td className="ellipsis" style={{paddingTop: '10px', paddingBottom: '10px'}}><Link to={miner_link}>{block.miner}</Link></td>
                             <td>{block.gas_used}</td>
-                          </tr>
-                        </tbody>);
+                          </tr>);
                     })}
+                    </tbody>
                    </Table>
                    </CardBody>
                   <CardFooter>

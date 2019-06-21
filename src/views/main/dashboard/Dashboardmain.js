@@ -264,7 +264,7 @@ class Monitoring extends Component {
                 <ContentRow>
                     <ContentCol xl={3} lg={6} md={6} sm={12} xs={12}>
                         {/* <ContentCard inverse backgroundColor='#e06377' borderColor='#c83349'> */}
-                        <ContentCard style={{ maxHeight: '130px' }}>
+                        <ContentCard>
                             <ContentRow>
                                 <Col xl={4} lg={4} md={4} sm={4} xs={4} style={{ textAlign: 'center' }}>
                                     {/* <FiBox size={100} color="#0F9EDB" /> */}
@@ -273,14 +273,14 @@ class Monitoring extends Component {
                                 <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{ textAlign: 'left', lineHeight: 2 }}>
                                     {/* <span class='dash-upper-line-card' style={{fontSize:'0.9rem', color:"#FFFFFF"}}>BEST BLOCK</span><br/> */}
                                     <span className='dash-upper-line-card-title' >BEST BLOCK</span><br />
-                                    <span className='dash-upper-line-card-value'># {blockNo === undefined ? '' : blockNo}</span>
+                                    <span className='dash-upper-line-card-value' style={{color: '#B648F6'}}># {blockNo === undefined ? '' : blockNo}</span>
                                 </Col>
                             </ContentRow>
                         </ContentCard>
                     </ContentCol>
                     <ContentCol xl={3} lg={6} md={6} sm={12} xs={12}>
                         {/* <ContentCard inverse backgroundColor='#e06377' borderColor='#c83349'> */}
-                        <ContentCard style={{maxHeight: '130px'}}>
+                        <ContentCard>
                             <ContentRow>
                                 <Col xl={4} lg={4} md={4} sm={4} xs={4} style={{textAlign:'center'}}>
                                     {/* <MdHourglassEmpty size={100} color="#8B9DC3"/> */}
@@ -289,14 +289,14 @@ class Monitoring extends Component {
                                 <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{textAlign:'left', lineHeight:2}}>
                                     {/* <span class='dash-upper-line-card' style={{fontSize:'0.9rem', color:"#FFFFFF"}}>BEST BLOCK</span><br/> */}
                                     <span className='dash-upper-line-card-title' >LAST BLOCK</span><br/>
-                                    <span className='dash-upper-line-card-value'>{passSec === undefined ? '' : passSec} s ago</span>
+                                    <span className='dash-upper-line-card-value' style={{color: '#0F9EDB'}}>{passSec === undefined ? '' : passSec} s ago</span>
                                 </Col>
                             </ContentRow>
                         </ContentCard>
                     </ContentCol>
                     <ContentCol xl={3} lg={6} md={6} sm={12} xs={12}>
                         {/* <ContentCard inverse backgroundColor='#339AED' borderColor='#3B5998'> */}
-                        <ContentCard style={{maxHeight: '130px'}}>
+                        <ContentCard>
                             <ContentRow>
                                 <Col xl={4} lg={4} md={4} sm={4} xs={4} style={{textAlign:'center'}}>
                                     {/* <MdTimer size={100} color='#339AED'/> */}
@@ -304,14 +304,14 @@ class Monitoring extends Component {
                                 </Col>
                                 <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{textAlign:'left', lineHeight:2}}>
                                     <span className='dash-upper-line-card-title'>AVG BLOCK TIME</span><br/>
-                                    <span className='dash-upper-line-card-value'>{avgBlockTime} s</span>
+                                    <span className='dash-upper-line-card-value' style={{color: '#7BCC3A'}}>{avgBlockTime} s</span>
                                 </Col>
                             </ContentRow>
                         </ContentCard>
                     </ContentCol>
                     <ContentCol xl={3} lg={6} md={6} sm={12} xs={12}>
                         {/* <ContentCard inverse backgroundColor='#34A853' borderColor='#A4C639'> */}
-                        <ContentCard style={{ maxHeight: '130px' }}>
+                        <ContentCard>
                             <ContentRow>
                                 <Col xl={4} lg={4} md={4} sm={4} xs={4} style={{ textAlign: 'center' }}>
                                     {/* <TiKeyOutline size={100} color='#34A853' /> */}
@@ -319,7 +319,7 @@ class Monitoring extends Component {
                                 </Col>
                                 <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{textAlign:'left', lineHeight:2}}>
                                     <span className='dash-upper-line-card-title'>DIFFICULTY</span><br/>
-                                    <span className='dash-upper-line-card-value'>{difficulty === undefined ? '' : difficulty} H</span>
+                                    <span className='dash-upper-line-card-value' style={{color: '#FFD162'}}>{difficulty === undefined ? '' : difficulty} H</span>
                                 </Col>
                             </ContentRow>
                         </ContentCard>
@@ -327,35 +327,35 @@ class Monitoring extends Component {
                 </ContentRow>
                 <ContentRow>
                     <ContentCol xl={6} lg={12} md={12} sm={12} xs={12} noMarginBottom={true}>
-                        <ContentCard>
-                            <D3component ref='D3' cardPosition={d3card} node={node} />
+                        <ContentCard imgBackground={true}>
+                            <D3component ref='D3' cardPosition={d3card} node={node}/>
                         </ContentCard>
                     </ContentCol>
                     <ContentCol xl={6} lg={12} md={12} sm={12} xs={12} noMarginBottom={true}>
                         <ContentRow>
-                            <ContentCol xl={6} lg={12} md={12} sm={12} xs={12}>
-                                <ContentCard style={{maxHeight: '130px'}}>
+                            <ContentCol xl={6} lg={12} md={12} sm={12} xs={12} noMarginBottom={true}>
+                                <ContentCard>
                                     <ContentRow>
                                         <Col xl={4} lg={4} md={4} sm={4} xs={4} style={{textAlign:'center'}}>
                                             <img src="/img/gas_price.svg" width="90px"/>
                                         </Col>
                                         <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{textAlign:'left', lineHeight:2}}>
                                             <span className='dash-upper-line-card-title'>GAS PRICE</span><br/>
-                                            <span className='dash-upper-line-card-value'>{gasUsed === undefined ? '' : gasUsed} gwei</span>
+                                            <span className='dash-upper-line-card-value' style={{color: '#FD8900'}}>{gasUsed === undefined ? '' : gasUsed} gwei</span>
                                         </Col>
                                     </ContentRow>
                                 </ContentCard>
                             </ContentCol>
                             <ContentCol xl={6} lg={12} md={12} sm={12} xs={12}>
                                 {/* <ContentCard inverse backgroundColor='#34A853' borderColor='#A4C639'> */}
-                                <ContentCard style={{maxHeight: '130px'}}>
+                                <ContentCard>
                                     <ContentRow>
                                         <Col xl={4} lg={4} md={4} sm={4} xs={4} style={{textAlign:'center'}}>
                                             <img src="/img/gas_limit.svg" width="90px"/>
                                         </Col>
                                         <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{textAlign:'left', lineHeight:2}}>
                                             <span className='dash-upper-line-card-title'>GAS LIMIT</span><br/>
-                                            <span className='dash-upper-line-card-value'>{gasLimit === undefined ? '' : gasLimit} gas</span>
+                                            <span className='dash-upper-line-card-value' style={{color: '#F74B4B'}}>{gasLimit === undefined ? '' : gasLimit} gas</span>
                                         </Col>
                                     </ContentRow>
                                 </ContentCard>
@@ -363,7 +363,7 @@ class Monitoring extends Component {
                         </ContentRow>
                         <ContentRow>
                             <ContentCol>
-                                <ContentCard style={{height: '330px', overflow: 'auto'}}>
+                                <ContentCard style={{height: '325px'}}>
                                     <Col style={{ textAlign: 'left', marginBottom: '10px' }}>
                                         <span className='dash-upper-line-card-title'>Pending Transactions</span>
                                     </Col>

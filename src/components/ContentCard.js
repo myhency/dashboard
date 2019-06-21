@@ -40,7 +40,15 @@ const ContentCard = (props) => {
     }
 
     if(props.noMarginBottom) {
-        ContentCardStyle.marginBottom = '0px'
+        ContentCardStyle.marginBottom = '0px';
+    }
+
+    if(props.imgBackground) {
+        // ContentCardStyle.background = 'url(/img/Ethereum3.png)';
+        ContentCardStyle.background = 'url(/img/login_page.jpg)';
+        ContentCardStyle.backgroundSize = 'cover';
+        CardBodyStyle.background = 'rgba(0,0,0,0.7)';
+
     }
 
     return (
