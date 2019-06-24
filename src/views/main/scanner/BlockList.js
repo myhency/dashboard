@@ -64,7 +64,8 @@ export default class BlockList extends Component {
                             },
                             {
                                 Header: "Miner",
-                                accessor: "miner"
+                                accessor: "miner",
+                                Cell: ({row}) => (<Link to={`/main/scanner/address/${row.miner}`}>{row.miner}</Link>)
                             },
                             {
                                 Header: "Gas Used",
@@ -98,7 +99,7 @@ export default class BlockList extends Component {
                         loading={loading} // Display the loading overlay when we need it
                         onFetchData={this.getBlock} // Request new data when things change
                         pageSizeOptions={[5, 10, 15, 20]}
-                        defaultPageSize={20}
+                        defaultPageSize={15}
                     />
                 </ContentCard>
             </Fragment>

@@ -18,9 +18,6 @@ class PrivateRoute extends Component {
             isAuthenticated = props.isAuthenticated;
         }
         
-        console.log('dassdadsf');
-        console.log(props.isAuthenticated)
-        console.log(isAuthenticated);
         return {
             isAuthenticated
         }

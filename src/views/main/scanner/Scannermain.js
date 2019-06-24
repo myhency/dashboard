@@ -91,6 +91,73 @@ export default class Scannermain extends Component {
 
 
   render() {
+    const { blocks, transactions } = this.state;
+    
+    // latest block table
+    var brows = [];
+    blocks.map((block) => {
+      let block_link = `/main/scanner/block/${block.number}`;
+      let miner_link = `/main/scanner/address/${block.miner}`;
+      brows.push(
+        <tr key={block.id}>
+          <td><Link to={block_link}>{block.number}</Link></td>
+          <td className="ellipsis" style={{paddingTop: '10px', paddingBottom: '10px'}}><Link to={miner_link}>{block.miner}</Link></td>
+          <td>{block.gas_used}</td>
+        </tr>
+      )
+    });
+
+    // latest transaction table
+    var trows = [];
+    transactions.map((tx) => {
+      let block_link = `/main/scanner/transaction/${tx.transaction_hash}`;
+      let from_link = `/main/scanner/address/${tx.transaction_from}`;
+      let to_link = `/main/scanner/address/${tx.transaction_to}`;
+      trows.push(
+        <tr key={tx.id}>
+          <td className="ellipsis"><Link to={block_link}>{tx.transaction_hash}</Link></td>
+          <td>
+            <Table borderless style={{tableLayout: 'fixed', margin: '0', padding: '0'}}>
+              <tbody>
+                <tr>
+                  <td className="ellipsis"><Link to={from_link}>{tx.transaction_from}</Link></td>
+                  <td style={{width:'10%'}}><FaArrowRight/></td>
+                  <td className="ellipsis"><Link to={to_link}>{tx.transaction_to}</Link></td>
+                </tr>
+              </tbody>
+            </Table>
+          </td>
+          <td className="ellipsis">{tx.gas * tx.gas_price}</td>
+        </tr>
+      )
+    });
+
+    var blen = blocks.length;
+    var tlen = transactions.length;
+
+    if(blen>tlen) {
+      for(var i=0; i<blen-tlen; i++){
+        trows.push(
+          <tr key={i}>
+            <td>&nbsp;</td>
+            <td style={{paddingTop: '10px', paddingBottom: '10px'}}>&nbsp;</td>
+            <td>&nbsp;</td>
+          </tr>
+        );
+      }
+    }
+    else {
+      for(var i=0; i<tlen-blen; i++){
+        brows.push(
+          <tr key={i}>
+            <td>&nbsp;</td>
+            <td style={{paddingTop: '10px', paddingBottom: '10px'}}>&nbsp;</td>
+            <td>&nbsp;</td>
+          </tr>
+        );
+      }
+    }
+
     return (
       <Fragment>
            <ContentRow>
@@ -104,7 +171,7 @@ export default class Scannermain extends Component {
                         onChange={(event) => {this.setState({searchTxt: event.target.value})}}
                         onKeyPress={this.handleKeyPress}/>
                       <InputGroupAddon addonType='append'>
-                        <Button type='submit' onClick={()=>this.search(this.state.searchTxt)}>  Search  </Button>
+                        <Button type='button' onClick={()=>this.search(this.state.searchTxt)}>  Search  </Button>
                       </InputGroupAddon> 
                     </InputGroup>  
                   </Form>
@@ -125,16 +192,7 @@ export default class Scannermain extends Component {
                       </tr>
                     </thead>
                     <tbody>
-                    {this.state.blocks.map((block) => {
-                      let block_link = `/main/scanner/block/${block.number}`;
-                      let miner_link = `/main/scanner/address/${block.miner}`
-                      return ( 
-                          <tr key={block.id}>
-                            <td><Link to={block_link}>{block.number}</Link></td>
-                            <td className="ellipsis" style={{paddingTop: '10px', paddingBottom: '10px'}}><Link to={miner_link}>{block.miner}</Link></td>
-                            <td>{block.gas_used}</td>
-                          </tr>);
-                    })}
+                      {brows}
                     </tbody>
                    </Table>
                    </CardBody>
@@ -160,29 +218,9 @@ export default class Scannermain extends Component {
                         <th style={{width:'16%'}}>Eth</th>
                       </tr>
                     </thead>
-                    {this.state.transactions.map((tx, i) => {
-                      let block_link = `/main/scanner/transaction/${tx.transaction_hash}`;
-                      let from_link = `/main/scanner/address/${tx.transaction_from}`;
-                      let to_link = `/main/scanner/address/${tx.transaction_to}`;
-                      return ( 
-                        <tbody key={tx.id}>
-                          <tr>
-                            <td className="ellipsis"><Link to={block_link}>{tx.transaction_hash}</Link></td>
-                            <td>
-                              <Table borderless style={{tableLayout: 'fixed', margin: '0', padding: '0'}}>
-                                <tbody>
-                                  <tr>
-                                    <td className="ellipsis"><Link to={from_link}>{tx.transaction_from}</Link></td>
-                                    <td style={{width:'10%'}}><FaArrowRight/></td>
-                                    <td className="ellipsis"><Link to={to_link}>{tx.transaction_to}</Link></td>
-                                  </tr>
-                                </tbody>
-                              </Table>
-                            </td>
-                            <td className="ellipsis">{tx.gas * tx.gas_price}</td>
-                          </tr>
-                        </tbody>);
-                    })}
+                    <tbody>
+                      {trows}
+                    </tbody>
                    </Table>
                   </CardBody>
                   <CardFooter>

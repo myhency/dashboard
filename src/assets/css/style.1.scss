@@ -69,8 +69,9 @@ a:hover {
 }
 
 .btn-outline-primary {
-    color: rgb(192, 192, 192);
-    border-color: rgb(192, 192, 192);
+    color: black;
+    border-color: navy;
+    background-color: #0F9EDB;
 }
 
 .btn-outline-primary:hover {
@@ -78,7 +79,29 @@ a:hover {
 }
 
 .input-group>.custom-file, .input-group>.custom-select, .input-group>.form-control, .input-group>.form-control-plaintext {
-    background-color: rgba(43, 90, 151, 0.082)
+    background-color: $table-background-color ;
+    border: 1px solid $table-border-color ;
+    color: white;
+}
+
+.input-group-append>.btn {
+    background-color: #0F9EDB;
+    color: black;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+.select:-webkit-autofill:focus {
+    border: 1px solid $table-border-color;
+    -webkit-text-fill-color: white;
+    -webkit-box-shadow: 0 0 0px 1000px $table-background-color inset;
+
 }
 
 
@@ -248,16 +271,32 @@ a.homeButton {
     react-table style append
 ----------------------------------------------------- */
 .ReactTable {
-    border: 0px !important;
     text-align: center;
     padding-left: 10px;
     padding-right: 10px;
-    background-color: #262626;
+    // background-color: #262626;
+    background-color: transparent;
     color: white;
 }
 
+.ReactTable .-loading {
+    // background: red;
+    background-color: rgba(0,0,0,0.5);
+
+}
+
 .ReactTable .rt-thead {
-    background-color: $table-background-color;
+    // background-color: $table-background-color;
+    background-color: transparent;
+}
+
+// .ReactTable .rt-table {
+//     border: 1px solid $table-border-color;
+// }
+
+.ReactTable .rt-tr-group {
+    border-top: 1px solid $table-border-color;
+    border-bottom: 1px solid $table-border-color;
 }
 
 .ReactTable .-next {
@@ -288,14 +327,13 @@ a.homeButton {
 }
 
 .ReactTable .-pagination .-btn[disabled]:hover {
-    // background-color: gainsboro;
-    // background-color: transparent;
     background-color: transparent !important;
 }
 
-// .ReactTable .-btn {
-//     color: white;
-// }
+.ReactTable .-pageJump input, .-pagination select {
+    background-color: $table-border-color !important;
+    color: white;
+}
 
 
 /* ---------------------------------------------------
@@ -381,25 +419,42 @@ a.homeButton {
 ----------------------------------------------------- */
 
 .tab-content {
-    border-left: 1px solid rgb(105, 105, 105);
-    border-right: 1px solid rgb(105, 105, 105);
-    border-bottom: 1px solid rgb(105, 105, 105);
-    border-top: 1px solid white;
+    // border-left: 1px solid rgb(105, 105, 105);
+    // border-right: 1px solid rgb(105, 105, 105);
+    // border-bottom: 1px solid rgb(105, 105, 105);
+    // border-top: 1px solid white;
     padding: 0px;
 }
 
 .nav-tabs {
     text-align: center;
     margin-bottom: 0;
+    border-bottom: 1px solid $table-border-color;
+}
+
+.nav-tabs .nav-link {
+    border: 1px solid $table-border-color;
+}
+
+.nav-tabs .nav-link.active {
+    background: #1C1C1D;
+    color: white;
+    border: 1px solid $table-border-color;
+}
+
+.nav-tabs .nav-link:hover {
+    color: white !important;
 }
 
 /* ---------------------------------------------------
     table
 ----------------------------------------------------- */
+
 .table {
-
+    border-collapse: collapse;
+    border-right: 0px;
+    border-left: 0px;
 }
-
 
 .table td, .table th, .table thead th{
     vertical-align: middle;
@@ -408,9 +463,9 @@ a.homeButton {
     padding-right: 10px;
     background-color: $table-background-color;
     border-color: $table-border-color;
-    border-bottom-color: $table-border-color;
-    border-top-color: $table-border-color;
     color: $table-font-color;
+    border-right: 0px;
+    border-left: 0px;
 
 }
 
@@ -446,6 +501,7 @@ a.homeButton {
     color: #FFFFFF;
 }
 
+
 /* ---------------------------------------------------
     Login page background
 ----------------------------------------------------- */
@@ -455,3 +511,19 @@ a.homeButton {
     background-size: cover;
 
 }
+
+
+/* ---------------------------------------------------
+    general
+----------------------------------------------------- */
+
+.copyicon {
+    color: #0F9EDB;
+}
+
+.form-control {
+    background-color: $table-background-color !important;
+    border: 2px solid $table-border-color !important;
+    color: silver;
+}
+

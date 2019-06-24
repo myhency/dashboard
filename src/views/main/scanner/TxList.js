@@ -53,7 +53,7 @@ export default class TxList extends Component {
                         Header: "TxHash",
                         accessor: "transaction_hash",
                         Cell: ({row}) => (<Link to={this.props.location.pathname + '/' + row.transaction_hash}>{row.transaction_hash}</Link>),
-                        width: 350
+                        width: 340
                     },
                     {
                         Header: "Block",
@@ -69,12 +69,14 @@ export default class TxList extends Component {
                     {
                         Header: "From",
                         accessor: "transaction_from",
-                        width: 350
+                        width: 340,
+                        Cell: ({row}) => (<Link to={`/main/scanner/address/${row.transaction_from}`}>{row.transaction_from}</Link>),
                     },
                     {
                         Header: "To",
                         accessor: "transaction_to",
-                        width: 350
+                        width: 340,
+                        Cell: ({row}) => (<Link to={`/main/scanner/address/${row.transaction_to}`}>{row.transaction_to}</Link>),
                     },
                     {
                         Header: "Value",
@@ -98,7 +100,7 @@ export default class TxList extends Component {
                 loading={loading}
                 onFetchData={this.getTransaction}
                 pageSizeOptions={[5, 10, 15, 20]}
-                defaultPageSize={20}
+                defaultPageSize={15}
             />
         </ContentCard>
     </Fragment>

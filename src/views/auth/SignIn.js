@@ -34,7 +34,6 @@ class SignIn extends Component {
     onClickSignIn = () => {
         const { userId, password } = this.state;
 
-        const url = '/api/login/';
         const params = {
             username: userId,
             password: password
@@ -42,7 +41,6 @@ class SignIn extends Component {
 
         let token = '';
         let redirect_url = '';
-
 
         // csrf 생성을 위한 장고 cookie 얻기
         function getCookie(name) {
@@ -78,9 +76,6 @@ class SignIn extends Component {
                 'X-CSRFToken': csrftoken,
             }
         }
-                
-        
-
 
         let isInvalidUserId = false;
         let isInvalidPassword = false;
@@ -103,43 +98,33 @@ class SignIn extends Component {
         }
         
 
-        // 서버와 통신하여 로그인 성공/실패 판단
+        //서버와 통신하여 로그인 성공/실패 판단
         // this.props.dispatch(loadingStart())
         // .then(() => {
-        //     // post에 param 전달
-        //     Fetch.POST(url, params, django)
-        //     .then((res) => {
-        //         token = res.result.data.token;
-        //         redirect_url = res.result.redirect_url;
-        //     })
-        //     .catch(error => {
-        //         alert(error);
-        //     })
-        //     .finally(() => {
-        //         this.props.dispatch(loadingStop());
-        //         if(token !== undefined) {
-        //             // TODO res에서 받아오는 url로 push 할 것
-        //             if(redirect_url === 'http://10.40.104.49:8000/api/users/') {
-        //                 this.props.history.push('/auth/initAdmin/');
-        //             } else {
-        //                 this.props.history.push('/main/dashboard/main');
-        //             }
-        //         } else {
-        //             alert('Please Checkup Again')
-        //         }
-        //     })
+            // post에 param 전달
+            Fetch.POST('/api/auth/login/', params, django)
+            .then((res) => {
+                sessionStorage.setItem('userId', userId);
+                this.props.dispatch(signIn(userId));
+                this.props.history.push('/main/dashboard'); 
+                // token = res.result.data.token;
+                // redirect_url = res.result.redirect_url;
+            })
+            .catch(error => {
+                this.props.history.push('/auth/SignIn'); 
+            })
+            .finally((res) => {
+                console.log(res);
+                // if(res.status == undefined) {
+                //    this.props.history.push('/main/dashboard'); 
+                // } else {
+                //     alert('Please Checkup Again')
+                // }
+            })
         // })
 
 
-        // 로그인 성공 시
-        sessionStorage.setItem('userId', userId);
-        this.props.dispatch(signIn(userId));
-        this.props.history.push('/main');
-
-
-
-
-        // const url = '/auth/signInOut/';
+        // const logoutUrl = '/api/auth/logout/';
         // const params = {
         //     userId: userId,
         //     password: password,
@@ -190,18 +175,15 @@ class SignIn extends Component {
         //     .finally(() => {
         //         this.props.dispatch(loadingStop());
         //         if(signInFlag === 'true') {
-        //             this.props.history.push('/auth/initAdmin/');
-        //             console.log("login success")
+        //             this.props.history.push('/auth/SignIn/');
+        //             console.log("logout success")
         //         } else {
-        //             console.log("login fail")
-        //             alert('Please Signup First')
+        //             console.log("logout fail")
         //         }
         //     })
         // })
 
-        // sessionStorage.setItem('userId', userId);
-        // this.props.dispatch(signIn(userId));
-        // this.props.history.push('/main');
+        // sessionStorage.clear();
     }
 
     onChangeUserId = (event) => {

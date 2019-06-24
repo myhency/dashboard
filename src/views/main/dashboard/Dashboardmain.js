@@ -1,4 +1,4 @@
-import React, { Component, Fragment, useState } from 'react';
+import React, { Component, Fragment } from 'react';
 import ReactDOM from 'react-dom';
 import ContentRow from 'components/ContentRow';
 import ContentCol from 'components/ContentCol';
@@ -36,6 +36,14 @@ class Monitoring extends Component {
           tbpLabels: [],            // transaction per block label
           miningBlock: [],             // recent mining block info
           uncleState: false,            // uncle state
+        //   node: [],        // 
+        //   angle: 0,      // 그림 회전 각도, 여기부터 d3쪽에서 사용할 state
+        //   numOfNodes: 0,
+        //   simulation: {},
+        //   xcenter: 0,
+        //   ycenter: 0,
+        //   nodeImgSize: 0,
+        //   cardPosition: undefined
         };
 
         socket = io.connect(process.env.REACT_APP_BAAS_SOCKET);
@@ -110,7 +118,11 @@ class Monitoring extends Component {
             d3card: ReactDOM.findDOMNode(this.refs['D3']).getBoundingClientRect()
         });
         
-        console.log(this.state.d3card);
+        // setInterval(() => {
+        //     // this.updateTime();          // 그림을 몇초마다 리프레쉬할지 정함
+        // }, 10);
+        
+        // console.log(this.state.d3card);
 
     }
 
@@ -153,22 +165,14 @@ class Monitoring extends Component {
                 timePass: newTime,
                 passSec: 0,
                 txPerBlock: tpb,
-                tbpLabels: labels
+                tbpLabels: labels,
+                difficulty: bestBlock.difficulty,
             });
 
-                this.setState({
-                    blockNo: bestBlock.number,
-                    gasLimit: bestBlock.gas_limit,
-                    gasUsed: bestBlock.gas_used,
-                    timestamp: bestBlock.timestamp,
-                    avgBlockTime: avgBlockTime,
-                    timePass: newTime
-                });
-
-            })
-            .catch(error => {
-                console.log(error);
-            })
+        })
+        .catch(error => {
+            console.log(error);
+        })
     }
 
     getCurrentTime = () => {
@@ -214,7 +218,8 @@ class Monitoring extends Component {
                 timePass: newTime,
                 passSec: 0,
                 txPerBlock: tpb,
-                tbpLabels: labels
+                tbpLabels: labels,
+                difficulty: bestBlock.difficulty
             });
 
         })
@@ -239,9 +244,9 @@ class Monitoring extends Component {
         
         // pending Transaction Table 
         var rows = [];
-        pendingTx.map((txInfo, index) => {
+        pendingTx.map((txInfo) => {
             rows.push(
-                <tr key={index}>
+                <tr key={txInfo.index}>
                     <td>{txInfo.time}s ago</td>
                     <td>{txInfo.hash}</td>
                 </tr>
@@ -249,7 +254,7 @@ class Monitoring extends Component {
         });
         for(var i = 0; i < 5-pendingTx.length; i++) {
             rows.push( 
-                <tr>
+                <tr key={i}>
                     <td>&nbsp;</td>
                     <td>&nbsp;</td>
                 </tr>)

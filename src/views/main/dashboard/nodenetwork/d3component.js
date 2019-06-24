@@ -18,8 +18,6 @@ import _ from "lodash";
 class D3component extends Component {
 
     constructor(props) {
-        // console.log("constructor");
-        // console.log(props.node)
         super(props)
 
         this.state = {
@@ -35,7 +33,6 @@ class D3component extends Component {
     }
 
     componentDidMount() {
-        // console.log('componentDidMount');
         setInterval(() => {
             this.updateTime();          // 그림을 몇초마다 리프레쉬할지 정함
         }, 10);
@@ -43,18 +40,11 @@ class D3component extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        // console.log('getDerivedStateFromProps');
-
-        // console.log(nextProps);
-        // console.log(state.node);
         let { node, cardPosition } = prevState;
 
         if (!_.isEqual(nextProps.node, node)
             || (!_.isEqual(nextProps.cardPosition, cardPosition)
                 && cardPosition != undefined)) {
-            // console.log(nextProps.node);
-            // console.log(node);
-            //console.log(nextProps.cardPosition.width * nextProps.cardPosition.height * 0.0003)
             return {
                 node: nextProps.node,
                 numOfNodes: nextProps.node.length,
@@ -80,7 +70,6 @@ class D3component extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        // console.log('componentDidUpdate');
         if ((!_.isEqual(prevState.node, this.state.node) && this.state.node.length > 0)
             || (!_.isEqual(prevState.cardPosition, this.state.cardPosition) && this.state.cardPosition != undefined)) {
             this.drawFrame();
@@ -88,7 +77,6 @@ class D3component extends Component {
     }
 
     updateTime() {
-        // console.log("updateTime");
         this.setState({
             angle: this.state.angle + 0.07     //그림을 얼마만큼 회전시킬지 정함
         });
@@ -103,7 +91,6 @@ class D3component extends Component {
     }
 
     moveNodes(type, pAngle) {
-        // console.log("moveNodes");
         let xcenter = this.state.xcenter;
         let ycenter = this.state.ycenter;
         const transform = `rotate(${pAngle},${xcenter},${ycenter})`
@@ -112,9 +99,6 @@ class D3component extends Component {
     }
 
     drawFrame() {
-        // console.log('drawFram');
-        // console.log(this.state.nodeImgSize);
-
         let links = [];
         // { "source": "A", "target": "B", "value": 1 },
         for (var i = 0; i < this.state.node.length; i++) {          // 노드 개수별로 선긋기
@@ -124,16 +108,10 @@ class D3component extends Component {
         }
 
         let nodes = _.map(this.state.node, (node) => {
+            let imgsrc = ""
             return { id: node.id, group: 1, img: "/img/blockchain_green.svg" };
         });
 
-        // console.log(this.state.node);
-
-        // console.log(this.svg._groups);
-        // console.log('aaaaa');
-        // console.log(this.svg._groups[0][0].children);
-
-        // console.log(this.svg.selectAll('.images'));
         // this.svg.children().remove();
         // this.svg.remove();
         this.svg.selectAll('*').remove();
@@ -160,6 +138,7 @@ class D3component extends Component {
             .selectAll("g.images")
             .data(nodes)
             .enter().append("image")
+            .attr("id", function (d) { return d.id; })
             .attr("xlink:href", function (d) { return d.img; })
             .attr("width", this.state.nodeImgSize)
             .attr("height", this.state.nodeImgSize);
@@ -192,8 +171,6 @@ class D3component extends Component {
 
 
         function ticked() {
-            //console.log("ticked");
-            
             link
                 .attr("x1", function (d) { return d.source.x; })
                 .attr("y1", function (d) { return d.source.y; })
@@ -226,9 +203,6 @@ class D3component extends Component {
 
 
     render() {
-        // console.log("render");
-        // console.log(this.state.node);
-        // console.log(this.state);
         return (
             <svg width="100%" height="450"//width="620" height="450"  //켄버스 크기
                 ref={handle => (this.svg = d3.select(handle))}>

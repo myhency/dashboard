@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import React from 'react';
 import ContentCard from 'components/ContentCard';
 import { Button, Input } from 'reactstrap';
 
 const Contract_code = (props) => {
   return (
     <ContentCard style={{margin: '0', border: 0, height: '520px'}}>
-      <Button color='info' onClick={()=>this.setState({ view: 'byte'})}>
+      <Button  style={{backgroundColor: '#0F9EDB', color: 'white'}}>
           Bytecodes View
       </Button> {' '}
       {/* <Button 

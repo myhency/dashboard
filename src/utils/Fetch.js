@@ -41,6 +41,10 @@ const GET = (url, options) => {
             clearTimeout(timeout);
             if(!didTimeout) {
                 if(response.ok) {
+                    if(response.status === 204) {
+                        resolve(response);
+                        return;
+                    }
                     resolve(response.json());
                 }else {
                     if(response.status === 401) {
@@ -72,6 +76,7 @@ const POST = (url, params, options) => {
     }
     
     let didTimeout = false;
+    console.log(headers);
 
     return new Promise((resolve, reject) => {
         const timeout = setTimeout(() => {
@@ -88,6 +93,10 @@ const POST = (url, params, options) => {
             clearTimeout(timeout);
             if(!didTimeout) {
                 if(response.ok) {
+                    if(response.status === 204) {
+                        resolve(response);
+                        return;
+                    }
                     resolve(response.json());
                 }else {
                     if(response.status === 401) {

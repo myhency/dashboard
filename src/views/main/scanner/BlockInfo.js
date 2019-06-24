@@ -108,8 +108,8 @@ class BlockInfo extends Component {
     
     return (
       <Fragment>
-        <ContentCard style={{paddingLeft: '150px', paddingRight: '150px'}}>
-          <Table bordered style={{height: '30px'}}>
+        <ContentCard detailCard={true} >
+          <Table bordered>
             <tbody>
               <tr>
                 <td style={{width: '20%'}}>Block Height:</td>

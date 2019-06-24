@@ -1,6 +1,3 @@
-import React from 'react';
-import { Redirect } from 'react-router-dom';
-
 import Dashboardmain from 'views/main/dashboard/Dashboardmain';
 
 import Scanner from 'views/main/scanner/Scannermain';
@@ -10,8 +7,7 @@ import TxList from 'views/main/scanner/TxList';
 import TxInfo from 'views/main/scanner/TxInfo';
 import Address from 'views/main/scanner/Address.js';
 
-import { FiFile, FiImage, FiBox, FiBookOpen } from 'react-icons/fi';
-import { FaChartBar, FaEye, FaSearch } from 'react-icons/fa';
+import { FaChartBar, FaSearch } from 'react-icons/fa';
 
 const contextPath = '/main/';
 

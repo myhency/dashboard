@@ -24,6 +24,11 @@ import { setPage } from 'store/modules/tempPageName';
 import { FaCopy } from 'react-icons/fa';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import ReactTooltip from 'react-tooltip';
+import jQuery from "jquery";
+
+// import Background from '/img/login_page.jpeg';
+
+window.$ = window.jQuery = jQuery;
 
 class MainLayout extends Component {
     constructor(props) {
@@ -146,23 +151,51 @@ class MainLayout extends Component {
     signOut = () => {
         sessionStorage.clear();
         this.props.dispatch(signOut());
-        this.props.history.push('/auth/signIn');
+        
+        // csrf 생성을 위한 장고 cookie 얻기
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                console.log(cookies);
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
 
-        // const url = '/auth/signInOut/';
-        // Fetch.GET(url)
-        // .then(res => {
-        //     console.log('logout');
-        // })
-        // .catch(error => {
-        //     alert(error);
-        // })
-        // .finally(() => {
-        //     console.log('logout')
-        // })
+        // 쿠키로부터 csrf 토큰 값 추출 
+        var csrftoken = getCookie('csrftoken');
+        // fetch post 옵션으로 보낼 dict 생성
+        // API 보낼 때 헤더 생략되면 MIME타입으로 요청 -> 응답 불가
+        const options = {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken,
+            }
+        }
+
+        Fetch.POST('/api/auth/logout/', {}, options)
+        .then(res => {
+            console.log('logout');
+        })
+        .catch(error => {
+            console.log(error);
+        })
+        .finally(() => {
+            console.log('logout')
+            this.props.history.push('/auth/signIn');
+        })
     }
 
     render() {
-        const { active, toggleButtonStyle, currentPath, currentInfo, isWindowSmall, userId } = this.state;
+        const { active, currentPath, currentInfo, isWindowSmall, userId } = this.state;
         return (
             <Fragment>
                 {/* Sidebar */}
@@ -227,7 +260,7 @@ class MainLayout extends Component {
                             {currentInfo}
                         </span>
                         {(this.getCurrentPageName(currentPath) === "Address") || (this.getCurrentPageName(currentPath) === "Contract") ?
-                            <span data-tip='Copy'>
+                            <span data-tip='Copy' >
                                 <CopyToClipboard text={currentInfo}> 
                                     <FaCopy style={{marginLeft: '10px', color: 'white'}}/>
                                 </CopyToClipboard>

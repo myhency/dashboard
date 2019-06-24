@@ -48,7 +48,13 @@ const ContentCard = (props) => {
         ContentCardStyle.background = 'url(/img/login_page.jpg)';
         ContentCardStyle.backgroundSize = 'cover';
         CardBodyStyle.background = 'rgba(0,0,0,0.7)';
+    }
 
+    if(props.detailCard) {
+        ContentCardStyle.background = 'black';
+        ContentCardStyle.marginLeft = '150px';
+        ContentCardStyle.marginRight = '150px';
+        CardBodyStyle.background = 'black';
     }
 
     return (
