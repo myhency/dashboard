@@ -246,11 +246,7 @@ class Monitoring extends Component {
         var rows = [];
         pendingTx.map((txInfo) => {
             rows.push(
-<<<<<<< HEAD
-                <tr key={txInfo.index}>
-=======
                 <tr key={txInfo.hash}>
->>>>>>> dbd0ba193290d5acbbe7f3973f2ed5e7fb62f73d
                     <td>{txInfo.time}s ago</td>
                     <td>{txInfo.hash}</td>
                 </tr>
