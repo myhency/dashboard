@@ -239,9 +239,9 @@ class Monitoring extends Component {
         
         // pending Transaction Table 
         var rows = [];
-        pendingTx.map((txInfo, index) => {
+        pendingTx.map((txInfo) => {
             rows.push(
-                <tr key={index}>
+                <tr key={txInfo.hash}>
                     <td>{txInfo.time}s ago</td>
                     <td>{txInfo.hash}</td>
                 </tr>
