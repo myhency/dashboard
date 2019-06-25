@@ -73,6 +73,7 @@ class Monitoring extends Component {
                 nodeStatus: data
             })
             console.log(this.state.nodeStatus);
+            this.updateNode(data);
         });
 
         socket.on('pendingTransaction', (data) => {
@@ -98,6 +99,7 @@ class Monitoring extends Component {
                 miningBlock: data
             });
             console.log(this.state.miningBlock);
+            this.updateNode(data);
         });
 
         socket.on('uncle', (data) => {
@@ -105,6 +107,7 @@ class Monitoring extends Component {
                 uncleState: data
             });
             console.log(this.state.uncleState);
+            this.updateNode(data);
         });
 
         //1초에 한번씩 백엔드에 요청
@@ -112,7 +115,6 @@ class Monitoring extends Component {
         this.intervalId_getCurrentTime = setInterval(this.getCurrentTime, 1000); 
         this.intervalId_getPendingTx = setInterval(() => socket.emit("requestPendingTx"), 1000);
 
-        window.addEventListener('resize', this.updatePosition.bind(this));
         this.setState({
             cardPosition: ReactDOM.findDOMNode(this.svgCard).getBoundingClientRect()
         });
@@ -131,6 +133,7 @@ class Monitoring extends Component {
         window.removeEventListener('resize', this.updatePosition.bind(this));
     }
 
+    // dashboard info 분기
     getDashboardInfo = () => {
         if(this.state.timePass.length > 0)
             this.updateDashboardInfo();
@@ -138,6 +141,7 @@ class Monitoring extends Component {
             this.getFirstInfo();
     }
 
+    // 첫번째는 최대 60개까지 불러옴
     getFirstInfo = () => {
         Fetch.GET('/api/block/?page_size=61&page=1')
         .then(res => {
@@ -172,16 +176,7 @@ class Monitoring extends Component {
         })
     }
 
-    getCurrentTime = () => {
-        if (this.state.passSec === undefined) {
-            return;
-        } else {
-            this.setState({
-                passSec: this.state.passSec + 1
-            });
-        }
-    }
-
+    // 두번째 부터는 하나씩 값 갖고오기
     updateDashboardInfo =() => {
         Fetch.GET('/api/block/?page_size=2&page=1')
         .then(res => {
@@ -199,7 +194,6 @@ class Monitoring extends Component {
             tpb.splice(0,1);
             labels.splice(0,1);
 
-            console.log(moment(bestBlock.timestamp).diff(res.results[1].timestamp,'seconds'));
             newTime.push(moment(bestBlock.timestamp).diff(res.results[1].timestamp,'seconds'));
             tpb.push(bestBlock.transaction_count);
             labels.push(bestBlock.number);
@@ -225,6 +219,18 @@ class Monitoring extends Component {
         })
     }
 
+    // pass sec 처리
+    getCurrentTime = () => {
+        if (this.state.passSec === undefined) {
+            return;
+        } else {
+            this.setState({
+                passSec: this.state.passSec + 1
+            });
+        }
+    }
+
+    // window resize 
     updatePosition() {
         if(this.state.node.length > 0){
             let cardPosition = ReactDOM.findDOMNode(this.svgCard).getBoundingClientRect();
@@ -238,9 +244,9 @@ class Monitoring extends Component {
                     )
                     .force("center", d3.forceCenter()
                         .x(cardPosition.width / 2)
-                        .y(cardPosition.height / 2)), // center of the picture
-                xcenter: cardPosition.width / 2,      // rotational center of the picture
-                ycenter: cardPosition.height / 2,
+                        .y(cardPosition.height / 2 -30)), // center of the picture
+                xcenter: cardPosition.width / 2 ,      // rotational center of the picture
+                ycenter: cardPosition.height / 2 -30,
                 nodeImgSize: cardPosition.width * cardPosition.height * 0.0003,
                 cardPosition: cardPosition
             })
@@ -249,7 +255,49 @@ class Monitoring extends Component {
 
         }
     }
+
+    updateNode = (data) => {
+        let len = Object.keys(data).length;
+        
+        // uncle => value(true/false)
+        if(len === 1){
+            let status = data.value ? 'yellow' : 'green';
+              
+            let changeNodeImg = '/img/blockchain_' + status + '.svg';
+            
+            // node image 태그 가져오기
+            let imageTags = d3.selectAll(`image`);
+            console.log(imageTags);
+            imageTags.each(tag => {
+                let imageTag = d3.select(`image[id='${tag.id}']`);
+                imageTag.attr("href", changeNodeImg); 
+            })
+            // 노드 이미지 변경
+            // imageTag.attr("href", changeNodeImg);
+        }
+        // node status => id, status(connect/disconnect)
+        else if(len === 2) {
+            let status = data.status === 'connect' ? 'green' : 'red';
+              
+            let changeNodeImg = '/img/blockchain_' + status + '.svg';
+            
+            // node image 태그 가져오기
+            let imageTag = d3.select(`image[id='${data.id}']`);
+            // 노드 이미지 변경
+            imageTag.attr("href", changeNodeImg);
+            
+        }
+        // block mining => number, hash, miner
+        else if(len === 3) {
+
+        }
+        else
+            return;
+
+        // drawFrame();
+    }
     
+    // d3 움직임 정도
     updateTime() {
         this.setState({
             angle: this.state.angle + 0.07     //그림을 얼마만큼 회전시킬지 정함
@@ -264,6 +312,7 @@ class Monitoring extends Component {
         this.moveNodes('g.labels', this.state.angle)
     }
 
+    // d3 움직이기
     moveNodes(type, pAngle) {
         let xcenter = this.state.xcenter;
         let ycenter = this.state.ycenter;
@@ -272,7 +321,8 @@ class Monitoring extends Component {
             .attr('transform', () => transform)
     }
 
-    drawFrame() {
+    // d3 그리기
+    drawFrame(changeNode) {
         let links = [];
         for (var i = 0; i < this.state.node.length; i++) {          // 노드 개수별로 선긋기
             for (var j = i + 1; j < this.state.node.length; j++) {
@@ -281,10 +331,9 @@ class Monitoring extends Component {
         }
 
         let nodes = _.map(this.state.node, (node) => {
-            let imgsrc = ""
             return { id: node.id, group: 1, img: "/img/blockchain_green.svg" };
-        });
-
+        });        
+        
         this.svg.selectAll('*').remove();
         
         let link = this.svg.append("g")
@@ -315,6 +364,8 @@ class Monitoring extends Component {
             .attr('font-size', function (d) { return '20px' })
             .text(function (d) { return d.id });
 
+            
+
         this.state.simulation
             .nodes(nodes)
             .on("tick", ticked);
@@ -327,6 +378,8 @@ class Monitoring extends Component {
         let labelGX = this.state.nodeImgSize * 0.05; //node image 무게중심 구하기
         let labelGY = this.state.nodeImgSize * 0.13; //node image 무게중심 구하기
 
+        
+        
 
         function ticked() {
             link
@@ -345,32 +398,6 @@ class Monitoring extends Component {
                 .style("font-size", "16px").style("fill", "#000");
         }
     }
-
-    // componentDidUpdate(prevProps, prevState) {
-    //     if(!_.isEqual(prevState.cardPosition, this.state.cardPosition) 
-    //         && this.state.node.length >0 ){
-    //         console.log('componentDidUpdate');
-    //         this.setState({
-    //             numOfNodes: this.state.node.length,
-    //             simulation: d3.forceSimulation()
-    //                 .force("link", d3.forceLink().id(function (d) { return d.id; }))
-    //                 .force('charge', d3.forceManyBody()
-    //                     .strength(this.state.node.length * (-5000))
-    //                     .theta(0.1)
-    //                 )
-    //                 .force("center", d3.forceCenter()
-    //                     .x(this.state.cardPosition.width / 2)
-    //                     .y(this.state.cardPosition.height / 2)), // center of the picture
-    //             xcenter: this.state.cardPosition.width / 2,      // rotational center of the picture
-    //             ycenter: this.state.cardPosition.height / 2,
-    //             nodeImgSize: this.state.cardPosition.width * this.state.cardPosition.height * 0.0003,
-    //             cardPosition: this.state.cardPosition
-    //         })
-    //         this.drawFrame();
-    //     }
-    //     // if(!_.isEqual(prevState.node, this.state.node))
-    // }
-
 
     render() {
         const { blockNo, avgBlockTime, gasLimit, gasUsed, passSec, difficulty, 

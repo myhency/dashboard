@@ -93,7 +93,7 @@ export default class TxInfo extends Component {
                 <td style={{width: '20%'}}>Transaction Hash:</td>
                 <td style={{width: '80%'}}>
                     {TxHash}
-                    <span class="copyicon" data-tip='Copy'>
+                    <span className="copyicon" data-tip='Copy'>
                     <CopyToClipboard text={TxHash}> 
                         <FaCopy style={{marginLeft: '10px'}}/>
                     </CopyToClipboard>
@@ -117,7 +117,7 @@ export default class TxInfo extends Component {
                 <td>From:</td>
                 <td>
                   {txFrom}
-                  <span data-tip='Copy' class="copyicon">
+                  <span data-tip='Copy' className="copyicon">
                     <CopyToClipboard text={txFrom}> 
                       <FaCopy style={{marginLeft: '10px'}}/>
                     </CopyToClipboard>
@@ -129,7 +129,7 @@ export default class TxInfo extends Component {
                 <td>To:</td>
                 <td>
                   {txTo}
-                  <span data-tip='Copy' class="copyicon">
+                  <span data-tip='Copy' className="copyicon">
                     <CopyToClipboard text={txTo}> 
                       <FaCopy style={{marginLeft: '10px'}}/>
                     </CopyToClipboard>
