@@ -54,6 +54,7 @@ class ContentCard extends Component {
             ContentCardStyle.background = 'url(/img/login_page.jpg)';
             ContentCardStyle.backgroundSize = 'cover';
             CardBodyStyle.background = 'rgba(0,0,0,0.7)';
+            CardBodyStyle.padding = '0';
         }
     
         if(this.props.detailCard) {

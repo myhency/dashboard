@@ -244,9 +244,9 @@ class Monitoring extends Component {
                     )
                     .force("center", d3.forceCenter()
                         .x(cardPosition.width / 2)
-                        .y(cardPosition.height / 2 -30)), // center of the picture
+                        .y(cardPosition.height / 2 )), // center of the picture
                 xcenter: cardPosition.width / 2 ,      // rotational center of the picture
-                ycenter: cardPosition.height / 2 -30,
+                ycenter: cardPosition.height / 2 ,
                 nodeImgSize: cardPosition.width * cardPosition.height * 0.0003,
                 cardPosition: cardPosition
             })
@@ -261,24 +261,26 @@ class Monitoring extends Component {
         
         // uncle => value(true/false)
         if(len === 1){
-            let status = data.value ? 'yellow' : 'green';
-              
-            let changeNodeImg = '/img/blockchain_' + status + '.svg';
-            
-            // node image 태그 가져오기
+            // node image 태그 전체 가져오기
             let imageTags = d3.selectAll(`image`);
-            console.log(imageTags);
             imageTags.each(tag => {
+                let status = data.value ? 'yellow' : 'green';
+                let changeNodeImg = '/img/blockchain_' + status + '.svg';
                 let imageTag = d3.select(`image[id='${tag.id}']`);
+                let originalImg = imageTag._groups[0][0].href;
+                
+                // 원래 빨강이었으면 계속 빨강 무조건
+                if(originalImg.baseVal === '/img/blockchain_red.svg'){
+                    changeNodeImg = '/img/blockchain_red.svg';
+                }
+                
                 imageTag.attr("href", changeNodeImg); 
             })
-            // 노드 이미지 변경
-            // imageTag.attr("href", changeNodeImg);
+            
         }
         // node status => id, status(connect/disconnect)
         else if(len === 2) {
             let status = data.status === 'connect' ? 'green' : 'red';
-              
             let changeNodeImg = '/img/blockchain_' + status + '.svg';
             
             // node image 태그 가져오기
@@ -286,10 +288,36 @@ class Monitoring extends Component {
             // 노드 이미지 변경
             imageTag.attr("href", changeNodeImg);
             
+            if(status === 'red'){
+                d3.selectAll(`line[src='${data.id}']`).attr("style", "display:none");
+                d3.selectAll(`line[target='${data.id}']`).attr("style", "display:none");
+            }
+            else {
+                let lines = [];
+                for( var i = 0; i < this.state.node.length; i++) {
+                    // 현재 빨강은 죽은애니까 연결안해줌
+                    let imageTag = d3.select(`image[id='${this.state.node[i].id}']`);
+                    console.log(imageTag._groups);
+                    let originalImg = imageTag._groups[0][0].href;
+                    if(originalImg.baseVal !== '/img/blockchain_red.svg'){
+                        lines.push({ source: data.id, target: this.state.node[i].id, value: 1})
+                    }
+                }
+
+                d3.selectAll(`line[src='${data.id}']`).attr("style", "display:true");
+                d3.selectAll(`line[target='${data.id}']`).attr("style", "display:true");
+
+            }
+
+            
         }
         // block mining => number, hash, miner
         else if(len === 3) {
-
+            // node image 태그 가져오기
+            let imageTag = d3.select(`image[id='${data.miner}']`);
+            // console.log(data.miner);
+            // imageTag.attr("href", changeNodeImg);
+            // imageTag.attr("href", changeNodeImg);
         }
         else
             return;
@@ -322,7 +350,7 @@ class Monitoring extends Component {
     }
 
     // d3 그리기
-    drawFrame(changeNode) {
+    drawFrame() {
         let links = [];
         for (var i = 0; i < this.state.node.length; i++) {          // 노드 개수별로 선긋기
             for (var j = i + 1; j < this.state.node.length; j++) {
@@ -342,7 +370,9 @@ class Monitoring extends Component {
             .attr("stroke-width", 1)
             .selectAll("line")
             .data(links)
-            .enter().append("line");
+            .enter().append("line")
+            .attr("src", function (l) { return l.source })
+            .attr("target", function (l) { return l.target });
 
         let node = this.svg.append("g")
             .attr("class", "images")
