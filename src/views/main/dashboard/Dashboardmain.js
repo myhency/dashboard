@@ -12,6 +12,10 @@ import * as d3 from "d3";
 
 import Fetch from 'utils/Fetch.js';
 import D3component from './nodenetwork/d3component';
+import jQuery from "jquery";
+
+
+window.$ = window.jQuery = jQuery;
 
 let socket;
 
@@ -30,14 +34,12 @@ class Monitoring extends Component {
           node: [],
           pendingTx: [],                // key가 hash, value가 시간
           cardPosition : undefined,
-          nodeStatus: [],
           passSec: undefined,
           difficulty: undefined,
           txPerBlock: [],            // transaction per block 
           tbpLabels: [],            // transaction per block label
           miningBlock: [],             // recent mining block info
-          uncleState: false,            // uncle state
-        //   node: [],        // 
+          nodeState : {},       // node state json => disconnect, uncle, connect
           angle: 0,      // 그림 회전 각도, 여기부터 d3쪽에서 사용할 state
           numOfNodes: 0,
           simulation: {},
@@ -60,26 +62,49 @@ class Monitoring extends Component {
             socket.emit("requestNodeList")
         });
 
+        // 처음에 노드 리스트 왔을 때 
         socket.on('responseNodeList', (data) => {
+            let nodeState = {};
+            // 첫 state는 red(disconncet)로 초기화
+            for(var i=0; i<data.length; i++){
+                nodeState[data[i].id] = 'disconnect'
+            }
             this.setState({
-                node: data
+                node: data,
+                nodeState: nodeState
             })
-            console.log(this.state.node);
+            console.log(data);
             this.updatePosition();
         });
 
         socket.on('nodeStatus', (data) => {
+            let changeState = this.state.nodeState;
+            let isUncle = false;
+            
+            // connect이 와도 다른 애들이 uncle 이면 uncle로 표시
+            jQuery.each(changeState, function (id, state) {
+                if(state === 'uncle'){
+                    isUncle = true;
+                    return;
+                }
+            });
+
+            if(isUncle && data.status === 'connect')
+                changeState[data.id] = 'uncle';
+            else
+                changeState[data.id] = data.status;
+
             this.setState({
-                nodeStatus: data
+                nodeState: changeState
             })
-            console.log(this.state.nodeStatus);
-            this.updateNode(data);
+            console.log(data);
+            this.updateNode();
         });
 
         socket.on('pendingTransaction', (data) => {
             let pendingTimeTx = [];
             let prevList = this.state.pendingTx;
-            // 최근에 온게 리스트 앞쪽에 오도록
+            // 최근에 온게 리스트 뒤쪽에 오도록
             for(var i = data.length-1; i>=0; i--) {
                 let txHash = data[i];
                 let temp = {'time': 0, 'hash': txHash};
@@ -95,19 +120,25 @@ class Monitoring extends Component {
         });
 
         socket.on('blockMiner', (data) => {
-            this.setState({
-                miningBlock: data
-            });
-            console.log(this.state.miningBlock);
-            this.updateNode(data);
+            console.log(data);
+            this.miningNode(data);
         });
 
         socket.on('uncle', (data) => {
+            let changeState = this.state.nodeState;
+            let node = this.state.node;
+
+            // disconnect인 경우 바꾸지 않음
+            for(var i=0; i < node.length; i++) {
+                changeState[node[i].id] = changeState[node[i].id] === 'disconnect' ? 'disconnect' :
+                    data.value ? 'uncle' : 'connect'
+            }
+
             this.setState({
-                uncleState: data
+                nodeState: changeState
             });
-            console.log(this.state.uncleState);
-            this.updateNode(data);
+            console.log(data);
+            this.updateNode();
         });
 
         //1초에 한번씩 백엔드에 요청
@@ -256,73 +287,54 @@ class Monitoring extends Component {
         }
     }
 
-    updateNode = (data) => {
-        let len = Object.keys(data).length;
-        
-        // uncle => value(true/false)
-        if(len === 1){
-            // node image 태그 전체 가져오기
-            let imageTags = d3.selectAll(`image`);
-            imageTags.each(tag => {
-                let status = data.value ? 'yellow' : 'green';
-                let changeNodeImg = '/img/blockchain_' + status + '.svg';
-                let imageTag = d3.select(`image[id='${tag.id}']`);
-                let originalImg = imageTag._groups[0][0].href;
-                
-                // 원래 빨강이었으면 계속 빨강 무조건
-                if(originalImg.baseVal === '/img/blockchain_red.svg'){
-                    changeNodeImg = '/img/blockchain_red.svg';
-                }
-                
-                imageTag.attr("href", changeNodeImg); 
-            })
-            
-        }
-        // node status => id, status(connect/disconnect)
-        else if(len === 2) {
-            let status = data.status === 'connect' ? 'green' : 'red';
-            let changeNodeImg = '/img/blockchain_' + status + '.svg';
+    updateNode = () => {
+        let nodeState = this.state.nodeState;
+        let disconnectNode = [];
+
+        // 노드 색 변경
+        jQuery.each(nodeState, function(id, state) {
+            let color = state === 'uncle' ? 'yellow' : 'green';
+            // discconnect 일때는 무조건 red
+            if(state == 'disconnect'){
+                color ='red';
+                disconnectNode.push(id);
+            }
+            let changeNodeImg = '/img/blockchain_' + color + '.svg';
             
             // node image 태그 가져오기
-            let imageTag = d3.select(`image[id='${data.id}']`);
+            let imageTag = d3.select(`image[id='${id}']`);
             // 노드 이미지 변경
             imageTag.attr("href", changeNodeImg);
-            
-            if(status === 'red'){
-                d3.selectAll(`line[src='${data.id}']`).attr("style", "display:none");
-                d3.selectAll(`line[target='${data.id}']`).attr("style", "display:none");
-            }
-            else {
-                let lines = [];
-                for( var i = 0; i < this.state.node.length; i++) {
-                    // 현재 빨강은 죽은애니까 연결안해줌
-                    let imageTag = d3.select(`image[id='${this.state.node[i].id}']`);
-                    console.log(imageTag._groups);
-                    let originalImg = imageTag._groups[0][0].href;
-                    if(originalImg.baseVal !== '/img/blockchain_red.svg'){
-                        lines.push({ source: data.id, target: this.state.node[i].id, value: 1})
-                    }
-                }
+        })
 
-                d3.selectAll(`line[src='${data.id}']`).attr("style", "display:true");
-                d3.selectAll(`line[target='${data.id}']`).attr("style", "display:true");
+        // 먼저 선을 다 살리고
+        d3.selectAll(`line[src]`).attr("style", "display:true");
 
-            }
+        // disconnect인 것들 선을 없앰
+        disconnectNode.map(id => {
+            d3.selectAll(`line[src='${id}']`).attr("style", "display:none");
+            d3.selectAll(`line[target='${id}']`).attr("style", "display:none");
+        })
+        
+    }
 
-            
-        }
-        // block mining => number, hash, miner
-        else if(len === 3) {
-            // node image 태그 가져오기
-            let imageTag = d3.select(`image[id='${data.miner}']`);
-            // console.log(data.miner);
-            // imageTag.attr("href", changeNodeImg);
-            // imageTag.attr("href", changeNodeImg);
-        }
-        else
-            return;
+    miningNode = (data) => {
+        let miner = data.miner;
 
-        // drawFrame();
+        // node image 태그 가져오기
+        let imageTag = d3.select(`image[id='${miner}']`);
+
+        var blinkNode = setInterval(function() {
+            imageTag.attr("style", "display:none");
+            setTimeout(() => {
+                imageTag.attr("style", "display:true");
+            }, 200);
+        }, 400);
+        
+        setTimeout(function() {
+            clearTimeout(blinkNode);
+        }, 1500);
+        
     }
     
     // d3 움직임 정도
