@@ -576,7 +576,7 @@ class Monitoring extends Component {
                         </ContentRow>
                         <ContentRow>
                             <ContentCol>
-                                <ContentCard style={{height: '325px'}}>
+                                <ContentCard style={{height: '305px'}} bodyNoPaddingBottom={true}>
                                     <Col style={{ textAlign: 'left', marginBottom: '10px' }}>
                                         <span className='dash-upper-line-card-title'>Pending Transactions</span>
                                     </Col>
@@ -639,7 +639,8 @@ class Monitoring extends Component {
                                                 ticks: {
                                                     suggestedMin: 0,
                                                     suggestedMax: 5,
-                                                    interval: 1
+                                                    interval: 1,
+                                                    display: false
                                                 },
                                                 gridLines: {
                                                     display:false,
@@ -693,7 +694,8 @@ class Monitoring extends Component {
                                                 display: true,
                                                 ticks: {
                                                     suggestedMin: 0,
-                                                    suggestedMax: 60
+                                                    suggestedMax: 60,
+                                                    display: false
                                                 },
                                                 gridLines: {
                                                     display:false,

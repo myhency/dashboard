@@ -100,20 +100,11 @@ export default class Scannermain extends Component {
       let miner_link = `/main/scanner/address/${block.miner}`;
       brows.push(
         <tr key={block.id}>
-          <td><img src='/img/bk.png' height='50px'/><Link to={block_link}>&nbsp;&nbsp;&nbsp;{block.number}</Link></td>
-          <td>
-            <Table borderless style={{tableLayout: 'fixed', margin: '0', padding: '0'}}>
-              <tbody>
-               <tr>
-                  <td className="ellipsis"><Link to={miner_link}>{block.miner}</Link></td>
-                </tr>
-              </tbody>
-            </Table> 
-            {/* className="ellipsis" style={{paddingTop: '10px', paddingBottom: '10px'}}><Link to={miner_link}>{block.miner}</Link> */}
-          </td>
+          <td><img src='/img/bk.png' height='50px'/>&nbsp;&nbsp;&nbsp;<Link to={block_link}>{block.number}</Link></td>
+          <td className="ellipsis" style={{paddingTop: '10px', paddingBottom: '10px'}}><Link to={miner_link}>{block.miner}</Link> </td>
           <td style={{textAlign: 'right'}}>
             <h5><Badge style={{paddingLeft: '10px', backgroundColor: '#9DB38B', color: 'black'}}> 
-              {block.gas_used} Eth
+              {block.reward} Eth
             </Badge></h5>
           </td>
         </tr>
@@ -128,7 +119,7 @@ export default class Scannermain extends Component {
       let to_link = `/main/scanner/address/${tx.transaction_to}`;
       trows.push(
         <tr key={tx.id}>
-          <td className="ellipsis"><img src='/img/tx.png' height='50px'/><Link to={block_link}>&nbsp;&nbsp;&nbsp;{tx.transaction_hash}</Link></td>
+          <td className="ellipsis"><img src='/img/tx.png' height='50px'/>&nbsp;&nbsp;&nbsp;<Link to={block_link}>{tx.transaction_hash}</Link></td>
           <td>
             <Table borderless style={{tableLayout: 'fixed', margin: '0', padding: '0'}}>
               <tbody>

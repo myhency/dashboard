@@ -167,16 +167,16 @@ class Address extends Component {
                         Cell: ({row}) => {
                             var age = moment(this.state.timestamp).diff(row.timestamp, 'seconds');
                             if(age < 60) {
-                                age = age + 'sec';
+                                age = age + ' sec';
                             }
                             else if(age < 3600) {
-                                age = Math.floor(age/60) + 'min';
+                                age = Math.floor(age/60) + ' min';
                             }
                             else if(age < 84600) {
-                                age = Math.floor(age/3600) + 'hour';
+                                age = Math.floor(age/3600) + ' hour';
                             }
                             else if(age < 2538000) {
-                                age = Math.floor(age/84600) + 'day';
+                                age = Math.floor(age/84600) + ' day';
                             }
                             else {
                                 return (<span>{row.timestamp}</span>)
@@ -184,6 +184,11 @@ class Address extends Component {
 
                             return (
                                 <Fragment>
+                                    {/* <span data-tip={row.timestamp}>
+                                        {age}
+                                        {(age.includes('hour') || age.includes('day')) &&
+                                        <span style={{fontSize: '13px', color: '#C0C0C0'}}>s</span>} ago
+                                    </span> */}
                                     <span data-tip={row.timestamp}>{age} ago</span>
                                     <ReactTooltip/>
                                 </Fragment>
@@ -193,7 +198,10 @@ class Address extends Component {
                     {
                         Header: "From",
                         accessor: "transaction_from",
-                        Cell: ({row}) => (<Link to={`/main/scanner/address/${row.transaction_from}`}>{row.transaction_from}</Link>),
+                        Cell: ({row}) => (
+                            row.transaction_from === this.state.address ?
+                            row.transaction_from :
+                            <Link to={`/main/scanner/address/${row.transaction_from}`}>{row.transaction_from}</Link>),
                         width: '20%'
                     },
                     {
@@ -208,13 +216,19 @@ class Address extends Component {
                     {
                         Header: "To",
                         accessor: "transaction_to",
-                        Cell: ({row}) => (<Link to={`/main/scanner/address/${row.transaction_to}`}>{row.transaction_to}</Link>),
+                        Cell: ({row}) => (
+                            row.transaction_to === this.state.address ?
+                            row.transaction_to :
+                            <Link to={`/main/scanner/address/${row.transaction_to}`}>{row.transaction_to}</Link>),
                         width: '20%'
                     },
                     {
                         Header: "Value",
                         accessor: "value",
-                        width: '7%'
+                        width: '7%',
+                        Cell: ({row}) => {
+                            return (<span>{row.value} Eth</span>)
+                        }
                     },
                     {
                         Header: "Tx Fee",
@@ -223,7 +237,7 @@ class Address extends Component {
                         Cell: ({row}) => {
                             let gas = row._original.gas;
                             let gas_price = row._original.gas_price;
-                            return (<span>{gas*gas_price}</span>)
+                            return (<span style={{fontSize: '13px', color: '#C0C0C0'}}>{gas*gas_price}</span>)
                         }
                     }
                 ]}

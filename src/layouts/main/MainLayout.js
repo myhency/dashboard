@@ -202,7 +202,7 @@ class MainLayout extends Component {
                 <div id="sidebar" className={active ? 'active' : null}>
                     <Nav vertical style={{minHeight:'100vh'}}>
                         <NavLink to="/main/components/" className={'homeButton'} tag={Link} style={{fontSize:'1rem', padding:'1.15rem 1.25rem', marginBottom:'1.5rem'}} onClick={isWindowSmall ? this.toggle : null}>
-                            <span style={{fontSize:'1.2rem'}}>
+                            <span style={{fontSize:'1.2rem', fontFamily: 'arial'}}>
                                 <IoIosCloud size={30} color={'white'} style={{marginRight:'.75rem'}}/>
                                 HMG BaaS Portal
                             </span>
@@ -236,7 +236,7 @@ class MainLayout extends Component {
                                     
                                 }else {
                                     return (
-                                        <NavLink to={route.path} className={'menu'} tag={RRNavLink} key={key} onClick={isWindowSmall ? this.toggle : null}>
+                                        <NavLink to={route.path} className={'menu'} tag={RRNavLink} key={key} onClick={isWindowSmall ? this.toggle : null} style={{fontFamily: 'arial'}}>
                                             <route.icon size={20} color={'white'} style={{marginLeft:'.4rem', marginRight:'.75rem'}}/>
                                             {route.name}
                                         </NavLink>
@@ -255,7 +255,7 @@ class MainLayout extends Component {
                         <FiAlignLeft size={25} color={'#FFFFFF'}/>
                     </NavbarBrand>
                     <NavbarBrand>
-                        {this.getCurrentPageName(currentPath)}
+                        <span style={{fontFamily: 'Arial'}}>{this.getCurrentPageName(currentPath)}</span>
                         <span style={{fontSize: '1.0rem', color: 'gray', marginLeft: '20px'}}> 
                             {currentInfo}
                         </span>

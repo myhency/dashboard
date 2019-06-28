@@ -1,12 +1,12 @@
 import React, { Component, Fragment } from 'react'
-import { Table, Input } from 'reactstrap';
+import { Table, Input, Badge } from 'reactstrap';
 import ContentCard from 'components/ContentCard';
 import { FaCopy } from 'react-icons/fa';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import ReactTooltip from 'react-tooltip';
 import Fetch from 'utils/Fetch.js';
 import { Link } from 'react-router-dom';
-
+import moment from 'moment';
 
 export default class TxInfo extends Component {
 
@@ -86,11 +86,17 @@ export default class TxInfo extends Component {
 
     return (
       <Fragment>
-        <ContentCard detailCard={true}>
-          <Table bordered style={{height: '30px'}}>
+        <ContentCard detailCard={true} noMarginBottom={true}>
+          <Table bordered style={{height: '30px', marginBottom: '0px'}}>
             <tbody>
               <tr>
-                <td style={{width: '20%'}}>Transaction Hash:</td>
+                <td style={{width: '20%'}}>
+                  <img src='/img/information.svg' height='18px' 
+                  style={{marginTop: '9px', marginBottom: '9px'}} 
+                  data-tip={"block height"}/>
+                  <ReactTooltip/>
+                   &nbsp; Transaction Hash:
+                </td>
                 <td style={{width: '80%'}}>
                     {TxHash}
                     <span className="copyicon" data-tip='Copy'>
@@ -102,21 +108,45 @@ export default class TxInfo extends Component {
                 </td>
               </tr>
               <tr>
-                <td>Status:</td>
+                <td>
+                  <img src='/img/information.svg' height='18px' 
+                  style={{marginTop: '9px', marginBottom: '9px'}} 
+                  data-tip={"block height"}/>
+                  <ReactTooltip/>
+                   &nbsp; Status:
+                </td>
                 <td>{status}</td>
               </tr>
               <tr>
-                <td>Block:</td>
-                <td><Link to={`/main/scanner/block/${+relatedBlock}`}>{relatedBlock}</Link></td>
-              </tr>
-              <tr>
-                <td>Timestamp:</td>
-                <td>{timestamp}</td>
-              </tr>
-              <tr>
-                <td>From:</td>
                 <td>
-                  {txFrom}
+                  <img src='/img/information.svg' height='18px' 
+                  style={{marginTop: '9px', marginBottom: '9px'}} 
+                  data-tip={"block height"}/>
+                  <ReactTooltip/>
+                   &nbsp; Block:
+                </td>
+                <td><Link to={`/main/scanner/block/${relatedBlock}`}>{relatedBlock}</Link></td>
+              </tr>
+              <tr>
+                <td>
+                  <img src='/img/information.svg' height='18px' 
+                  style={{marginTop: '9px', marginBottom: '9px'}} 
+                  data-tip={"block height"}/>
+                  <ReactTooltip/>
+                   &nbsp; Timestamp:
+                </td>
+                <td><img src='/img/clock.svg' height='15px'/>&nbsp;{moment(timestamp).format('YYYY-MM-DD HH:mm:ss')}</td>
+              </tr>
+              <tr>
+                <td>
+                  <img src='/img/information.svg' height='18px' 
+                  style={{marginTop: '9px', marginBottom: '9px'}} 
+                  data-tip={"block height"}/>
+                  <ReactTooltip/>
+                   &nbsp; From:
+                </td>
+                <td>
+                  <Link to={`/main/scanner/address/${txFrom}`}>{txFrom}</Link>
                   <span data-tip='Copy' className="copyicon">
                     <CopyToClipboard text={txFrom}> 
                       <FaCopy style={{marginLeft: '10px'}}/>
@@ -126,9 +156,15 @@ export default class TxInfo extends Component {
                 </td>
               </tr>
               <tr>
-                <td>To:</td>
                 <td>
-                  {txTo}
+                  <img src='/img/information.svg' height='18px' 
+                  style={{marginTop: '9px', marginBottom: '9px'}} 
+                  data-tip={"block height"}/>
+                  <ReactTooltip/>
+                   &nbsp; To:
+                </td>
+                <td>
+                  <Link to={`/main/scanner/address/${txTo}`}>{txTo}</Link>
                   <span data-tip='Copy' className="copyicon">
                     <CopyToClipboard text={txTo}> 
                       <FaCopy style={{marginLeft: '10px'}}/>
@@ -138,31 +174,85 @@ export default class TxInfo extends Component {
                 </td>
               </tr>
               <tr>
-                <td>Value:</td>
-                <td>{value} Ether</td>
+                <td>
+                  <img src='/img/information.svg' height='18px' 
+                  style={{marginTop: '9px', marginBottom: '9px'}} 
+                  data-tip={"block height"}/>
+                  <ReactTooltip/>
+                   &nbsp; Value:
+                </td>
+                <td><h5>
+                  <Badge style={{paddingLeft: '10px', backgroundColor: '#9DB38B', color: 'black'}}> 
+                    {value} Eth
+                 </Badge>
+                </h5></td>
               </tr>
               <tr>
-                <td>Transaction Fee:</td>
-                <td>{txFee} Ether</td>
+                <td>
+                  <img src='/img/information.svg' height='18px' 
+                  style={{marginTop: '9px', marginBottom: '9px'}} 
+                  data-tip={"block height"}/>
+                  <ReactTooltip/>
+                   &nbsp; Transaction Fee:
+                </td>
+                <td><h5>
+                  <Badge style={{paddingLeft: '10px', backgroundColor: '#9DB38B', color: 'black'}}> 
+                    {txFee} Eth
+                 </Badge>
+                </h5></td>
               </tr>
               <tr>
-                <td>Gas Limit:</td>
+                <td>
+                  <img src='/img/information.svg' height='18px' 
+                  style={{marginTop: '9px', marginBottom: '9px'}} 
+                  data-tip={"block height"}/>
+                  <ReactTooltip/>
+                   &nbsp; Gas Limit:
+                </td>
                 <td>{gasLimit}</td>
               </tr>
               <tr>
-                <td>Gas Used by Transaction:</td>
+                <td>
+                  <img src='/img/information.svg' height='18px' 
+                  style={{marginTop: '9px', marginBottom: '9px'}} 
+                  data-tip={"block height"}/>
+                  <ReactTooltip/>
+                   &nbsp; Gas Used by Transaction:
+                </td>
                 <td>{gasUsedByTx} ({gasUsedByTx/gasLimit*100}%)</td>
               </tr>
               <tr>
-                <td>Gas Price:</td>
-                <td>{gasPrice} Ether ({gasPrice*10^9} Gwei)</td>
+                <td>
+                  <img src='/img/information.svg' height='18px' 
+                  style={{marginTop: '9px', marginBottom: '9px'}} 
+                  data-tip={"block height"}/>
+                  <ReactTooltip/>
+                   &nbsp; Gas Price:
+                </td>
+                <td><h5>
+                  <Badge style={{paddingLeft: '10px', backgroundColor: '#E3AE71', color: 'black'}}> 
+                    {gasPrice} Eth
+                  </Badge>
+                </h5>({gasPrice*10^9} Gwei)</td>
               </tr>
               <tr>
-                <td>Nonce:</td>
+                <td>
+                  <img src='/img/information.svg' height='18px' 
+                  style={{marginTop: '9px', marginBottom: '9px'}} 
+                  data-tip={"block height"}/>
+                  <ReactTooltip/>
+                   &nbsp; Nonce:
+                </td>
                 <td>{nonce}</td>
               </tr>
               <tr>
-                <td>Input Data:</td>
+                <td>
+                  <img src='/img/information.svg' height='18px' 
+                  style={{marginTop: '9px', marginBottom: '9px'}} 
+                  data-tip={"block height"}/>
+                  <ReactTooltip/>
+                   &nbsp; Input Data:
+                </td>
                 <td><Input readOnly type="textarea" value={txInput} rows={5}/></td>
               </tr>
             </tbody>

@@ -104,16 +104,19 @@ export default class TxList extends Component {
                     {
                         Header: "Value",
                         accessor: "value",
-                        width: '10%'
+                        width: '10%',
+                        Cell: ({row}) => {
+                            return (<span>{row.value} Eth</span>)
+                        }
                     },
                     {
-                        Header: "[Tx Fee]",
+                        Header: "Tx Fee",
                         accessor: "gas",
                         width: '10%',
                         Cell: ({row}) => {
                           let gas = row._original.gas;
                           let gas_price = row._original.gas_price;
-                          return (<span>{gas*gas_price}</span>)
+                          return (<span style={{fontSize: '13px', color: '#C0C0C0'}}>{gas*gas_price}</span>)
                         }
                     }
                 ]}

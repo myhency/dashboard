@@ -1,11 +1,13 @@
 import React, { Component, Fragment } from 'react'
-import { Table, Button } from 'reactstrap';
+import { Table, Button, Badge } from 'reactstrap';
 import ContentCard from 'components/ContentCard';
 import { FaAngleLeft, FaAngleRight } from 'react-icons/fa';
 import Fetch from 'utils/Fetch.js';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { setInfo } from 'store/modules/currentInfo';
+import moment from 'moment';
+import ReactTooltip from 'react-tooltip';
 
 class BlockInfo extends Component {
   constructor(props) {
@@ -41,7 +43,7 @@ class BlockInfo extends Component {
   getBlockInfo = () => {
     // console.log(this.state.blockNo);
 
-    this.props.dispatch(setInfo(this.state.blockNo));
+    this.props.dispatch(setInfo('# ' + this.state.blockNo));
 
     Fetch.GET('/api/block/'+this.state.blockNo)
     .then(res => {
@@ -112,76 +114,163 @@ class BlockInfo extends Component {
           <Table bordered>
             <tbody>
               <tr>
-                <td style={{width: '20%'}}>Block Height:</td>
+                <td style={{width: '20%'}}>
+                  <img src='/img/information.svg' height='18px' 
+                  style={{marginTop: '9px', marginBottom: '9px'}} 
+                  data-tip={"block height"}/>
+                  <ReactTooltip/>
+                   &nbsp; Block Height: 
+                </td>
                 <td style={{width: '80%'}}>
                   {blockNo}
                   {preblock.length === 0 ?
                   <Button color="link" style={{width: '48px'}}/> :
                   <Button 
-                    variant='primary'
                     onClick={()=> this.mvBlock('previos')} 
-                    style={{marginLeft: '10px', padding: '0'}}>
-                    <FaAngleLeft style={{marginLeft: '10px', marginRight: '10px'}}/>
+                    style={{marginLeft: '10px', padding: '0', paddingBottom: '1px', backgroundColor: '#76B344'}}>
+                    <FaAngleLeft style={{marginLeft: '10px', marginRight: '10px', height: '15px', backgroundColor: '#76B344', color: 'black'}}/>
                   </Button> }
                   {nextblock.length === 0 ? null :
                   <Button 
                     variant='primary'
                     onClick={()=> this.mvBlock('next')} 
-                    style={{marginLeft: '10px', padding: '0'}}>
-                    <FaAngleRight style={{marginLeft: '10px', marginRight: '10px'}}/>
+                    style={{marginLeft: '10px', padding: '0', paddingBottom: '1px', backgroundColor: '#76B344'}}>
+                    <FaAngleRight style={{marginLeft: '10px', marginRight: '10px', height: '15px', backgroundColor: '#76B344', color: 'black'}}/>
                   </Button> }
                 </td>
               </tr>
               <tr>
-                <td>TimeStamp:</td>
-                <td>{timestamp}</td>
+                <td>
+                  <img src='/img/information.svg' height='18px' 
+                  style={{marginTop: '9px', marginBottom: '9px'}} 
+                  data-tip={"block height"}/>
+                  <ReactTooltip/>
+                   &nbsp; TimeStamp: 
+                </td>
+                <td><img src='/img/clock.svg' height='15px'/>&nbsp;{moment(timestamp).format('YYYY-MM-DD HH:mm:ss')}</td>
               </tr>
               <tr>
-                <td>Transactions:</td>
+                <td>
+                  <img src='/img/information.svg' height='18px' 
+                  style={{marginTop: '9px', marginBottom: '9px'}} 
+                  data-tip={"block height"}/>
+                  <ReactTooltip/>
+                   &nbsp; Transactions:
+                  </td>
                 <td>{transcationCount}</td>
               </tr>
               <tr>
-                <td>Mined by:</td>
+                <td>
+                  <img src='/img/information.svg' height='18px' 
+                  style={{marginTop: '9px', marginBottom: '9px'}} 
+                  data-tip={"block height"}/>
+                  <ReactTooltip/>
+                   &nbsp; Mined by:
+                </td>
                 <td><Link to={`/main/scanner/address/${miner}`}>{miner}</Link></td>
               </tr>
               <tr>
-                <td>Block Reward:</td>
-                <td>{blockReward}</td>
+                <td>
+                  <img src='/img/information.svg' height='18px' 
+                  style={{marginTop: '9px', marginBottom: '9px'}} 
+                  data-tip={"block height"}/>
+                  <ReactTooltip/>
+                   &nbsp; Block Reward:
+                </td>
+                <td><h5>
+                  <Badge style={{paddingLeft: '10px', backgroundColor: '#9DB38B', color: 'black'}}> 
+                    {blockReward} Eth
+                 </Badge>
+                </h5></td>
               </tr>
               <tr>
-                <td>Difficulty:</td>
+                <td>
+                <img src='/img/information.svg' height='18px' 
+                  style={{marginTop: '9px', marginBottom: '9px'}} 
+                  data-tip={"block height"}/>
+                  <ReactTooltip/>
+                   &nbsp; Difficulty:
+                </td>
                 <td>{difficulty}</td>
               </tr>
               <tr>
-                <td>Total Difficulty:</td>
+                <td>
+                  <img src='/img/information.svg' height='18px' 
+                  style={{marginTop: '9px', marginBottom: '9px'}} 
+                  data-tip={"block height"}/>
+                  <ReactTooltip/>
+                   &nbsp; Total Difficulty:
+                </td>
                 <td>{totalDifficulty}</td>
               </tr>
               <tr>
-                <td>Size:</td>
+                <td>
+                  <img src='/img/information.svg' height='18px' 
+                  style={{marginTop: '9px', marginBottom: '9px'}} 
+                  data-tip={"block height"}/>
+                  <ReactTooltip/>
+                   &nbsp; Size:
+                </td>
                 <td>{size}</td>
               </tr>
               <tr>
-                <td>Gas Used:</td>
+                <td>
+                  <img src='/img/information.svg' height='18px' 
+                  style={{marginTop: '9px', marginBottom: '9px'}} 
+                  data-tip={"block height"}/>
+                  <ReactTooltip/>
+                   &nbsp; Gas Used:
+                </td>
                 <td>{gasUsed}</td>
               </tr>
               <tr>
-                <td>Gas Limit:</td>
+                <td>
+                  <img src='/img/information.svg' height='18px' 
+                  style={{marginTop: '9px', marginBottom: '9px'}} 
+                  data-tip={"block height"}/>
+                  <ReactTooltip/>
+                   &nbsp; Gas Limit:
+                </td>
                 <td>{gasLimit}</td>
               </tr>
               <tr>
-                <td>Extra Data:</td>
+                <td>
+                  <img src='/img/information.svg' height='18px' 
+                  style={{marginTop: '9px', marginBottom: '9px'}} 
+                  data-tip={"block height"}/>
+                  <ReactTooltip/>
+                   &nbsp; Extra Data:
+                </td>
                 <td>{extraData}</td>
               </tr>
               <tr>
-                <td>Hash:</td>
+                <td>
+                  <img src='/img/information.svg' height='18px' 
+                  style={{marginTop: '9px', marginBottom: '9px'}} 
+                  data-tip={"block height"}/>
+                  <ReactTooltip/>
+                   &nbsp; Hash:
+                </td>
                 <td>{blockHash}</td>
               </tr>
               <tr>
-                <td>Parent Hash:</td>
+                <td>
+                  <img src='/img/information.svg' height='18px' 
+                  style={{marginTop: '9px', marginBottom: '9px'}} 
+                  data-tip={"block height"}/>
+                  <ReactTooltip/>
+                   &nbsp; Parent Hash:
+                </td>
                 <td>{parentHash}</td>
               </tr>
               <tr>
-                <td>Nonce:</td>
+                <td>
+                  <img src='/img/information.svg' height='18px' 
+                  style={{marginTop: '9px', marginBottom: '9px'}} 
+                  data-tip={"block height"}/>
+                  <ReactTooltip/>
+                   &nbsp; Nonce:
+                </td>
                 <td>{nonce}</td>
               </tr>
             </tbody>

@@ -64,6 +64,12 @@ class ContentCard extends Component {
             CardBodyStyle.background = 'black';
         }
 
+        if(this.props.bodyNoPaddingBottom) {
+            // ContentCardStyle.marginBottom = '0'
+            CardBodyStyle.paddingBottom = '0';
+            CardBodyStyle.marginBottom = '0'
+        }
+
         return (
         
             <Card style={{...this.props.style, ...ContentCardStyle}}>
