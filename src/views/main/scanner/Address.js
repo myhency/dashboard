@@ -152,22 +152,20 @@ class Address extends Component {
                         Header: "TxHash",
                         accessor: "transaction_hash",
                         Cell: ({row}) => (<Link to={`/main/scanner/transaction/${row.transaction_hash}`}>{row.transaction_hash}</Link>),
-                        width: 300
+                        width: '20%'
                     },
                     {
                         Header: "Block",
                         accessor: "related_block",
                         Cell: ({row}) => (<Link to={`/main/scanner/block/${row.related_block.number}`}>{row.related_block.number}</Link>),
-                        width: 140
+                        width: '10%'
                     },
                     {
                         Header: "Age",
                         accessor: "timestamp",
-                        width: 150,
+                        width: '10%',
                         Cell: ({row}) => {
                             var age = moment(this.state.timestamp).diff(row.timestamp, 'seconds');
-                            console.log(this.state.timestamp);
-                            console.log(row.timestamp);
                             if(age < 60) {
                                 age = age + 'sec';
                             }
@@ -196,11 +194,11 @@ class Address extends Component {
                         Header: "From",
                         accessor: "transaction_from",
                         Cell: ({row}) => (<Link to={`/main/scanner/address/${row.transaction_from}`}>{row.transaction_from}</Link>),
-                        width: 290
+                        width: '20%'
                     },
                     {
                         Header: "",
-                        width: 100,
+                        width: '6%',
                         Cell: ({row}) => (
                             row.transaction_from === this.state.address ?
                             <Badge color='danger' style ={{width: '50px'}}> Out </Badge>:
@@ -211,17 +209,17 @@ class Address extends Component {
                         Header: "To",
                         accessor: "transaction_to",
                         Cell: ({row}) => (<Link to={`/main/scanner/address/${row.transaction_to}`}>{row.transaction_to}</Link>),
-                        width: 290
+                        width: '20%'
                     },
                     {
                         Header: "Value",
                         accessor: "value",
-                        width: 100
+                        width: '7%'
                     },
                     {
                         Header: "Tx Fee",
                         accessor: "txFee",
-                        width: 120,
+                        width: '7%',
                         Cell: ({row}) => {
                             let gas = row._original.gas;
                             let gas_price = row._original.gas_price;

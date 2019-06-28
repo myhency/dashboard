@@ -49,7 +49,7 @@ class Monitoring extends Component {
         };
 
         socket = io.connect(process.env.REACT_APP_BAAS_SOCKET);
-        window.addEventListener('resize', this.updatePosition.bind(this));
+        window.addEventListener('resize', this.updatePosition);
 
     }
 
@@ -161,7 +161,7 @@ class Monitoring extends Component {
         clearInterval(this.intervalId_getInfo);
         clearInterval(this.intervalId_getCurrentTime);
         clearInterval(this.getPendingTx);
-        window.removeEventListener('resize', this.updatePosition.bind(this));
+        window.removeEventListener('resize', this.updatePosition);
     }
 
     // dashboard info 분기
@@ -262,8 +262,10 @@ class Monitoring extends Component {
     }
 
     // window resize 
-    updatePosition() {
+    updatePosition = () => {
         if(this.state.node.length > 0){
+            if(ReactDOM.findDOMNode(this.svgCard) === undefined)
+                return;
             let cardPosition = ReactDOM.findDOMNode(this.svgCard).getBoundingClientRect();
             this.setState({
                 numOfNodes: this.state.node.length,
@@ -325,15 +327,15 @@ class Monitoring extends Component {
         let imageTag = d3.select(`image[id='${miner}']`);
 
         var blinkNode = setInterval(function() {
-            imageTag.attr("style", "display:none");
+            imageTag.attr("style", "opacity:0.7");
             setTimeout(() => {
-                imageTag.attr("style", "display:true");
-            }, 200);
-        }, 400);
+                imageTag.attr("style", "opacity:1");
+            }, 150);
+        }, 300);
         
         setTimeout(function() {
             clearTimeout(blinkNode);
-        }, 1500);
+        }, 1000);
         
     }
     

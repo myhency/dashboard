@@ -60,7 +60,7 @@ body {
 
 a {
     // color: rgb(192, 192, 192);;
-    color: white;
+    color: #E6C26E;
 }
 
 a:hover {
@@ -70,12 +70,14 @@ a:hover {
 
 .btn-outline-primary {
     color: black;
-    border-color: navy;
-    background-color: #0F9EDB;
+    border-color: #4F6228;
+    background-color: #76B344;
 }
 
 .btn-outline-primary:hover {
     color: rgb(192, 192, 192);
+    background-color: #4F6228;
+    border-color: #4F6228;
 }
 
 .input-group>.custom-file, .input-group>.custom-select, .input-group>.form-control, .input-group>.form-control-plaintext {
@@ -85,7 +87,7 @@ a:hover {
 }
 
 .input-group-append>.btn {
-    background-color: #0F9EDB;
+    background-color: #76B344;
     color: black;
 }
 

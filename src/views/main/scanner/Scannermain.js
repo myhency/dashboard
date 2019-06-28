@@ -5,7 +5,7 @@ import ContentCard from 'components/ContentCard';
 import { 
     Form, FormGroup,
     Input, InputGroup, InputGroupAddon,
-    Button, Table,
+    Button, Table, Badge, 
     Card, CardBody, CardDeck, CardHeader, CardFooter } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import { FaArrowRight, icons } from 'react-icons/fa';
@@ -32,7 +32,7 @@ export default class Scannermain extends Component {
   }
 
   getBlock = () => {
-    Fetch.GET('/api/block/?page_size=10&page=1')
+    Fetch.GET('/api/block/?page_size=6&page=1')
     .then(res => {
       //update안할때
       if(this.state.blocks.length !== 0 && this.state.blocks[0].number === res.results[0].number){
@@ -46,7 +46,7 @@ export default class Scannermain extends Component {
   }
 
   getTransaction = () => {
-    Fetch.GET('/api/transaction/?page_size=10&page=1')
+    Fetch.GET('/api/transaction/?page_size=6&page=1')
     .then(res => {
       //update안할때
       if(this.state.transactions.length !== 0 && this.state.transactions[0].id === res.results[0].id){
@@ -100,9 +100,22 @@ export default class Scannermain extends Component {
       let miner_link = `/main/scanner/address/${block.miner}`;
       brows.push(
         <tr key={block.id}>
-          <td><Link to={block_link}>{block.number}</Link></td>
-          <td className="ellipsis" style={{paddingTop: '10px', paddingBottom: '10px'}}><Link to={miner_link}>{block.miner}</Link></td>
-          <td>{block.gas_used}</td>
+          <td><img src='/img/bk.png' height='50px'/><Link to={block_link}>&nbsp;&nbsp;&nbsp;{block.number}</Link></td>
+          <td>
+            <Table borderless style={{tableLayout: 'fixed', margin: '0', padding: '0'}}>
+              <tbody>
+               <tr>
+                  <td className="ellipsis"><Link to={miner_link}>{block.miner}</Link></td>
+                </tr>
+              </tbody>
+            </Table> 
+            {/* className="ellipsis" style={{paddingTop: '10px', paddingBottom: '10px'}}><Link to={miner_link}>{block.miner}</Link> */}
+          </td>
+          <td style={{textAlign: 'right'}}>
+            <h5><Badge style={{paddingLeft: '10px', backgroundColor: '#9DB38B', color: 'black'}}> 
+              {block.gas_used} Eth
+            </Badge></h5>
+          </td>
         </tr>
       )
     });
@@ -115,7 +128,7 @@ export default class Scannermain extends Component {
       let to_link = `/main/scanner/address/${tx.transaction_to}`;
       trows.push(
         <tr key={tx.id}>
-          <td className="ellipsis"><Link to={block_link}>{tx.transaction_hash}</Link></td>
+          <td className="ellipsis"><img src='/img/tx.png' height='50px'/><Link to={block_link}>&nbsp;&nbsp;&nbsp;{tx.transaction_hash}</Link></td>
           <td>
             <Table borderless style={{tableLayout: 'fixed', margin: '0', padding: '0'}}>
               <tbody>
@@ -127,7 +140,11 @@ export default class Scannermain extends Component {
               </tbody>
             </Table>
           </td>
-          <td className="ellipsis">{tx.gas * tx.gas_price}</td>
+          <td className="ellipsis" style={{textAlign: 'right'}}>
+            <h5><Badge color='light' style={{paddingLeft: '10px', backgroundColor: '#9DB38B', color: 'black'}}>
+              {(tx.gas * tx.gas_price).toFixed(5)} Eth
+            </Badge></h5>
+          </td>
         </tr>
       )
     });
@@ -188,7 +205,7 @@ export default class Scannermain extends Component {
                       <tr>
                         <th style={{width:'25%'}}>Block #</th>
                         <th style={{width:'59%'}}>Miner</th>
-                        <th style={{width:'16%'}}>Eth</th>
+                        <th style={{width:'16%'}}>Reward</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -213,9 +230,9 @@ export default class Scannermain extends Component {
                    <Table bordered style={{tableLayout: 'fixed'}}>
                     <thead style={{backgroundColor:'skyblue', textAlign: 'center'}}>
                       <tr>
-                        <th style={{width:'20%'}}>tx Id</th>
-                        <th style={{width:'64%'}}>From / To</th>
-                        <th style={{width:'16%'}}>Eth</th>
+                        <th style={{width:'30%'}}>Tx hash</th>
+                        <th style={{width:'54%'}}>From / To</th>
+                        <th style={{width:'16%'}}>Gas used</th>
                       </tr>
                     </thead>
                     <tbody>

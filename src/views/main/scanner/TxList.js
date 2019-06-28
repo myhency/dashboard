@@ -4,6 +4,8 @@ import ContentCard from 'components/ContentCard';
 import ReactTable from 'react-table';
 import { Link } from 'react-router-dom';
 import Fetch from 'utils/Fetch'; 
+import moment from 'moment';
+import ReactTooltip from 'react-tooltip';
 
 export default class TxList extends Component {
     constructor(props) {
@@ -24,11 +26,7 @@ export default class TxList extends Component {
 
       Fetch.GET(`/api/transaction/?page_size=${state.pageSize}&page=${state.page+1}`)
       .then(res => {
-        //update안할때
-        // if(this.state.transactions.length !== 0 && this.state.transactions[0].number === res.results[0].number){
-        //   return;
-        // }
-
+        
         this.setState({
           transactions: res.results,
           pages: Math.ceil(res.count/state.pageSize)
@@ -53,40 +51,65 @@ export default class TxList extends Component {
                         Header: "TxHash",
                         accessor: "transaction_hash",
                         Cell: ({row}) => (<Link to={this.props.location.pathname + '/' + row.transaction_hash}>{row.transaction_hash}</Link>),
-                        width: 340
+                        width: '20%'
                     },
                     {
                         Header: "Block",
                         accessor: "related_block",
                         Cell: ({row}) => (<Link to={`/main/scanner/Block/${row.related_block}`}>{row.related_block.number}</Link>),
-                        width: 140
+                        width: '10%'
                     },
                     {
                         Header: "Age",
-                        accessor: "Tx_age",
-                        width: 150
+                        accessor: "timestamp",
+                        width: '10%',
+                        Cell: ({row}) => {
+                            var age = moment(this.state.timestamp).diff(row.timestamp, 'seconds');
+                            if(age < 60) {
+                              age = age + ' sec';
+                            }
+                            else if(age < 3600) {
+                              age = Math.floor(age/60) + ' min';
+                            }
+                            else if(age < 84600) {
+                              age = Math.floor(age/3600) + ' hour(s)';
+                            }
+                            else if(age < 2538000) {
+                              age = Math.floor(age/84600) + ' day(s)';
+                            }
+                            else {
+                              return (<span>{moment(row.timestamp).format("YYYY-MM-DD HH:mm:ss")}</span>)
+                            }
+
+                            return (
+                                <Fragment>
+                                    <span data-tip={moment(row.timestamp).format("YYYY-MM-DD HH:mm:ss")}>{age} ago</span>
+                                    <ReactTooltip/>
+                                </Fragment>
+                            )
+                        }
                     },
                     {
                         Header: "From",
                         accessor: "transaction_from",
-                        width: 340,
+                        width: '20%',
                         Cell: ({row}) => (<Link to={`/main/scanner/address/${row.transaction_from}`}>{row.transaction_from}</Link>),
                     },
                     {
                         Header: "To",
                         accessor: "transaction_to",
-                        width: 340,
+                        width: '20%',
                         Cell: ({row}) => (<Link to={`/main/scanner/address/${row.transaction_to}`}>{row.transaction_to}</Link>),
                     },
                     {
                         Header: "Value",
                         accessor: "value",
-                        width: 100
+                        width: '10%'
                     },
                     {
                         Header: "[Tx Fee]",
                         accessor: "gas",
-                        width: 150,
+                        width: '10%',
                         Cell: ({row}) => {
                           let gas = row._original.gas;
                           let gas_price = row._original.gas_price;
