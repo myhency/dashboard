@@ -11,7 +11,6 @@ import io from 'socket.io-client';
 import * as d3 from "d3";
 
 import Fetch from 'utils/Fetch.js';
-import D3component from './nodenetwork/d3component';
 import jQuery from "jquery";
 
 
@@ -541,7 +540,6 @@ class Monitoring extends Component {
                             <svg width="100%" height="450"//width="620" height="450"  //켄버스 크기
                                 ref={handle => (this.svg = d3.select(handle))}>
                             </svg>
-                            {/* <D3component ref='D3' cardPosition={d3card} node={node}/> */}
                         </ContentCard>
                     </ContentCol>
                     <ContentCol xl={6} lg={12} md={12} sm={12} xs={12} noMarginBottom={true}>
@@ -576,7 +574,7 @@ class Monitoring extends Component {
                         </ContentRow>
                         <ContentRow>
                             <ContentCol>
-                                <ContentCard style={{height: '305px'}} bodyNoPaddingBottom={true}>
+                                <ContentCard style={{height: '289px'}} bodyNoPaddingBottom={true}>
                                     <Col style={{ textAlign: 'left', marginBottom: '10px' }}>
                                         <span className='dash-upper-line-card-title'>Pending Transactions</span>
                                     </Col>

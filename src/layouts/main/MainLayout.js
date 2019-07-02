@@ -262,7 +262,8 @@ class MainLayout extends Component {
                         {(this.getCurrentPageName(currentPath) === "Address") || (this.getCurrentPageName(currentPath) === "Contract") ?
                             <span data-tip='Copy' >
                                 <CopyToClipboard text={currentInfo}> 
-                                    <FaCopy style={{marginLeft: '10px', color: 'white'}}/>
+                                    <img src={'/img/copy.svg'} height='18px' style={{marginLeft: '10px'}}/>
+                                    {/* <FaCopy style={{marginLeft: '10px', color: 'white'}}/> */}
                                 </CopyToClipboard>
                                 <ReactTooltip/>
                             </span> : null 

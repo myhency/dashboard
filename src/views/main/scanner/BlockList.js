@@ -1,6 +1,5 @@
 import React, { Component, Fragment } from 'react'
 import ContentCard from 'components/ContentCard';
-
 import ReactTable from 'react-table';
 import { Link } from 'react-router-dom';
 import Fetch from 'utils/Fetch'; 

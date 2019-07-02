@@ -1,6 +1,8 @@
 import React, { Component, Fragment } from 'react'
 import { Table, Button, Badge } from 'reactstrap';
 import ContentCard from 'components/ContentCard';
+import ContentRow from 'components/ContentRow';
+import ContentCol from 'components/ContentCol';
 import { FaAngleLeft, FaAngleRight } from 'react-icons/fa';
 import Fetch from 'utils/Fetch.js';
 import { Link } from 'react-router-dom';
@@ -97,10 +99,13 @@ class BlockInfo extends Component {
     }
   }
 
-
   mvBlock = (string) => {
     let nBlockNo = string === 'next' ? Number(this.state.blockNo)+1 : Number(this.state.blockNo)-1;
     this.props.history.push('/main/scanner/block/'+ nBlockNo);
+  }
+
+  goList = () => {
+    this.props.history.push('/main/scanner/block');
   }
 
   render() {
@@ -111,40 +116,50 @@ class BlockInfo extends Component {
     return (
       <Fragment>
         <ContentCard detailCard={true} >
+          <ContentRow style={{justifyContent: 'space-between'}}>
+            <ContentCol>
+              {preblock.length === 0 ?
+              <Button color="link" style={{width: '48px'}}/> :
+                <Button 
+                  onClick={()=> this.mvBlock('previos')} 
+                  style={{marginLeft: '10px', padding: '0', paddingBottom: '1px', backgroundColor: '#76B344'}}>
+                  <FaAngleLeft style={{marginLeft: '10px', marginRight: '10px', height: '15px', backgroundColor: '#76B344', color: 'black'}}/>
+                </Button> }
+                <span style={{color: 'white', marginLeft: '10px'}}> {blockNo} </span>
+                {nextblock.length === 0 ? null :
+                <Button 
+                  variant='primary'
+                  onClick={()=> this.mvBlock('next')} 
+                  style={{marginLeft: '10px', padding: '0', paddingBottom: '1px', backgroundColor: '#76B344'}}>
+                  <FaAngleRight style={{marginLeft: '10px', marginRight: '10px', height: '15px', backgroundColor: '#76B344', color: 'black'}}/>
+                </Button> }
+            </ContentCol>
+            <ContentCol style={{textAlign: 'right'}}>
+              <Button onClick={() => this.goList()} className='btn-outline-primary'>
+                To List
+              </Button>
+            </ContentCol>
+          </ContentRow>
           <Table bordered>
             <tbody>
               <tr>
                 <td style={{width: '20%'}}>
                   <img src='/img/information.svg' height='18px' 
-                  style={{marginTop: '9px', marginBottom: '9px'}} 
-                  data-tip={"block height"}/>
-                  <ReactTooltip/>
+                  style={{marginTop: '9px', marginBottom: '9px'}}
+                  data-for='blockHeight'
+                  data-tip={"Also known as Block Number. The block height, <br/>which indicateds the length of the blockchain, <br/>increases after the addition of the new block."}/>
+                  <ReactTooltip id='blockHeight' multiline={true}/>
                    &nbsp; Block Height: 
                 </td>
-                <td style={{width: '80%'}}>
-                  {blockNo}
-                  {preblock.length === 0 ?
-                  <Button color="link" style={{width: '48px'}}/> :
-                  <Button 
-                    onClick={()=> this.mvBlock('previos')} 
-                    style={{marginLeft: '10px', padding: '0', paddingBottom: '1px', backgroundColor: '#76B344'}}>
-                    <FaAngleLeft style={{marginLeft: '10px', marginRight: '10px', height: '15px', backgroundColor: '#76B344', color: 'black'}}/>
-                  </Button> }
-                  {nextblock.length === 0 ? null :
-                  <Button 
-                    variant='primary'
-                    onClick={()=> this.mvBlock('next')} 
-                    style={{marginLeft: '10px', padding: '0', paddingBottom: '1px', backgroundColor: '#76B344'}}>
-                    <FaAngleRight style={{marginLeft: '10px', marginRight: '10px', height: '15px', backgroundColor: '#76B344', color: 'black'}}/>
-                  </Button> }
-                </td>
+                <td style={{width: '80%'}}>{blockNo}</td>
               </tr>
               <tr>
                 <td>
                   <img src='/img/information.svg' height='18px' 
                   style={{marginTop: '9px', marginBottom: '9px'}} 
-                  data-tip={"block height"}/>
-                  <ReactTooltip/>
+                  data-for='timestamp'
+                  data-tip={"The date and time at which a transaction is mined."}/>
+                  <ReactTooltip id='timestamp' multiline={true}/>
                    &nbsp; TimeStamp: 
                 </td>
                 <td><img src='/img/clock.svg' height='15px'/>&nbsp;{moment(timestamp).format('YYYY-MM-DD HH:mm:ss')}</td>
@@ -153,8 +168,9 @@ class BlockInfo extends Component {
                 <td>
                   <img src='/img/information.svg' height='18px' 
                   style={{marginTop: '9px', marginBottom: '9px'}} 
-                  data-tip={"block height"}/>
-                  <ReactTooltip/>
+                  data-for='transcationCount'
+                  data-tip={"The number of transactions in the block. Internal <br/>transactions is transactions as a result of contract <br/>execution that involves Ether value."}/>
+                  <ReactTooltip id='transcationCount' multiline={true}/>
                    &nbsp; Transactions:
                   </td>
                 <td>{transcationCount}</td>
@@ -163,8 +179,9 @@ class BlockInfo extends Component {
                 <td>
                   <img src='/img/information.svg' height='18px' 
                   style={{marginTop: '9px', marginBottom: '9px'}} 
-                  data-tip={"block height"}/>
-                  <ReactTooltip/>
+                  data-for='miner'
+                  data-tip={"Miner who successfully include the block onto the blockchain."}/>
+                  <ReactTooltip id='miner' multiline={true}/>
                    &nbsp; Mined by:
                 </td>
                 <td><Link to={`/main/scanner/address/${miner}`}>{miner}</Link></td>
@@ -173,8 +190,9 @@ class BlockInfo extends Component {
                 <td>
                   <img src='/img/information.svg' height='18px' 
                   style={{marginTop: '9px', marginBottom: '9px'}} 
-                  data-tip={"block height"}/>
-                  <ReactTooltip/>
+                  data-for='blockReward'
+                  data-tip={"For each block, the miner is rewarded with a finite <br/>amount of Ether on top of the fees paid for all <br/>transactions in the block."}/>
+                  <ReactTooltip id='blockReward' multiline={true}/>
                    &nbsp; Block Reward:
                 </td>
                 <td><h5>
@@ -187,8 +205,9 @@ class BlockInfo extends Component {
                 <td>
                 <img src='/img/information.svg' height='18px' 
                   style={{marginTop: '9px', marginBottom: '9px'}} 
-                  data-tip={"block height"}/>
-                  <ReactTooltip/>
+                  data-for='difficulty'
+                  data-tip={"The amount of effort required to mine a new block. <br/>The difficulty algorithm may adjust according to <br/>time."}/>
+                  <ReactTooltip id='difficulty' multiline={true}/>
                    &nbsp; Difficulty:
                 </td>
                 <td>{difficulty}</td>
@@ -197,8 +216,9 @@ class BlockInfo extends Component {
                 <td>
                   <img src='/img/information.svg' height='18px' 
                   style={{marginTop: '9px', marginBottom: '9px'}} 
-                  data-tip={"block height"}/>
-                  <ReactTooltip/>
+                  data-for='totalDifficulty'
+                  data-tip={"Total difficulty of the chain until this block."}/>
+                  <ReactTooltip id='totalDifficulty' multiline={true}/>
                    &nbsp; Total Difficulty:
                 </td>
                 <td>{totalDifficulty}</td>
@@ -207,8 +227,9 @@ class BlockInfo extends Component {
                 <td>
                   <img src='/img/information.svg' height='18px' 
                   style={{marginTop: '9px', marginBottom: '9px'}} 
-                  data-tip={"block height"}/>
-                  <ReactTooltip/>
+                  data-for='size'
+                  data-tip={"The block size is actually determined by the <br/>block's gas limit."}/>
+                  <ReactTooltip id='size' multiline={true}/>
                    &nbsp; Size:
                 </td>
                 <td>{size}</td>
@@ -217,8 +238,9 @@ class BlockInfo extends Component {
                 <td>
                   <img src='/img/information.svg' height='18px' 
                   style={{marginTop: '9px', marginBottom: '9px'}} 
-                  data-tip={"block height"}/>
-                  <ReactTooltip/>
+                  data-for='gasUsed'
+                  data-tip={"The total gas used in the block and its percentage <br/>of gas filled in the block."}/>
+                  <ReactTooltip id='gasUsed' multiline={true}/>
                    &nbsp; Gas Used:
                 </td>
                 <td>{gasUsed}</td>
@@ -227,8 +249,9 @@ class BlockInfo extends Component {
                 <td>
                   <img src='/img/information.svg' height='18px' 
                   style={{marginTop: '9px', marginBottom: '9px'}} 
-                  data-tip={"block height"}/>
-                  <ReactTooltip/>
+                  data-for='gasLimit'
+                  data-tip={"Total gas limit provieded by all transactions in the block."}/>
+                  <ReactTooltip id='gasLimit' multiline={true}/>
                    &nbsp; Gas Limit:
                 </td>
                 <td>{gasLimit}</td>
@@ -237,8 +260,9 @@ class BlockInfo extends Component {
                 <td>
                   <img src='/img/information.svg' height='18px' 
                   style={{marginTop: '9px', marginBottom: '9px'}} 
-                  data-tip={"block height"}/>
-                  <ReactTooltip/>
+                  data-for='extraData'
+                  data-tip={"Any data that can be included by the miner in the block."}/>
+                  <ReactTooltip id='extraData' multiline={true}/>
                    &nbsp; Extra Data:
                 </td>
                 <td>{extraData}</td>
@@ -247,8 +271,9 @@ class BlockInfo extends Component {
                 <td>
                   <img src='/img/information.svg' height='18px' 
                   style={{marginTop: '9px', marginBottom: '9px'}} 
-                  data-tip={"block height"}/>
-                  <ReactTooltip/>
+                  data-for='blockHash'
+                  data-tip={"Hash of the block header from the previous block."}/>
+                  <ReactTooltip id='blockHash' multiline={true}/>
                    &nbsp; Hash:
                 </td>
                 <td>{blockHash}</td>
@@ -257,8 +282,9 @@ class BlockInfo extends Component {
                 <td>
                   <img src='/img/information.svg' height='18px' 
                   style={{marginTop: '9px', marginBottom: '9px'}} 
-                  data-tip={"block height"}/>
-                  <ReactTooltip/>
+                  data-for='parentHash'
+                  data-tip={"The hash of the block from which this block was <br/>generated, also known as its parent block."}/>
+                  <ReactTooltip id='parentHash' multiline={true}/>
                    &nbsp; Parent Hash:
                 </td>
                 <td>{parentHash}</td>
@@ -267,8 +293,9 @@ class BlockInfo extends Component {
                 <td>
                   <img src='/img/information.svg' height='18px' 
                   style={{marginTop: '9px', marginBottom: '9px'}} 
-                  data-tip={"block height"}/>
-                  <ReactTooltip/>
+                  data-for='nonce'
+                  data-tip={"Block nonce is a value used during mining to <br/>demonstrate proof of work for a block."}/>
+                  <ReactTooltip id='nonce' multiline={true}/>
                    &nbsp; Nonce:
                 </td>
                 <td>{nonce}</td>

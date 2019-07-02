@@ -34,11 +34,6 @@ export default class Scannermain extends Component {
   getBlock = () => {
     Fetch.GET('/api/block/?page_size=6&page=1')
     .then(res => {
-      //update안할때
-      if(this.state.blocks.length !== 0 && this.state.blocks[0].number === res.results[0].number){
-        return;
-      }
-
       this.setState({
         blocks: res.results
       })
@@ -189,7 +184,7 @@ export default class Scannermain extends Component {
             <ContentRow>
               <ContentCol xl={6} lg={12} md={12} sm={12} xs={12}>
                 <Card> 
-                  <CardHeader tag="h3">Latest Block</CardHeader>
+                  <CardHeader tag="h3">Blocks</CardHeader>
                   <CardBody style={{maxHeight: '560px', overflow: 'auto'}}>
                    <Table bordered style={{tableLayout: 'fixed'}}>
                     <thead style={{backgroundColor:'skyblue', textAlign: 'center'}}>
