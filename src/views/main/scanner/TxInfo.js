@@ -8,6 +8,7 @@ import ReactTooltip from 'react-tooltip';
 import Fetch from 'utils/Fetch.js';
 import { Link } from 'react-router-dom';
 import moment from 'moment'
+import Validation from 'utils/Validation';
 
 export default class TxInfo extends Component {
 
@@ -52,9 +53,9 @@ export default class TxInfo extends Component {
         txFrom: res.transaction_from,
         txTo : res.transaction_to,
         value: res.value,
-        txFee: res.gas * res.gas_price,
+        txFee: res.gas_used * res.gas_price,
         gasLimit: res.gas,
-        gasUsedByTx: res.gas * res.gas_price,
+        gasUsed: res.gas_used,
         gasPrice: res.gas_price,
         nonce: res.nonce,
         txInput: res.transaction_input
@@ -84,7 +85,7 @@ export default class TxInfo extends Component {
   
   render() {
     const { TxHash, passSec, status, relatedBlock, timestamp, txFrom, txTo, value,
-      txFee, gasLimit, gasUsedByTx, gasPrice, nonce, txInput} = this.state;
+      txFee, gasLimit, gasPrice, gasUsed, nonce, txInput} = this.state;
 
     const CopyImg = '/img/copy.svg';
 
@@ -93,7 +94,7 @@ export default class TxInfo extends Component {
         <ContentCard detailCard={true} noMarginBottom={true}>
           <ContentRow>
             <ContentCol style={{textAlign: 'right'}}>
-              <Button onClick={() => this.goList()} className='btn-outline-primary'>
+              <Button onClick={() => this.props.history.push('/main/scanner/transaction')} className='btn-outline-primary'>
                 To List
               </Button>
             </ContentCol>
@@ -111,13 +112,12 @@ export default class TxInfo extends Component {
                 </td>
                 <td style={{width: '80%'}}>
                     {TxHash}
-                    <span className="copyicon" data-tip='Copy' data-for='id'>
-                    <CopyToClipboard text={TxHash} onCopy={() => { this.setState({copied: true}) }} >
+                    <span className="copyicon" data-tip='Copy' data-for='hashCopy' >
+                    <CopyToClipboard text={TxHash} onCopy={() => { this.setState({copied: true}) }}>
                       <img src={CopyImg} height='18px' style={{marginLeft: '10px'}}/>
-                        {/* <FaCopy style={{marginLeft: '10px'}}/> */}
                     </CopyToClipboard>
                     </span>
-                    <ReactTooltip id='id' getContent={(dataTip) => {if(this.state.copied) return 'Copied'; else return 'Copy';}}/>
+                    <ReactTooltip id='hashCopy' getContent={(dataTip) => {if(this.state.copied) return 'Copied'; else return 'Copy';}} afterHide={() => {this.setState({copied: false}) }}/>
                 </td>
               </tr>
               <tr>
@@ -164,12 +164,12 @@ export default class TxInfo extends Component {
                 </td>
                 <td>
                   <Link to={`/main/scanner/address/${txFrom}`}>{txFrom}</Link>
-                  <span data-tip='Copy' className="copyicon">
-                    <CopyToClipboard text={txFrom}> 
+                  <span data-tip='Copy' className="copyicon" data-for='fromCopy' >
+                    <CopyToClipboard text={txFrom} onCopy={() => { this.setState({copied: true}) }}> 
                       <img src={CopyImg} height='18px' style={{marginLeft: '10px'}}/>
                     </CopyToClipboard>
                   </span>
-                  <ReactTooltip/>
+                  <ReactTooltip id='fromCopy' getContent={(dataTip) => {if(this.state.copied) return 'Copied'; else return 'Copy';}} afterHide={() => {this.setState({copied: false}) }}/>
                 </td>
               </tr>
               <tr>
@@ -183,12 +183,12 @@ export default class TxInfo extends Component {
                 </td>
                 <td>
                   <Link to={`/main/scanner/address/${txTo}`}>{txTo}</Link>
-                  <span data-tip='Copy' className="copyicon">
-                    <CopyToClipboard text={txTo}> 
+                  <span data-tip='Copy' className="copyicon" data-for='toCopy'>
+                    <CopyToClipboard text={txTo} onCopy={() => { this.setState({copied: true}) }}> 
                       <img src={CopyImg} height='18px' style={{marginLeft: '10px'}}/>
                     </CopyToClipboard>
                   </span>
-                  <ReactTooltip/>
+                  <ReactTooltip id='toCopy' getContent={(dataTip) => {if(this.state.copied) return 'Copied'; else return 'Copy';}} afterHide={() => {this.setState({copied: false}) }}/>
                 </td>
               </tr>
               <tr>
@@ -200,11 +200,11 @@ export default class TxInfo extends Component {
                   <ReactTooltip id='value' multiline={true}/>
                    &nbsp; Value:
                 </td>
-                <td><h5>
-                  <Badge style={{paddingLeft: '10px', backgroundColor: '#9DB38B', color: 'black'}}> 
-                    {value} Eth
+                <td>
+                  <Badge style={{paddingLeft: '10px', backgroundColor: '#9DB38B', color: 'black', fontSize: '1.1rem'}}> 
+                    {Validation.noExponents(value)} Eth
                  </Badge>
-                </h5></td>
+                </td>
               </tr>
               <tr>
                 <td>
@@ -215,11 +215,11 @@ export default class TxInfo extends Component {
                   <ReactTooltip id='txFee' multiline={true}/>
                    &nbsp; Transaction Fee:
                 </td>
-                <td><h5>
-                  <Badge style={{paddingLeft: '10px', backgroundColor: '#9DB38B', color: 'black'}}> 
-                    {txFee} Eth
+                <td>
+                  <Badge style={{paddingLeft: '10px', backgroundColor: '#9DB38B', color: 'black', fontSize: '1.1rem'}}> 
+                    {txFee !== undefined ? Validation.noExponents(txFee) : null} Eth
                  </Badge>
-                </h5></td>
+                </td>
               </tr>
               <tr>
                 <td>
@@ -241,7 +241,7 @@ export default class TxInfo extends Component {
                   <ReactTooltip id='gasUsedByTx' multiline={true}/>
                    &nbsp; Gas Used by Transaction:
                 </td>
-                <td>{gasUsedByTx} ({gasUsedByTx/gasLimit*100}%)</td>
+                <td>{parseInt(gasUsed)} ({gasUsed/gasLimit*100}%)</td>
               </tr>
               <tr>
                 <td>
@@ -252,11 +252,11 @@ export default class TxInfo extends Component {
                   <ReactTooltip id='gasPrice' multiline={true}/>
                    &nbsp; Gas Price:
                 </td>
-                <td><h5>
-                  <Badge style={{paddingLeft: '10px', backgroundColor: '#E3AE71', color: 'black'}}> 
-                    {gasPrice} Eth
-                  </Badge>
-                </h5>({gasPrice*10^9} Gwei)</td>
+                <td>
+                  <Badge style={{paddingLeft: '10px', backgroundColor: '#E3AE71', color: 'black', fontSize: '1.1rem'}}> 
+                    {gasPrice*10^9} Gwei
+                  </Badge> {' '}
+                ({Validation.noExponents(gasPrice)} Eth)</td>
               </tr>
               <tr>
                 <td>

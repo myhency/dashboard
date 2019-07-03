@@ -53,7 +53,6 @@ class Monitoring extends Component {
     }
 
     componentDidMount() {
-        this.getDashboardInfo();
         this.getCurrentTime();
 
         // web socket 연결 
@@ -72,7 +71,7 @@ class Monitoring extends Component {
                 node: data,
                 nodeState: nodeState
             })
-            console.log(data);
+            // console.log(data);
             this.updatePosition();
         });
 
@@ -96,7 +95,7 @@ class Monitoring extends Component {
             this.setState({
                 nodeState: changeState
             })
-            console.log(data);
+            // console.log(data);
             this.updateNode();
         });
 
@@ -119,8 +118,9 @@ class Monitoring extends Component {
         });
 
         socket.on('blockMiner', (data) => {
-            console.log(data);
+            // console.log(data);
             this.miningNode(data);
+            // this.getDashboardInfo();
         });
 
         socket.on('uncle', (data) => {
@@ -136,12 +136,13 @@ class Monitoring extends Component {
             this.setState({
                 nodeState: changeState
             });
-            console.log(data);
+            // console.log(data);
             this.updateNode();
         });
 
         //1초에 한번씩 백엔드에 요청
-        this.intervalId_getInfo = setInterval(this.getDashboardInfo, 1000);
+        this.getFirstInfo();
+        this.intervalId_getInfo = setInterval(this.updateDashboardInfo, 3000);
         this.intervalId_getCurrentTime = setInterval(this.getCurrentTime, 1000); 
         this.intervalId_getPendingTx = setInterval(() => socket.emit("requestPendingTx"), 1000);
 
@@ -161,14 +162,6 @@ class Monitoring extends Component {
         clearInterval(this.intervalId_getCurrentTime);
         clearInterval(this.getPendingTx);
         window.removeEventListener('resize', this.updatePosition);
-    }
-
-    // dashboard info 분기
-    getDashboardInfo = () => {
-        if(this.state.timePass.length > 0)
-            this.updateDashboardInfo();
-        else
-            this.getFirstInfo();
     }
 
     // 첫번째는 최대 60개까지 불러옴
@@ -210,36 +203,40 @@ class Monitoring extends Component {
     updateDashboardInfo =() => {
         Fetch.GET('/api/block/?page_size=2&page=1')
         .then(res => {
+            // console.log(res.results[0]);
             let bestBlock = res.results[0];
             // update 안할 때
             if(this.state.blockNo === bestBlock.number) {
                 return;
             }
 
-            let newTime = this.state.timePass;
-            let tpb = this.state.txPerBlock;
-            let labels = this.state.tbpLabels;
-            
-            newTime.splice(0,1);
-            tpb.splice(0,1);
-            labels.splice(0,1);
+            let timePass = this.state.timePass.slice();
+            let txPerBlock = this.state.txPerBlock.slice();
+            let tbpLabels = this.state.tbpLabels.slice();
 
-            newTime.push(moment(bestBlock.timestamp).diff(res.results[1].timestamp,'seconds'));
-            tpb.push(bestBlock.transaction_count);
-            labels.push(bestBlock.number);
+            // console.log(newTime);
+            if(this.state.timePass.length >= 60) {
+                timePass.splice(0, 1);
+                txPerBlock.splice(0, 1);
+                tbpLabels.splice(0, 1);
+            }
+
+            timePass.push(moment(bestBlock.timestamp).diff(res.results[1].timestamp,'seconds'));
+            txPerBlock.push(bestBlock.transaction_count);
+            tbpLabels.push(bestBlock.number);
             
-            let avgBlockTime = _.meanBy(newTime).toFixed(3);
-            
+            let avgBlockTime = _.meanBy(timePass).toFixed(3);
+
             this.setState({    
                 blockNo: bestBlock.number,
                 gasLimit: bestBlock.gas_limit,
                 gasUsed: bestBlock.gas_used,
                 timestamp: bestBlock.timestamp,
                 avgBlockTime: avgBlockTime,
-                timePass: newTime,
+                timePass: timePass,
                 passSec: 0,
-                txPerBlock: tpb,
-                tbpLabels: labels,
+                txPerBlock: txPerBlock,
+                tbpLabels: tbpLabels,
                 difficulty: bestBlock.difficulty
             });
 
@@ -271,7 +268,7 @@ class Monitoring extends Component {
                 simulation: d3.forceSimulation()
                     .force("link", d3.forceLink().id(function (d) { return d.id; }))
                     .force('charge', d3.forceManyBody()
-                        .strength(this.state.node.length * (-5000))
+                        .strength((-5000) * 10 / this.state.node.length)
                         .theta(0.1)
                     )
                     .force("center", d3.forceCenter()
@@ -452,7 +449,7 @@ class Monitoring extends Component {
             rows.push(
                 <tr key={txInfo.hash}>
                     <td>{txInfo.time}s ago</td>
-                    <td>{txInfo.hash}</td>
+                    <td className="ellipsis">{txInfo.hash}</td>
                 </tr>
             );
         });
@@ -551,8 +548,8 @@ class Monitoring extends Component {
                                             <img src="/img/gas_price.svg" width="90px"/>
                                         </Col>
                                         <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{textAlign:'left', lineHeight:2}}>
-                                            <span className='dash-upper-line-card-title'>GAS PRICE</span><br/>
-                                            <span className='dash-upper-line-card-value' style={{color: '#FD8900'}}>{gasUsed === undefined ? '' : gasUsed} gwei</span>
+                                            <span className='dash-upper-line-card-title'>GAS USED</span><br/>
+                                            <span className='dash-upper-line-card-value' style={{color: '#FD8900'}}>{gasUsed === undefined ? '' : gasUsed} gas</span>
                                         </Col>
                                     </ContentRow>
                                 </ContentCard>
@@ -580,7 +577,7 @@ class Monitoring extends Component {
                                     </Col>
                                     <Col>
                                         <Table bordered >
-                                            <thead style={{ backgroundColor: 'skyblue', textAlign: 'center' }}>
+                                            <thead style={{ textAlign: 'center' }}>
                                                 <tr>
                                                     <th style={{width:'15%'}}>Pending..</th>
                                                     <th style={{width:'85%'}}>txHash</th>
@@ -590,6 +587,13 @@ class Monitoring extends Component {
                                                 { rows }
                                             </tbody>
                                         </Table>
+                                        {pendingTx.length === 0 && 
+                                        <div style={{
+                                            display: 'block',
+                                            position: 'absolute',
+                                            left: '38%',
+                                            top: '44%',
+                                            color: 'white'}}>No Pending Transactions</div>}
                                     </Col>
                                 </ContentCard>
                             </ContentCol>
@@ -664,11 +668,9 @@ class Monitoring extends Component {
                                         {
                                             label: "Block Generation Time",
                                             data: timePass,
-                                            // fill: false,
-                                            // backgroundColor: '#b7d7e8',
                                             borderColor: '#FFD162',
                                             borderWidth: 2,
-                                            pointRadius: 0,
+                                            pointRadius: 1,
                                             pointHoverBorderWidth: 1
                                         }
                                     ]

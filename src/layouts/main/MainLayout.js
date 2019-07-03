@@ -21,10 +21,11 @@ import { signOut } from 'store/modules/auth';
 import Fetch from 'utils/Fetch';
 import { setInfo } from 'store/modules/currentInfo';
 import { setPage } from 'store/modules/tempPageName';
-import { FaCopy } from 'react-icons/fa';
+import { FaBook } from 'react-icons/fa';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import ReactTooltip from 'react-tooltip';
 import jQuery from "jquery";
+import { callbackify } from 'util';
 
 // import Background from '/img/login_page.jpeg';
 
@@ -246,6 +247,10 @@ class MainLayout extends Component {
                                 return null;
                             }
                         })}
+                        <NavLink to="/main/components/" className='manualButton' >
+                            <FaBook size={20} color={'white'} style={{marginRight:'.75rem'}}/>
+                            Manual
+                        </NavLink>
                     </Nav>
                 </div>
 
@@ -260,12 +265,12 @@ class MainLayout extends Component {
                             {currentInfo}
                         </span>
                         {(this.getCurrentPageName(currentPath) === "Address") || (this.getCurrentPageName(currentPath) === "Contract") ?
-                            <span data-tip='Copy' >
-                                <CopyToClipboard text={currentInfo}> 
+                            <span data-tip='Copy'  data-for='addressCopy'>
+                                <CopyToClipboard text={currentInfo} onCopy={() => { this.setState({copied: true}) }}> 
                                     <img src={'/img/copy.svg'} height='18px' style={{marginLeft: '10px'}}/>
                                     {/* <FaCopy style={{marginLeft: '10px', color: 'white'}}/> */}
                                 </CopyToClipboard>
-                                <ReactTooltip/>
+                                <ReactTooltip id='addressCopy' getContent={(dataTip) => {if(this.state.copied) return 'Copied'; else return 'Copy';}} afterHide={() => {this.setState({copied: false}) }}/>
                             </span> : null 
                         }
                     </NavbarBrand>
@@ -322,12 +327,15 @@ class MainLayout extends Component {
                     </div>
 
                     {/* Footer */}
-                    <div className="footer small" align="right">
-                        <ul className="list-inline">
+                    <div className="footer small" align='right'>
+                        <div style={{color:'white'}} >
+                            &nbsp;&nbsp;&nbsp;© HYUNDAI AUTOEVER
+                        </div>
+                        {/* <ul className="list-inline">
                             <li className="list-inline-item" style={{color:'#6C757D'}}>
-                                Developed by 블록체인기술팀
+                                © HYUNDAI
                             </li>
-                        </ul>
+                        </ul> */}
                     </div>
                 </div>
 

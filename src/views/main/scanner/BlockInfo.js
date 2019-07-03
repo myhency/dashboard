@@ -104,9 +104,6 @@ class BlockInfo extends Component {
     this.props.history.push('/main/scanner/block/'+ nBlockNo);
   }
 
-  goList = () => {
-    this.props.history.push('/main/scanner/block');
-  }
 
   render() {
     const { passSec, difficulty, gasLimit, gasUsed, timestamp, parentHash, miner, blockReward,
@@ -135,7 +132,7 @@ class BlockInfo extends Component {
                 </Button> }
             </ContentCol>
             <ContentCol style={{textAlign: 'right'}}>
-              <Button onClick={() => this.goList()} className='btn-outline-primary'>
+              <Button onClick={() => this.props.history.push('/main/scanner/block')} className='btn-outline-primary'>
                 To List
               </Button>
             </ContentCol>
@@ -147,7 +144,7 @@ class BlockInfo extends Component {
                   <img src='/img/information.svg' height='18px' 
                   style={{marginTop: '9px', marginBottom: '9px'}}
                   data-for='blockHeight'
-                  data-tip={"Also known as Block Number. The block height, <br/>which indicateds the length of the blockchain, <br/>increases after the addition of the new block."}/>
+                  data-tip={"Also known as Block Number. The block height, <br/>which indicates the length of the blockchain, <br/>increases after the addition of the new block."}/>
                   <ReactTooltip id='blockHeight' multiline={true}/>
                    &nbsp; Block Height: 
                 </td>
@@ -169,7 +166,7 @@ class BlockInfo extends Component {
                   <img src='/img/information.svg' height='18px' 
                   style={{marginTop: '9px', marginBottom: '9px'}} 
                   data-for='transcationCount'
-                  data-tip={"The number of transactions in the block. Internal <br/>transactions is transactions as a result of contract <br/>execution that involves Ether value."}/>
+                  data-tip={"The number of transactions in the block. Internal <br/>transactions are transactions as a result of contract <br/>execution that involves Ether value."}/>
                   <ReactTooltip id='transcationCount' multiline={true}/>
                    &nbsp; Transactions:
                   </td>
@@ -180,7 +177,7 @@ class BlockInfo extends Component {
                   <img src='/img/information.svg' height='18px' 
                   style={{marginTop: '9px', marginBottom: '9px'}} 
                   data-for='miner'
-                  data-tip={"Miner who successfully include the block onto the blockchain."}/>
+                  data-tip={"Miner who successfully included the block onto the blockchain."}/>
                   <ReactTooltip id='miner' multiline={true}/>
                    &nbsp; Mined by:
                 </td>
@@ -221,7 +218,7 @@ class BlockInfo extends Component {
                   <ReactTooltip id='totalDifficulty' multiline={true}/>
                    &nbsp; Total Difficulty:
                 </td>
-                <td>{totalDifficulty}</td>
+                <td>{parseInt(totalDifficulty)}</td>
               </tr>
               <tr>
                 <td>
@@ -232,7 +229,7 @@ class BlockInfo extends Component {
                   <ReactTooltip id='size' multiline={true}/>
                    &nbsp; Size:
                 </td>
-                <td>{size}</td>
+                <td>{parseInt(size)}</td>
               </tr>
               <tr>
                 <td>
@@ -272,7 +269,7 @@ class BlockInfo extends Component {
                   <img src='/img/information.svg' height='18px' 
                   style={{marginTop: '9px', marginBottom: '9px'}} 
                   data-for='blockHash'
-                  data-tip={"Hash of the block header from the previous block."}/>
+                  data-tip={"Hash of the block."}/>
                   <ReactTooltip id='blockHash' multiline={true}/>
                    &nbsp; Hash:
                 </td>
