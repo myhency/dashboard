@@ -299,9 +299,11 @@ a.manualButton {
     position: absolute;
     bottom: 0;
     width: 100%;
-    margin-bottom: 1rem;
+    // margin-bottom: 1rem;
     color: #ffffff !important;
-    background-color: $sidebar-menu-hover-color;
+    // text-align: center;
+    // padding-right: 40px;
+    // background-color: $sidebar-menu-hover-color;
     opacity: 0.8;
     
     &:hover {

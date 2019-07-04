@@ -247,9 +247,9 @@ class MainLayout extends Component {
                                 return null;
                             }
                         })}
-                        <NavLink to="/main/components/" className='manualButton' >
-                            <FaBook size={20} color={'white'} style={{marginRight:'.75rem'}}/>
-                            Manual
+                        <NavLink to="/main/components/" className={'manualButton'} >
+                            <FaBook size={20} color={'#0F9EDB'} style={{marginLeft:'.4rem', marginRight:'.75rem'}}/>
+                            User Guide
                         </NavLink>
                     </Nav>
                 </div>

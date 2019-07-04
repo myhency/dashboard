@@ -9,6 +9,7 @@ import Fetch from 'utils/Fetch.js';
 import { Link } from 'react-router-dom';
 import moment from 'moment'
 import Validation from 'utils/Validation';
+import Decimal from 'decimal.js';
 
 export default class TxInfo extends Component {
 
@@ -18,7 +19,6 @@ export default class TxInfo extends Component {
       this.state=({
           TxHash: this.props.match.params.transactionHash,
           passSec: undefined,
-          status: undefined,
           relatedBlock: undefined,
           timestamp: undefined,
           txFrom: undefined,
@@ -45,15 +45,16 @@ export default class TxInfo extends Component {
         return;
       }
 
+      let txFee = Decimal.mul(res.gas_used, res.gas_price);
+
       this.setState({
         passSec: 0,
-        status: res.status,
         relatedBlock: res.related_block.number,
         timestamp: res.timestamp,
         txFrom: res.transaction_from,
         txTo : res.transaction_to,
         value: res.value,
-        txFee: res.gas_used * res.gas_price,
+        txFee: txFee.toNumber(),
         gasLimit: res.gas,
         gasUsed: res.gas_used,
         gasPrice: res.gas_price,
@@ -84,7 +85,7 @@ export default class TxInfo extends Component {
 
   
   render() {
-    const { TxHash, passSec, status, relatedBlock, timestamp, txFrom, txTo, value,
+    const { TxHash, relatedBlock, timestamp, txFrom, txTo, value,
       txFee, gasLimit, gasPrice, gasUsed, nonce, txInput} = this.state;
 
     const CopyImg = '/img/copy.svg';
@@ -120,7 +121,7 @@ export default class TxInfo extends Component {
                     <ReactTooltip id='hashCopy' getContent={(dataTip) => {if(this.state.copied) return 'Copied'; else return 'Copy';}} afterHide={() => {this.setState({copied: false}) }}/>
                 </td>
               </tr>
-              <tr>
+              {/* <tr>
                 <td>
                   <img src='/img/information.svg' height='18px' 
                   style={{marginTop: '9px', marginBottom: '9px'}} 
@@ -130,7 +131,7 @@ export default class TxInfo extends Component {
                    &nbsp; Status:
                 </td>
                 <td>{status}</td>
-              </tr>
+              </tr> */}
               <tr>
                 <td>
                   <img src='/img/information.svg' height='18px' 
@@ -217,7 +218,7 @@ export default class TxInfo extends Component {
                 </td>
                 <td>
                   <Badge style={{paddingLeft: '10px', backgroundColor: '#9DB38B', color: 'black', fontSize: '1.1rem'}}> 
-                    {txFee !== undefined ? Validation.noExponents(txFee) : null} Eth
+                    {txFee} Eth
                  </Badge>
                 </td>
               </tr>
@@ -254,7 +255,7 @@ export default class TxInfo extends Component {
                 </td>
                 <td>
                   <Badge style={{paddingLeft: '10px', backgroundColor: '#E3AE71', color: 'black', fontSize: '1.1rem'}}> 
-                    {gasPrice*10^9} Gwei
+                    {gasPrice*Math.pow(10,9)} Gwei
                   </Badge> {' '}
                 ({Validation.noExponents(gasPrice)} Eth)</td>
               </tr>

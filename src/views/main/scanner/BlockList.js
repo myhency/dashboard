@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import Fetch from 'utils/Fetch'; 
 import moment from 'moment';
 import ReactTooltip from 'react-tooltip';
+import Validation from 'utils/Validation';
 
 export default class BlockList extends Component {
     constructor(props) {
@@ -113,8 +114,8 @@ export default class BlockList extends Component {
                                         txGasPrice += tx.gas_price
                                     } )
                                     return (
-                                        <Button disabled={true} className='gasPrice'>
-                                            {row.related_transaction.length == 0 ? 0 : txGasPrice/row.related_transaction.length} gwei
+                                        <Button disabled={true} className='eth'>
+                                            {row.related_transaction.length == 0 ? 0 : Validation.noExponents(txGasPrice/row.related_transaction.length)} Eth
                                         </Button>
                                     )
                                 }
