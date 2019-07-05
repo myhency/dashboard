@@ -9,6 +9,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import io from 'socket.io-client';
 import * as d3 from "d3";
+import { Scrollbars } from 'react-custom-scrollbars';
 
 import Fetch from 'utils/Fetch.js';
 import jQuery from "jquery";
@@ -71,7 +72,7 @@ class Monitoring extends Component {
                 node: data,
                 nodeState: nodeState
             })
-            // console.log(data);
+
             this.updatePosition();
         });
 
@@ -281,7 +282,7 @@ class Monitoring extends Component {
             })
             
             this.drawFrame();
-
+            this.updateNode();
         }
     }
 
@@ -418,8 +419,34 @@ class Monitoring extends Component {
         let labelGX = this.state.nodeImgSize * 0.05; //node image 무게중심 구하기
         let labelGY = this.state.nodeImgSize * 0.13; //node image 무게중심 구하기
 
-        
-        
+        // mouseover시 tooltip에 node 정보 추가
+        node.on('mouseover', function (d) {
+            
+            d3.select("#tooltip")
+            .style("right", "0px")
+            .style("top",  "0px")
+            .select('#info')
+            .text(tooltipText(d));
+
+            d3.select("#tooltip").classed("hidden", false);
+        })
+        .on('mouseout', function () {
+            d3.select("#tooltip").classed("hidden", true);
+        })
+
+
+        function tooltipText(d) {
+            let info;
+            // let myNode = state.node;
+            // console.log(myNode);
+
+            // info = 'Node id: ' + myNode.id 
+            //     + <br/> + 'Node ip: ' + myNode.ip 
+            //     + <br/> + 'Node port: ' + myNode.port ;
+
+            return info;
+        }
+          
 
         function ticked() {
             link
@@ -537,6 +564,10 @@ class Monitoring extends Component {
                             <svg width="100%" height="450"//width="620" height="450"  //켄버스 크기
                                 ref={handle => (this.svg = d3.select(handle))}>
                             </svg>
+                            <div id="tooltip" className="hidden">
+                                <p><strong>Node information</strong></p>
+                                <p><span id="info"></span></p>
+                            </div>
                         </ContentCard>
                     </ContentCol>
                     <ContentCol xl={6} lg={12} md={12} sm={12} xs={12} noMarginBottom={true}>
@@ -571,29 +602,34 @@ class Monitoring extends Component {
                         </ContentRow>
                         <ContentRow>
                             <ContentCol>
-                                <ContentCard style={{height: '289px'}} bodyNoPaddingBottom={true}>
+                                <ContentCard style={{height: '289px'}} bodyNoPaddingBottom={true} className="scrollbar" id="style-2">
                                     <Col style={{ textAlign: 'left', marginBottom: '10px' }}>
                                         <span className='dash-upper-line-card-title'>Pending Transactions</span>
                                     </Col>
                                     <Col>
-                                        <Table bordered >
-                                            <thead style={{ textAlign: 'center' }}>
-                                                <tr>
-                                                    <th style={{width:'15%'}}>Pending..</th>
-                                                    <th style={{width:'85%'}}>txHash</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                { rows }
-                                            </tbody>
-                                        </Table>
-                                        {pendingTx.length === 0 && 
-                                        <div style={{
-                                            display: 'block',
-                                            position: 'absolute',
-                                            left: '38%',
-                                            top: '44%',
-                                            color: 'white'}}>No Pending Transactions</div>}
+                                        <Scrollbars horizontal style={{width: '100%', height: '100%'}}
+                                            renderView = {() => {
+                                                return <span>Write</span>
+                                            }}>
+                                            <Table bordered>
+                                                <thead style={{ textAlign: 'center' }}>
+                                                    <tr>
+                                                        <th style={{width:'15%'}}>Pending..</th>
+                                                        <th style={{width:'85%'}}>txHash</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    { rows }
+                                                </tbody>
+                                            </Table>
+                                            {pendingTx.length === 0 && 
+                                            <div style={{
+                                                display: 'block',
+                                                position: 'absolute',
+                                                left: '38%',
+                                                top: '44%',
+                                                color: 'white'}}>No Pending Transactions</div>}
+                                        </Scrollbars>
                                     </Col>
                                 </ContentCard>
                             </ContentCol>

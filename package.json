@@ -21,6 +21,7 @@
     "react-bootstrap": "^1.0.0-beta.5",
     "react-chartjs-2": "^2.7.4",
     "react-copy-to-clipboard": "^5.0.1",
+    "react-custom-scrollbars": "^4.2.1",
     "react-dom": "^16.4.2",
     "react-dynamic-font": "^2.0.1",
     "react-files": "^2.4.8",

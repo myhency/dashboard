@@ -12,32 +12,33 @@ import AuthLayout from 'layouts/auth/AuthLayout';
 import MainLayout from 'layouts/main/MainLayout';
 import NotFound from 'views/common/NotFound';
 import PrivateRoute from 'components/PrivateRoute';
-import { signIn } from 'store/modules/auth';
+// import { signIn } from 'store/modules/auth';
 
 class App extends Component {
     constructor(props) {
         super(props);
         
         // Login Check
-        let isAuthenticated = false;
-        const userId = sessionStorage.getItem('userId');
-        if(userId) {
-            isAuthenticated = true;
-            props.dispatch(signIn(userId));
-        }
+        // let isAuthenticated = false;
+        // const userId = sessionStorage.getItem('userId');
+        // if(userId) {
+        //     isAuthenticated = true;
+        //     props.dispatch(signIn(userId));
+        // }
 
         this.state = {
             isLoading: false,
-            isAuthenticated
+            // isAuthenticated
         };
     }
     
     static getDerivedStateFromProps(props, state) {
-        let { isLoading, isAuthenticated } = state;
-        
-        if(props.userId !== undefined) {
-            isAuthenticated = true;
-        }
+        // let { isLoading, isAuthenticated } = state;
+        let { isLoading } = state;
+
+        // if(props.userId !== undefined) {
+        //     isAuthenticated = true;
+        // }
 
         if(props.isLoading !== isLoading) {
             isLoading = props.isLoading;
@@ -45,25 +46,27 @@ class App extends Component {
 
         return {
             isLoading,
-            isAuthenticated
+            // isAuthenticated
         }
     }
 
     render() {    
-        const { isLoading, isAuthenticated } = this.state;
-        
+        // const { isLoading, isAuthenticated } = this.state;
+        const { isLoading } = this.state;
+
         return (
             <Router>
                 <ScrollToTop>
                     <Switch>
-                        <Route exact path="/" render={() =>
-                            isAuthenticated ?
-                            <Redirect to="/main"/>
-                            : <Redirect to="/auth"/>
-                        } />
-                        <PrivateRoute path="/main" component={MainLayout} isAuthenticated={isAuthenticated} />
-                        {/* <Route path="/main" component={MainLayout} /> */}
-                        <Route path="/auth" component={AuthLayout} />
+                        <Route exact path="/" component={MainLayout}
+                            // render={() =>
+                            // isAuthenticated ?
+                            // <Redirect to="/main"/>
+                            // : <Redirect to="/auth"/>}
+                        />
+                        {/* <PrivateRoute path="/main" component={MainLayout} isAuthenticated={isAuthenticated} /> */}
+                        <Route path="/main" component={MainLayout} />
+                        {/* <Route path="/auth" component={AuthLayout} /> */}
                         <Route component={NotFound} />
                     </Switch>
                     
@@ -77,6 +80,6 @@ class App extends Component {
 export default connect(
     state => ({
         isLoading: state.loading.isLoading,
-        userId: state.auth.userId
+        // userId: state.auth.userId
     })
 )(App);

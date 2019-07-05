@@ -149,51 +149,51 @@ class MainLayout extends Component {
         });
     }
 
-    signOut = () => {
-        sessionStorage.clear();
-        this.props.dispatch(signOut());
+    // signOut = () => {
+    //     sessionStorage.clear();
+    //     this.props.dispatch(signOut());
         
-        // csrf 생성을 위한 장고 cookie 얻기
-        function getCookie(name) {
-            var cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                var cookies = document.cookie.split(';');
-                console.log(cookies);
-                for (var i = 0; i < cookies.length; i++) {
-                    var cookie = jQuery.trim(cookies[i]);
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
-            }
-            return cookieValue;
-        }
+    //     // csrf 생성을 위한 장고 cookie 얻기
+    //     function getCookie(name) {
+    //         var cookieValue = null;
+    //         if (document.cookie && document.cookie !== '') {
+    //             var cookies = document.cookie.split(';');
+    //             console.log(cookies);
+    //             for (var i = 0; i < cookies.length; i++) {
+    //                 var cookie = jQuery.trim(cookies[i]);
+    //                 if (cookie.substring(0, name.length + 1) === (name + '=')) {
+    //                     cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+    //                     break;
+    //                 }
+    //             }
+    //         }
+    //         return cookieValue;
+    //     }
 
-        // 쿠키로부터 csrf 토큰 값 추출 
-        var csrftoken = getCookie('csrftoken');
-        // fetch post 옵션으로 보낼 dict 생성
-        // API 보낼 때 헤더 생략되면 MIME타입으로 요청 -> 응답 불가
-        const options = {
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'X-CSRFToken': csrftoken,
-            }
-        }
+    //     // 쿠키로부터 csrf 토큰 값 추출 
+    //     var csrftoken = getCookie('csrftoken');
+    //     // fetch post 옵션으로 보낼 dict 생성
+    //     // API 보낼 때 헤더 생략되면 MIME타입으로 요청 -> 응답 불가
+    //     const options = {
+    //         headers: {
+    //             'Accept': 'application/json',
+    //             'Content-Type': 'application/json',
+    //             'X-CSRFToken': csrftoken,
+    //         }
+    //     }
 
-        Fetch.POST('/api/auth/logout/', {}, options)
-        .then(res => {
-            console.log('logout');
-        })
-        .catch(error => {
-            console.log(error);
-        })
-        .finally(() => {
-            console.log('logout')
-            this.props.history.push('/auth/signIn');
-        })
-    }
+    //     Fetch.POST('/api/auth/logout/', {}, options)
+    //     .then(res => {
+    //         console.log('logout');
+    //     })
+    //     .catch(error => {
+    //         console.log(error);
+    //     })
+    //     .finally(() => {
+    //         console.log('logout')
+    //         this.props.history.push('/auth/signIn');
+    //     })
+    // }
 
     render() {
         const { active, currentPath, currentInfo, isWindowSmall, userId } = this.state;
@@ -275,7 +275,7 @@ class MainLayout extends Component {
                         }
                     </NavbarBrand>
                     
-                    <Nav className="ml-auto">
+                    {/* <Nav className="ml-auto">
                         <Navbar>
                         </Navbar>
                         <UncontrolledDropdown>
@@ -284,19 +284,12 @@ class MainLayout extends Component {
                                 <span style={{color: 'white'}}>{userId}</span>
                             </DropdownToggle>
                             <DropdownMenu right>
-                                {/* <DropdownItem>
-                                    Option 1
-                                </DropdownItem>
-                                <DropdownItem>
-                                    Option 2
-                                </DropdownItem>
-                                <DropdownItem divider /> */}
                                 <DropdownItem onClick={this.signOut}>
                                     Sign out
                                 </DropdownItem>
                             </DropdownMenu>
                         </UncontrolledDropdown>
-                    </Nav>
+                    </Nav> */}
                 </Navbar>
 
                 {/* Content */}
