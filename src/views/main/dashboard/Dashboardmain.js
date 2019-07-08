@@ -13,6 +13,8 @@ import { Scrollbars } from 'react-custom-scrollbars';
 
 import Fetch from 'utils/Fetch.js';
 import jQuery from "jquery";
+import { func } from 'prop-types';
+import { FaAddressBook } from 'react-icons/fa';
 
 
 window.$ = window.jQuery = jQuery;
@@ -50,6 +52,7 @@ class Monitoring extends Component {
 
         socket = io.connect(process.env.REACT_APP_BAAS_SOCKET);
         window.addEventListener('resize', this.updatePosition);
+
 
     }
 
@@ -362,14 +365,16 @@ class Monitoring extends Component {
 
     // d3 그리기
     drawFrame() {
+        let State = this.state;
+
         let links = [];
-        for (var i = 0; i < this.state.node.length; i++) {          // 노드 개수별로 선긋기
-            for (var j = i + 1; j < this.state.node.length; j++) {
-                links.push({ source: this.state.node[i].id, target: this.state.node[j].id, value: 1 });
+        for (var i = 0; i < State.node.length; i++) {          // 노드 개수별로 선긋기
+            for (var j = i + 1; j < State.node.length; j++) {
+                links.push({ source: State.node[i].id, target: State.node[j].id, value: 1 });
             }
         }
 
-        let nodes = _.map(this.state.node, (node) => {
+        let nodes = _.map(State.node, (node) => {
             return { id: node.id, group: 1, img: "/img/blockchain_green.svg" };
         });        
         
@@ -392,8 +397,8 @@ class Monitoring extends Component {
             .enter().append("image")
             .attr("id", function (d) { return d.id; })
             .attr("xlink:href", function (d) { return d.img; })
-            .attr("width", this.state.nodeImgSize)
-            .attr("height", this.state.nodeImgSize);
+            .attr("width", State.nodeImgSize)
+            .attr("height", State.nodeImgSize);
 
         let label = this.svg.append("g")
             .attr("class", "labels")
@@ -407,26 +412,27 @@ class Monitoring extends Component {
 
             
 
-        this.state.simulation
+        State.simulation
             .nodes(nodes)
             .on("tick", ticked);
 
-        this.state.simulation
+        State.simulation
             .force("link")
             .links(links);
 
-        let nodeG = this.state.nodeImgSize * 0.5; //node image 무게중심 구하기
-        let labelGX = this.state.nodeImgSize * 0.05; //node image 무게중심 구하기
-        let labelGY = this.state.nodeImgSize * 0.13; //node image 무게중심 구하기
+        let nodeG = State.nodeImgSize * 0.5; //node image 무게중심 구하기
+        let labelGX = State.nodeImgSize * 0.05; //node image 무게중심 구하기
+        let labelGY = State.nodeImgSize * 0.13; //node image 무게중심 구하기
+
+        
 
         // mouseover시 tooltip에 node 정보 추가
         node.on('mouseover', function (d) {
-            
             d3.select("#tooltip")
             .style("right", "0px")
             .style("top",  "0px")
             .select('#info')
-            .text(tooltipText(d));
+            .html(tooltipText(d, State));
 
             d3.select("#tooltip").classed("hidden", false);
         })
@@ -434,15 +440,17 @@ class Monitoring extends Component {
             d3.select("#tooltip").classed("hidden", true);
         })
 
-
-        function tooltipText(d) {
+        function tooltipText(d, stateParam) {
             let info;
-            // let myNode = state.node;
-            // console.log(myNode);
+            console.log(stateParam);
+            let myNode = stateParam.node[d.id-1];
+            let myStatus = stateParam.nodeState[d.id];
+            
+            info = '<p>id: ' + myNode.id + '</p>'
+            + '<p>ip: ' + myNode.ip + '</p>'
+            + '<p>port: ' +  myNode.port + '</p>'
+            + '<p>status: ' +  myStatus + '</p>';
 
-            // info = 'Node id: ' + myNode.id 
-            //     + <br/> + 'Node ip: ' + myNode.ip 
-            //     + <br/> + 'Node port: ' + myNode.port ;
 
             return info;
         }
@@ -465,6 +473,8 @@ class Monitoring extends Component {
                 .style("font-size", "16px").style("fill", "#000");
         }
     }
+
+    
 
     render() {
         const { blockNo, avgBlockTime, gasLimit, gasUsed, passSec, difficulty, 
@@ -566,7 +576,7 @@ class Monitoring extends Component {
                             </svg>
                             <div id="tooltip" className="hidden">
                                 <p><strong>Node information</strong></p>
-                                <p><span id="info"></span></p>
+                                <p><div id="info"></div></p>
                             </div>
                         </ContentCard>
                     </ContentCol>
@@ -607,7 +617,7 @@ class Monitoring extends Component {
                                         <span className='dash-upper-line-card-title'>Pending Transactions</span>
                                     </Col>
                                     <Col>
-                                        <Scrollbars horizontal style={{width: '100%', height: '100%'}}
+                                        <Scrollbars style={{width: '100%', height: '100%'}}
                                             renderView = {() => {
                                                 return <span>Write</span>
                                             }}>
