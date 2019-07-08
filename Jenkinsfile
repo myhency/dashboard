@@ -22,7 +22,8 @@ node {
             echo 'bass-portal-front-end not exists'
             // throw
         } finally {
-            echo 'bass-portal-front-end saved'
+            sh "scp -P 1322 bass-portal-front-end-${env.BUILD_ID}.tar devadmin@10.40.111.56:/var/www/html"
+            echo 'bass-portal-front-end file copy completed'
         }
     }
 }
