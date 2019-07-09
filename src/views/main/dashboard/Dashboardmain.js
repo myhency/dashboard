@@ -61,7 +61,7 @@ class Monitoring extends Component {
         this.getCurrentTime();
 
         // web socket 연결 
-        socket.on('connect',  () => {
+        socket.on('connect', () => {
             socket.emit("requestNodeList")
             this.setState({
                 socketError: false

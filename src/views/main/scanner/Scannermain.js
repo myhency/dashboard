@@ -99,7 +99,7 @@ export default class Scannermain extends Component {
           <td className="ellipsis" style={{paddingTop: '10px', paddingBottom: '10px'}}><Link to={miner_link}>{block.miner}</Link> </td>
           <td style={{textAlign: 'right'}}>
             <h5><Badge style={{paddingLeft: '10px', backgroundColor: '#9DB38B', color: 'black'}}> 
-              {block.reward} Eth
+              {block.reward !== undefined ? block.reward.toFixed(5) : null} Eth
             </Badge></h5>
           </td>
         </tr>
@@ -190,8 +190,8 @@ export default class Scannermain extends Component {
                     <thead style={{backgroundColor:'skyblue', textAlign: 'center'}}>
                       <tr>
                         <th style={{width:'25%'}}>Block #</th>
-                        <th style={{width:'59%'}}>Miner</th>
-                        <th style={{width:'16%'}}>Reward</th>
+                        <th style={{width:'55%'}}>Miner</th>
+                        <th style={{width:'20%'}}>Reward</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -217,8 +217,8 @@ export default class Scannermain extends Component {
                     <thead style={{backgroundColor:'skyblue', textAlign: 'center'}}>
                       <tr>
                         <th style={{width:'30%'}}>Tx hash</th>
-                        <th style={{width:'54%'}}>From / To</th>
-                        <th style={{width:'16%'}}>Gas used</th>
+                        <th style={{width:'50%'}}>From / To</th>
+                        <th style={{width:'20%'}}>Gas used</th>
                       </tr>
                     </thead>
                     <tbody>
