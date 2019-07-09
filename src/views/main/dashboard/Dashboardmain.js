@@ -10,11 +10,11 @@ import moment from 'moment';
 import io from 'socket.io-client';
 import * as d3 from "d3";
 import { Scrollbars } from 'react-custom-scrollbars';
+import swal from 'sweetalert2';
+
 
 import Fetch from 'utils/Fetch.js';
 import jQuery from "jquery";
-import { func } from 'prop-types';
-import { FaAddressBook } from 'react-icons/fa';
 
 
 window.$ = window.jQuery = jQuery;
@@ -48,6 +48,7 @@ class Monitoring extends Component {
           xcenter: 0,
           ycenter: 0,
           nodeImgSize: 0,
+          socketError: false
         };
 
         socket = io.connect(process.env.REACT_APP_BAAS_SOCKET);
@@ -60,9 +61,25 @@ class Monitoring extends Component {
         this.getCurrentTime();
 
         // web socket 연결 
-        socket.on('connect', function () {
+        socket.on('connect', () => {
             socket.emit("requestNodeList")
+            this.setState({
+                socketError: false
+            })
         });
+
+        socket.on('connect_error', (error) => {
+            if(!this.state.socketError){
+                this.setState({
+                    socketError: true
+                })
+                swal.fire(
+                    'Node Monitoring Server error!',
+                    'Please check your server status',
+                    'error'
+                  );
+            }
+        })
 
         // 처음에 노드 리스트 왔을 때 
         socket.on('responseNodeList', (data) => {
@@ -272,7 +289,7 @@ class Monitoring extends Component {
                 simulation: d3.forceSimulation()
                     .force("link", d3.forceLink().id(function (d) { return d.id; }))
                     .force('charge', d3.forceManyBody()
-                        .strength((-5000) * 10 / this.state.node.length)
+                        .strength((-25000) / this.state.node.length)
                         .theta(0.1)
                     )
                     .force("center", d3.forceCenter()
@@ -280,7 +297,7 @@ class Monitoring extends Component {
                         .y(cardPosition.height / 2 )), // center of the picture
                 xcenter: cardPosition.width / 2 ,      // rotational center of the picture
                 ycenter: cardPosition.height / 2 ,
-                nodeImgSize: cardPosition.width * cardPosition.height * 0.0003,
+                nodeImgSize: cardPosition.width * cardPosition.height * 0.0009 / this.state.node.length,
                 cardPosition: cardPosition
             })
             
@@ -400,15 +417,15 @@ class Monitoring extends Component {
             .attr("width", State.nodeImgSize)
             .attr("height", State.nodeImgSize);
 
-        let label = this.svg.append("g")
-            .attr("class", "labels")
-            .selectAll("text")
-            .data(nodes)
-            .enter().append("text")
-            .attr("class", "label")
-            .attr("class", "fa")
-            .attr('font-size', function (d) { return '20px' })
-            .text(function (d) { return d.id });
+        // let label = this.svg.append("g")
+        //     .attr("class", "labels")
+        //     .selectAll("text")
+        //     .data(nodes)
+        //     .enter().append("text")
+        //     .attr("class", "label")
+        //     .attr("class", "fa")
+        //     .attr('font-size', function (d) { return '20px' })
+        //     .text(function (d) { return d.id });
 
             
 
@@ -421,8 +438,8 @@ class Monitoring extends Component {
             .links(links);
 
         let nodeG = State.nodeImgSize * 0.5; //node image 무게중심 구하기
-        let labelGX = State.nodeImgSize * 0.05; //node image 무게중심 구하기
-        let labelGY = State.nodeImgSize * 0.13; //node image 무게중심 구하기
+        // let labelGX = State.nodeImgSize * 0.05; //node image 무게중심 구하기
+        // let labelGY = State.nodeImgSize * 0.13; //node image 무게중심 구하기
 
         
 
@@ -442,7 +459,6 @@ class Monitoring extends Component {
 
         function tooltipText(d, stateParam) {
             let info;
-            console.log(stateParam);
             let myNode = stateParam.node[d.id-1];
             let myStatus = stateParam.nodeState[d.id];
             
@@ -467,10 +483,10 @@ class Monitoring extends Component {
                 .attr("x", function (d) { return d.x - nodeG; })
                 .attr("y", function (d) { return d.y - nodeG; });
 
-            label
-                .attr("x", function (d) { return d.x - labelGX; })
-                .attr("y", function (d) { return d.y - labelGY; })
-                .style("font-size", "16px").style("fill", "#000");
+            // label
+            //     .attr("x", function (d) { return d.x - labelGX; })
+            //     .attr("y", function (d) { return d.y - labelGY; })
+            //     .style("font-size", "16px").style("fill", "#000");
         }
     }
 
@@ -576,7 +592,7 @@ class Monitoring extends Component {
                             </svg>
                             <div id="tooltip" className="hidden">
                                 <p><strong>Node information</strong></p>
-                                <p><div id="info"></div></p>
+                                <p><span id="info"></span></p>
                             </div>
                         </ContentCard>
                     </ContentCol>
@@ -740,7 +756,7 @@ class Monitoring extends Component {
                                                 display: true,
                                                 ticks: {
                                                     suggestedMin: 0,
-                                                    suggestedMax: 60,
+                                                    suggestedMax: 30,
                                                     display: false
                                                 },
                                                 gridLines: {

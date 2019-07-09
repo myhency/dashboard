@@ -218,7 +218,7 @@ export default class TxInfo extends Component {
                 </td>
                 <td>
                   <Badge style={{paddingLeft: '10px', backgroundColor: '#9DB38B', color: 'black', fontSize: '1.1rem'}}> 
-                    {txFee} Eth
+                    {Validation.noExponents(txFee)} Eth
                  </Badge>
                 </td>
               </tr>
@@ -242,7 +242,7 @@ export default class TxInfo extends Component {
                   <ReactTooltip id='gasUsedByTx' multiline={true}/>
                    &nbsp; Gas Used by Transaction:
                 </td>
-                <td>{parseInt(gasUsed)} ({gasUsed/gasLimit*100}%)</td>
+                <td>{gasUsed} ({gasUsed/gasLimit*100}%)</td>
               </tr>
               <tr>
                 <td>
@@ -255,7 +255,7 @@ export default class TxInfo extends Component {
                 </td>
                 <td>
                   <Badge style={{paddingLeft: '10px', backgroundColor: '#E3AE71', color: 'black', fontSize: '1.1rem'}}> 
-                    {gasPrice*Math.pow(10,9)} Gwei
+                    {Validation.noExponents(gasPrice*Math.pow(10,9))} Gwei
                   </Badge> {' '}
                 ({Validation.noExponents(gasPrice)} Eth)</td>
               </tr>
