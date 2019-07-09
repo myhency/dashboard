@@ -247,10 +247,10 @@ class MainLayout extends Component {
                                 return null;
                             }
                         })}
-                        <NavLink to="/main/components/" className={'manualButton'} >
+                        <a href="http://10.40.111.60:3001" className={'manualButton'} target="blank" >
                             <FaBook size={20} color={'#0F9EDB'} style={{marginLeft:'.4rem', marginRight:'.75rem'}}/>
                             User Guide
-                        </NavLink>
+                        </a>
                     </Nav>
                 </div>
 
