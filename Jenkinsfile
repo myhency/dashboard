@@ -7,7 +7,7 @@ node {
         try {
             sh "docker stop bass-portal-front-end"
             sh "docker rm bass-portal-front-end"
-            sh "docker system prune --force"
+            // sh "docker system prune --force"
         } catch (exc) {
             echo 'bass-portal-front-end exists'
             // throw
