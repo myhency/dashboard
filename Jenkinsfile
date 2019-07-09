@@ -19,7 +19,7 @@ node {
     stage("Save container"){
         try {
             sh "docker save -o bass-portal-front-end-latest.tar bass-portal-front-end:${env.BUILD_ID}"
-            sh "docker rmi bass-portal-front-end:${env.BUILD_ID}"
+            sh "docker rmi bass-portal-front-end:${env.BUILD_ID-1}"
             sh "scp -P 1322 bass-portal-front-end-latest.tar devadmin@10.40.111.56:/var/www/html"
             sh "ssh devadmin@10.40.111.56 -p 1322 chmod 664 /var/www/html/bass-portal-front-end-latest.tar"
             echo 'bass-portal-front-end file copy completed'
