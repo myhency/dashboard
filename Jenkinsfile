@@ -7,6 +7,7 @@ node {
         try {
             sh "docker stop bass-portal-front-end"
             sh "docker rm bass-portal-front-end"
+            sh "docker rmi bass-portal-front-end"
         } catch (exc) {
             echo 'bass-portal-front-end exists'
             // throw
@@ -15,16 +16,16 @@ node {
         }
     }
 
-    stage("Save container"){
-        try {
-            sh "docker save -o bass-portal-front-end-latest.tar bass-portal-front-end:${env.BUILD_ID}"
-        } catch (exc) {
-            echo 'bass-portal-front-end not exists'
-            // throw
-        } finally {
-            sh "scp -P 1322 bass-portal-front-end-latest.tar devadmin@10.40.111.56:/var/www/html"
-            sh "ssh devadmin@10.40.111.56 -p 1322 chmod 664 /var/www/html/bass-portal-front-end-latest.tar"
-            echo 'bass-portal-front-end file copy completed'
-        }
-    }
+    // stage("Save container"){
+    //     try {
+    //         sh "docker save -o bass-portal-front-end-latest.tar bass-portal-front-end:${env.BUILD_ID}"
+    //     } catch (exc) {
+    //         echo 'bass-portal-front-end not exists'
+    //         // throw
+    //     } finally {
+    //         sh "scp -P 1322 bass-portal-front-end-latest.tar devadmin@10.40.111.56:/var/www/html"
+    //         sh "ssh devadmin@10.40.111.56 -p 1322 chmod 664 /var/www/html/bass-portal-front-end-latest.tar"
+    //         echo 'bass-portal-front-end file copy completed'
+    //     }
+    // }
 }
