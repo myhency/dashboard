@@ -632,31 +632,26 @@ class Monitoring extends Component {
                                     <Col style={{ textAlign: 'left', marginBottom: '10px' }}>
                                         <span className='dash-upper-line-card-title'>Pending Transactions</span>
                                     </Col>
-                                    <Col>
-                                        <Scrollbars style={{width: '100%', height: '100%'}}
-                                            renderView = {() => {
-                                                return <span>Write</span>
-                                            }}>
-                                            <Table bordered>
-                                                <thead style={{ textAlign: 'center' }}>
-                                                    <tr>
-                                                        <th style={{width:'15%'}}>Pending..</th>
-                                                        <th style={{width:'85%'}}>txHash</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    { rows }
-                                                </tbody>
-                                            </Table>
-                                            {pendingTx.length === 0 && 
+                                    <div style={{maxHeight:'230px', overflowY:'auto', width:'100%'}}>
+                                        <Table striped style={{width:'100%'}}>
+                                            <thead style={{ textAlign: 'center' }}>
+                                                <tr>
+                                                    <th style={{width:'15%'}}>Pending..</th>
+                                                    <th style={{width:'85%'}}>txHash</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                { rows }
+                                            </tbody>
+                                        </Table>
+                                        {pendingTx.length === 0 && 
                                             <div style={{
                                                 display: 'block',
                                                 position: 'absolute',
                                                 left: '38%',
-                                                top: '44%',
+                                                top: '50%',
                                                 color: 'white'}}>No Pending Transactions</div>}
-                                        </Scrollbars>
-                                    </Col>
+                                    </div>
                                 </ContentCard>
                             </ContentCol>
                         </ContentRow>
