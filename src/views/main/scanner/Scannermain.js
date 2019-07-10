@@ -3,12 +3,11 @@ import ContentRow from 'components/ContentRow';
 import ContentCol from 'components/ContentCol';
 import ContentCard from 'components/ContentCard';
 import { 
-    Form, FormGroup,
-    Input, InputGroup, InputGroupAddon,
+    Form, Input, InputGroup, InputGroupAddon,
     Button, Table, Badge, 
-    Card, CardBody, CardDeck, CardHeader, CardFooter } from 'reactstrap';
+    Card, CardBody, CardHeader, CardFooter } from 'reactstrap';
 import { Link } from 'react-router-dom';
-import { FaArrowRight, icons } from 'react-icons/fa';
+import { FaArrowRight } from 'react-icons/fa';
 import SweetAlert from 'sweetalert2';
 
 import Fetch from 'utils/Fetch.js';
@@ -55,11 +54,10 @@ export default class Scannermain extends Component {
   }
 
   search = (item) => {
-    console.log('search');
     Fetch.GET(`/api/search/${item}`)
     .then(res =>{
       //잘못된 serach
-      if(res.kinds == 'none'){
+      if(res.kinds === 'none'){
         SweetAlert.fire(
           'No Data Found!',
           'Please check your input',
@@ -90,12 +88,12 @@ export default class Scannermain extends Component {
     
     // latest block table
     var brows = [];
-    blocks.map((block) => {
+    blocks.forEach((block) => {
       let block_link = `/main/scanner/block/${block.number}`;
       let miner_link = `/main/scanner/address/${block.miner}`;
       brows.push(
         <tr key={block.id}>
-          <td><img src='/img/bk.png' height='50px'/>&nbsp;&nbsp;&nbsp;<Link to={block_link}>{block.number}</Link></td>
+          <td><img alt='block' src='/img/bk.png' height='50px'/>&nbsp;&nbsp;&nbsp;<Link to={block_link}>{block.number}</Link></td>
           <td className="ellipsis" style={{paddingTop: '10px', paddingBottom: '10px'}}><Link to={miner_link}>{block.miner}</Link> </td>
           <td style={{textAlign: 'right'}}>
             <h5><Badge style={{paddingLeft: '10px', backgroundColor: '#9DB38B', color: 'black'}}> 
@@ -108,13 +106,13 @@ export default class Scannermain extends Component {
 
     // latest transaction table
     var trows = [];
-    transactions.map((tx) => {
+    transactions.forEach((tx) => {
       let block_link = `/main/scanner/transaction/${tx.transaction_hash}`;
       let from_link = `/main/scanner/address/${tx.transaction_from}`;
       let to_link = `/main/scanner/address/${tx.transaction_to}`;
       trows.push(
         <tr key={tx.id}>
-          <td className="ellipsis"><img src='/img/tx.png' height='50px'/>&nbsp;&nbsp;&nbsp;<Link to={block_link}>{tx.transaction_hash}</Link></td>
+          <td className="ellipsis"><img alt='transaction' src='/img/tx.png' height='50px'/>&nbsp;&nbsp;&nbsp;<Link to={block_link}>{tx.transaction_hash}</Link></td>
           <td>
             <Table borderless style={{tableLayout: 'fixed', margin: '0', padding: '0'}}>
               <tbody>
@@ -150,9 +148,9 @@ export default class Scannermain extends Component {
       }
     }
     else {
-      for(var i=0; i<tlen-blen; i++){
+      for(var j=0; j<tlen-blen; j++){
         brows.push(
-          <tr key={i}>
+          <tr key={j}>
             <td>&nbsp;</td>
             <td style={{paddingTop: '10px', paddingBottom: '10px'}}>&nbsp;</td>
             <td>&nbsp;</td>

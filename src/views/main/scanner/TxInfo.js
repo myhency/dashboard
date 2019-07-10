@@ -104,7 +104,7 @@ export default class TxInfo extends Component {
             <tbody>
               <tr>
                 <td style={{width: '20%'}}>
-                  <img src='/img/information.svg' height='18px' 
+                  <img alt="info" src='/img/information.svg' height='18px' 
                   style={{marginTop: '9px', marginBottom: '9px'}} 
                   data-for='txHash'
                   data-tip={"A TxHash or transaction hash is a unique 66 <br/> characters identifier that is generated whenever a <br/>transaction is executed."}/>
@@ -115,7 +115,7 @@ export default class TxInfo extends Component {
                     {TxHash}
                     <span className="copyicon" data-tip='Copy' data-for='hashCopy' >
                     <CopyToClipboard text={TxHash} onCopy={() => { this.setState({copied: true}) }}>
-                      <img src={CopyImg} height='18px' style={{marginLeft: '10px'}}/>
+                      <img alt="copy" src={CopyImg} height='18px' style={{marginLeft: '10px'}}/>
                     </CopyToClipboard>
                     </span>
                     <ReactTooltip id='hashCopy' getContent={(dataTip) => {if(this.state.copied) return 'Copied'; else return 'Copy';}} afterHide={() => {this.setState({copied: false}) }}/>
@@ -134,7 +134,7 @@ export default class TxInfo extends Component {
               </tr> */}
               <tr>
                 <td>
-                  <img src='/img/information.svg' height='18px' 
+                  <img alt="info" src='/img/information.svg' height='18px' 
                   style={{marginTop: '9px', marginBottom: '9px'}} 
                   data-for='relatedBlock'
                   data-tip={"The number of the block in which the transaction <br/>was recorded. Block confirmation indicate how <br/>many blocks since the transaction is mined."}/>
@@ -145,18 +145,18 @@ export default class TxInfo extends Component {
               </tr>
               <tr>
                 <td>
-                  <img src='/img/information.svg' height='18px' 
+                  <img alt="info" src='/img/information.svg' height='18px' 
                   style={{marginTop: '9px', marginBottom: '9px'}} 
                   data-for='timestamp'
                   data-tip={"The date and time at which a transaction is mined."}/>
                   <ReactTooltip id='timestamp' multiline={true}/>
                    &nbsp; Timestamp:
                 </td>
-                <td><img src='/img/clock.svg' height='15px'/>&nbsp;{moment(timestamp).format('YYYY-MM-DD HH:mm:ss')}</td>
+                <td><img alt="clock" src='/img/clock.svg' height='15px'/>&nbsp;{moment(timestamp).format('YYYY-MM-DD HH:mm:ss')}</td>
               </tr>
               <tr>
                 <td>
-                  <img src='/img/information.svg' height='18px' 
+                  <img alt="info" src='/img/information.svg' height='18px' 
                   style={{marginTop: '9px', marginBottom: '9px'}} 
                   data-for='txFrom'
                   data-tip={"The sending party of the transcation (could be <br/>from a contract address)."}/>
@@ -167,7 +167,7 @@ export default class TxInfo extends Component {
                   <Link to={`/main/scanner/address/${txFrom}`}>{txFrom}</Link>
                   <span data-tip='Copy' className="copyicon" data-for='fromCopy' >
                     <CopyToClipboard text={txFrom} onCopy={() => { this.setState({copied: true}) }}> 
-                      <img src={CopyImg} height='18px' style={{marginLeft: '10px'}}/>
+                      <img alt="copy" src={CopyImg} height='18px' style={{marginLeft: '10px'}}/>
                     </CopyToClipboard>
                   </span>
                   <ReactTooltip id='fromCopy' getContent={(dataTip) => {if(this.state.copied) return 'Copied'; else return 'Copy';}} afterHide={() => {this.setState({copied: false}) }}/>
@@ -175,7 +175,7 @@ export default class TxInfo extends Component {
               </tr>
               <tr>
                 <td>
-                  <img src='/img/information.svg' height='18px' 
+                  <img alt="info" src='/img/information.svg' height='18px' 
                   style={{marginTop: '9px', marginBottom: '9px'}} 
                   data-for='txTo'
                   data-tip={"The receiving party of the transaction (could be a <br/>contract address)."}/>
@@ -186,7 +186,7 @@ export default class TxInfo extends Component {
                   <Link to={`/main/scanner/address/${txTo}`}>{txTo}</Link>
                   <span data-tip='Copy' className="copyicon" data-for='toCopy'>
                     <CopyToClipboard text={txTo} onCopy={() => { this.setState({copied: true}) }}> 
-                      <img src={CopyImg} height='18px' style={{marginLeft: '10px'}}/>
+                      <img alt="copy" src={CopyImg} height='18px' style={{marginLeft: '10px'}}/>
                     </CopyToClipboard>
                   </span>
                   <ReactTooltip id='toCopy' getContent={(dataTip) => {if(this.state.copied) return 'Copied'; else return 'Copy';}} afterHide={() => {this.setState({copied: false}) }}/>
@@ -194,7 +194,7 @@ export default class TxInfo extends Component {
               </tr>
               <tr>
                 <td>
-                  <img src='/img/information.svg' height='18px' 
+                  <img alt="info" src='/img/information.svg' height='18px' 
                   style={{marginTop: '9px', marginBottom: '9px'}} 
                   data-for='value'
                   data-tip={"The value being transacted in Ether."}/>
@@ -209,7 +209,7 @@ export default class TxInfo extends Component {
               </tr>
               <tr>
                 <td>
-                  <img src='/img/information.svg' height='18px' 
+                  <img alt="info" src='/img/information.svg' height='18px' 
                   style={{marginTop: '9px', marginBottom: '9px'}} 
                   data-for='txFee'
                   data-tip={"Amount paid to the miner for processing the <br/>transaction."}/>
@@ -224,7 +224,7 @@ export default class TxInfo extends Component {
               </tr>
               <tr>
                 <td>
-                  <img src='/img/information.svg' height='18px' 
+                  <img alt="info" src='/img/information.svg' height='18px' 
                   style={{marginTop: '9px', marginBottom: '9px'}} 
                   data-for='gasLimit'
                   data-tip={"Maximum amount of gas provided for the <br/>transaction. For normal Eth transfers, the value is <br/>21,000. For contract this value is higher and <br/>bound by block gas limit."}/>
@@ -235,7 +235,7 @@ export default class TxInfo extends Component {
               </tr>
               <tr>
                 <td>
-                  <img src='/img/information.svg' height='18px' 
+                  <img alt="info" src='/img/information.svg' height='18px' 
                   style={{marginTop: '9px', marginBottom: '9px'}} 
                   data-for='gasUsedByTx'
                   data-tip={"The exact units of gas that was used for the transaction."}/>
@@ -246,7 +246,7 @@ export default class TxInfo extends Component {
               </tr>
               <tr>
                 <td>
-                  <img src='/img/information.svg' height='18px' 
+                  <img alt="info" src='/img/information.svg' height='18px' 
                   style={{marginTop: '9px', marginBottom: '9px'}} 
                   data-for='gasPrice'
                   data-tip={"Cost per unit of gas specified for the transaction, <br/>in Ether and Gwei. The higher the gas price the <br/>higher chance of getting included in a block."}/>
@@ -261,7 +261,7 @@ export default class TxInfo extends Component {
               </tr>
               <tr>
                 <td>
-                  <img src='/img/information.svg' height='18px' 
+                  <img alt="info" src='/img/information.svg' height='18px' 
                   style={{marginTop: '9px', marginBottom: '9px'}} 
                   data-for='nonce'
                   data-tip={"Sequential running number for an address, <br/> beginning with 0 for the first transaction. For <br/>example, if the nonce of a transaction is 10, it <br/>would be the 11th transaction sent from the <br/>sender's address."}/>
@@ -272,7 +272,7 @@ export default class TxInfo extends Component {
               </tr>
               <tr>
                 <td>
-                  <img src='/img/information.svg' height='18px' 
+                  <img alt="info" src='/img/information.svg' height='18px' 
                   style={{marginTop: '9px', marginBottom: '9px'}} 
                   data-for='txInput'
                   data-tip={"Additional information that is required for the transaction."}/>

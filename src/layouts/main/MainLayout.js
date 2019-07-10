@@ -7,27 +7,18 @@ import {
     Nav,
     NavLink,
     UncontrolledCollapse,
-    UncontrolledDropdown,
-    DropdownToggle,
-    DropdownItem,
-    DropdownMenu
 } from "reactstrap";
 import windowSize from 'react-window-size';
-import { IoMdContact, IoIosCloud } from 'react-icons/io';
+import { IoIosCloud } from 'react-icons/io';
 import { FiChevronDown, FiAlignLeft } from 'react-icons/fi';
 import mainRoutes from 'routes/main';
 import UrlPattern from "url-pattern";
-import { signOut } from 'store/modules/auth';
-import Fetch from 'utils/Fetch';
 import { setInfo } from 'store/modules/currentInfo';
 import { setPage } from 'store/modules/tempPageName';
 import { FaBook } from 'react-icons/fa';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import ReactTooltip from 'react-tooltip';
 import jQuery from "jquery";
-import { callbackify } from 'util';
-
-// import Background from '/img/login_page.jpeg';
 
 window.$ = window.jQuery = jQuery;
 
@@ -42,15 +33,12 @@ class MainLayout extends Component {
             currentInfo: '',
             tempPageName: undefined,
             isWindowSmall: false,
-
-
-            userId: undefined
         };
     }
 
     static getDerivedStateFromProps(props, state) {
         
-        let { currentPath, currentInfo, userId, tempPageName } = state;
+        let { currentPath, currentInfo, tempPageName } = state;
         let isWindowSmall = false;
 
         if(currentPath !== props.location.pathname) {
@@ -71,14 +59,9 @@ class MainLayout extends Component {
             isWindowSmall = true;
         }
 
-        if(userId !== props.userId) {
-            userId = props.userId;
-        }
-
         return {
             currentPath,
             isWindowSmall,
-            userId,
             currentInfo,
             tempPageName
         }
@@ -117,10 +100,8 @@ class MainLayout extends Component {
         if(isWindowSmall) {
             if(active === true) {
                 document.body.style.overflow = 'auto';
-                // this.bodyScrolling(true);
             }else {
                 document.body.style.overflow = 'hidden';    
-                // this.bodyScrolling(false);
             }
         }
 
@@ -149,54 +130,8 @@ class MainLayout extends Component {
         });
     }
 
-    // signOut = () => {
-    //     sessionStorage.clear();
-    //     this.props.dispatch(signOut());
-        
-    //     // csrf 생성을 위한 장고 cookie 얻기
-    //     function getCookie(name) {
-    //         var cookieValue = null;
-    //         if (document.cookie && document.cookie !== '') {
-    //             var cookies = document.cookie.split(';');
-    //             console.log(cookies);
-    //             for (var i = 0; i < cookies.length; i++) {
-    //                 var cookie = jQuery.trim(cookies[i]);
-    //                 if (cookie.substring(0, name.length + 1) === (name + '=')) {
-    //                     cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-    //                     break;
-    //                 }
-    //             }
-    //         }
-    //         return cookieValue;
-    //     }
-
-    //     // 쿠키로부터 csrf 토큰 값 추출 
-    //     var csrftoken = getCookie('csrftoken');
-    //     // fetch post 옵션으로 보낼 dict 생성
-    //     // API 보낼 때 헤더 생략되면 MIME타입으로 요청 -> 응답 불가
-    //     const options = {
-    //         headers: {
-    //             'Accept': 'application/json',
-    //             'Content-Type': 'application/json',
-    //             'X-CSRFToken': csrftoken,
-    //         }
-    //     }
-
-    //     Fetch.POST('/api/auth/logout/', {}, options)
-    //     .then(res => {
-    //         console.log('logout');
-    //     })
-    //     .catch(error => {
-    //         console.log(error);
-    //     })
-    //     .finally(() => {
-    //         console.log('logout')
-    //         this.props.history.push('/auth/signIn');
-    //     })
-    // }
-
     render() {
-        const { active, currentPath, currentInfo, isWindowSmall, userId } = this.state;
+        const { active, currentPath, currentInfo, isWindowSmall } = this.state;
         return (
             <Fragment>
                 {/* Sidebar */}
@@ -267,7 +202,7 @@ class MainLayout extends Component {
                         {(this.getCurrentPageName(currentPath) === "Address") || (this.getCurrentPageName(currentPath) === "Contract") ?
                             <span data-tip='Copy'  data-for='addressCopy'>
                                 <CopyToClipboard text={currentInfo} onCopy={() => { this.setState({copied: true}) }}> 
-                                    <img src={'/img/copy.svg'} height='18px' style={{marginLeft: '10px'}}/>
+                                    <img alt="copy" src={'/img/copy.svg'} height='18px' style={{marginLeft: '10px'}}/>
                                     {/* <FaCopy style={{marginLeft: '10px', color: 'white'}}/> */}
                                 </CopyToClipboard>
                                 <ReactTooltip id='addressCopy' getContent={(dataTip) => {if(this.state.copied) return 'Copied'; else return 'Copy';}} afterHide={() => {this.setState({copied: false}) }}/>
@@ -275,21 +210,8 @@ class MainLayout extends Component {
                         }
                     </NavbarBrand>
                     
-                    {/* <Nav className="ml-auto">
-                        <Navbar>
-                        </Navbar>
-                        <UncontrolledDropdown>
-                            <DropdownToggle nav style={{color:'black'}}>
-                                <IoMdContact color='#0F9EDB' size={30}/>{' '}
-                                <span style={{color: 'white'}}>{userId}</span>
-                            </DropdownToggle>
-                            <DropdownMenu right>
-                                <DropdownItem onClick={this.signOut}>
-                                    Sign out
-                                </DropdownItem>
-                            </DropdownMenu>
-                        </UncontrolledDropdown>
-                    </Nav> */}
+                    <Nav className="ml-auto">
+                    </Nav>
                 </Navbar>
 
                 {/* Content */}
@@ -301,7 +223,6 @@ class MainLayout extends Component {
                                 if(route.subRoutes) {
                                     let subRoutes = [];
                                     route.subRoutes.map((subRoute, subKey) => {
-                                        // console.log(subRoute.path);
                                         subRoutes.push(
                                             <Route exact path={subRoute.path} component={subRoute.component} key={subKey}/>    
                                         )
@@ -340,7 +261,6 @@ class MainLayout extends Component {
 
 export default connect(
     state => ({
-        userId: state.auth.userId,
         currentInfo: state.currentInfo.info,
         tempPageName: state.tempPageName.pageName
     })

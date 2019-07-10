@@ -9,7 +9,6 @@ import _ from 'lodash';
 import moment from 'moment';
 import io from 'socket.io-client';
 import * as d3 from "d3";
-import { Scrollbars } from 'react-custom-scrollbars';
 import swal from 'sweetalert2';
 
 
@@ -116,7 +115,6 @@ class Monitoring extends Component {
             this.setState({
                 nodeState: changeState
             })
-            // console.log(data);
             this.updateNode();
         });
 
@@ -139,9 +137,7 @@ class Monitoring extends Component {
         });
 
         socket.on('blockMiner', (data) => {
-            // console.log(data);
             this.miningNode(data);
-            // this.getDashboardInfo();
         });
 
         socket.on('uncle', (data) => {
@@ -157,7 +153,6 @@ class Monitoring extends Component {
             this.setState({
                 nodeState: changeState
             });
-            // console.log(data);
             this.updateNode();
         });
 
@@ -224,7 +219,6 @@ class Monitoring extends Component {
     updateDashboardInfo =() => {
         Fetch.GET('/api/block/?page_size=2&page=1')
         .then(res => {
-            // console.log(res.results[0]);
             let bestBlock = res.results[0];
             // update 안할 때
             if(this.state.blockNo === bestBlock.number) {
@@ -235,7 +229,6 @@ class Monitoring extends Component {
             let txPerBlock = this.state.txPerBlock.slice();
             let tbpLabels = this.state.tbpLabels.slice();
 
-            // console.log(newTime);
             if(this.state.timePass.length >= 60) {
                 timePass.splice(0, 1);
                 txPerBlock.splice(0, 1);
@@ -314,7 +307,7 @@ class Monitoring extends Component {
         jQuery.each(nodeState, function(id, state) {
             let color = state === 'uncle' ? 'yellow' : 'green';
             // discconnect 일때는 무조건 red
-            if(state == 'disconnect'){
+            if(state === 'disconnect'){
                 color ='red';
                 disconnectNode.push(id);
             }
@@ -330,7 +323,7 @@ class Monitoring extends Component {
         d3.selectAll(`line[src]`).attr("style", "display:true");
 
         // disconnect인 것들 선을 없앰
-        disconnectNode.map(id => {
+        disconnectNode.forEach(id => {
             d3.selectAll(`line[src='${id}']`).attr("style", "display:none");
             d3.selectAll(`line[target='${id}']`).attr("style", "display:none");
         })
@@ -494,11 +487,11 @@ class Monitoring extends Component {
 
     render() {
         const { blockNo, avgBlockTime, gasLimit, gasUsed, passSec, difficulty, 
-            cardPosition, node, tbpLabels, txPerBlock, timePass, pendingTx } = this.state;
+            tbpLabels, txPerBlock, timePass, pendingTx } = this.state;
         
         // pending Transaction Table 
         var rows = [];
-        pendingTx.map((txInfo) => {
+        pendingTx.forEach((txInfo) => {
             rows.push(
                 <tr key={txInfo.hash}>
                     <td>{txInfo.time}s ago</td>
@@ -522,15 +515,12 @@ class Monitoring extends Component {
             <Fragment>
                 <ContentRow>
                     <ContentCol xl={3} lg={6} md={6} sm={12} xs={12}>
-                        {/* <ContentCard inverse backgroundColor='#e06377' borderColor='#c83349'> */}
                         <ContentCard>
                             <ContentRow>
                                 <Col xl={4} lg={4} md={4} sm={4} xs={4} style={{ textAlign: 'center' }}>
-                                    {/* <FiBox size={100} color="#0F9EDB" /> */}
-                                    <img src="/img/best_block.svg" width="90px"/>
+                                    <img alt="BEST BLOCK" src="/img/best_block.svg" width="90px"/>
                                 </Col>
                                 <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{ textAlign: 'left', lineHeight: 2 }}>
-                                    {/* <span class='dash-upper-line-card' style={{fontSize:'0.9rem', color:"#FFFFFF"}}>BEST BLOCK</span><br/> */}
                                     <span className='dash-upper-line-card-title' >BEST BLOCK</span><br />
                                     <span className='dash-upper-line-card-value' style={{color: '#B648F6'}}># {blockNo === undefined ? '' : blockNo}</span>
                                 </Col>
@@ -538,15 +528,12 @@ class Monitoring extends Component {
                         </ContentCard>
                     </ContentCol>
                     <ContentCol xl={3} lg={6} md={6} sm={12} xs={12}>
-                        {/* <ContentCard inverse backgroundColor='#e06377' borderColor='#c83349'> */}
                         <ContentCard>
                             <ContentRow>
                                 <Col xl={4} lg={4} md={4} sm={4} xs={4} style={{textAlign:'center'}}>
-                                    {/* <MdHourglassEmpty size={100} color="#8B9DC3"/> */}
-                                    <img src="/img/last_block.svg" width="90px"/>
+                                    <img alt="LAST BLOCK" src="/img/last_block.svg" width="90px"/>
                                 </Col>
                                 <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{textAlign:'left', lineHeight:2}}>
-                                    {/* <span class='dash-upper-line-card' style={{fontSize:'0.9rem', color:"#FFFFFF"}}>BEST BLOCK</span><br/> */}
                                     <span className='dash-upper-line-card-title' >LAST BLOCK</span><br/>
                                     <span className='dash-upper-line-card-value' style={{color: '#0F9EDB'}}>{passSec === undefined ? '' : passSec} s ago</span>
                                 </Col>
@@ -554,12 +541,10 @@ class Monitoring extends Component {
                         </ContentCard>
                     </ContentCol>
                     <ContentCol xl={3} lg={6} md={6} sm={12} xs={12}>
-                        {/* <ContentCard inverse backgroundColor='#339AED' borderColor='#3B5998'> */}
                         <ContentCard>
                             <ContentRow>
                                 <Col xl={4} lg={4} md={4} sm={4} xs={4} style={{textAlign:'center'}}>
-                                    {/* <MdTimer size={100} color='#339AED'/> */}
-                                    <img src="/img/avg_block_time.svg" width="90px"/>
+                                    <img alt="AVG BLOCK TIME" src="/img/avg_block_time.svg" width="90px"/>
                                 </Col>
                                 <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{textAlign:'left', lineHeight:2}}>
                                     <span className='dash-upper-line-card-title'>AVG BLOCK TIME</span><br/>
@@ -569,12 +554,10 @@ class Monitoring extends Component {
                         </ContentCard>
                     </ContentCol>
                     <ContentCol xl={3} lg={6} md={6} sm={12} xs={12}>
-                        {/* <ContentCard inverse backgroundColor='#34A853' borderColor='#A4C639'> */}
                         <ContentCard>
                             <ContentRow>
                                 <Col xl={4} lg={4} md={4} sm={4} xs={4} style={{ textAlign: 'center' }}>
-                                    {/* <TiKeyOutline size={100} color='#34A853' /> */}
-                                    <img src="/img/difficulty.svg" width="90px"/>
+                                    <img alt="DIFFICULTY" src="/img/difficulty.svg" width="90px"/>
                                 </Col>
                                 <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{textAlign:'left', lineHeight:2}}>
                                     <span className='dash-upper-line-card-title'>DIFFICULTY</span><br/>
@@ -602,7 +585,7 @@ class Monitoring extends Component {
                                 <ContentCard>
                                     <ContentRow>
                                         <Col xl={4} lg={4} md={4} sm={4} xs={4} style={{textAlign:'center'}}>
-                                            <img src="/img/gas_price.svg" width="90px"/>
+                                            <img alt="GAS USED" src="/img/gas_price.svg" width="90px"/>
                                         </Col>
                                         <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{textAlign:'left', lineHeight:2}}>
                                             <span className='dash-upper-line-card-title'>GAS USED</span><br/>
@@ -612,11 +595,10 @@ class Monitoring extends Component {
                                 </ContentCard>
                             </ContentCol>
                             <ContentCol xl={6} lg={12} md={12} sm={12} xs={12}>
-                                {/* <ContentCard inverse backgroundColor='#34A853' borderColor='#A4C639'> */}
                                 <ContentCard>
                                     <ContentRow>
                                         <Col xl={4} lg={4} md={4} sm={4} xs={4} style={{textAlign:'center'}}>
-                                            <img src="/img/gas_limit.svg" width="90px"/>
+                                            <img alt="GAS LIMIT" src="/img/gas_limit.svg" width="90px"/>
                                         </Col>
                                         <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{textAlign:'left', lineHeight:2}}>
                                             <span className='dash-upper-line-card-title'>GAS LIMIT</span><br/>
@@ -661,111 +643,113 @@ class Monitoring extends Component {
                     <ContentCol xl={6} noMarginBottom={true}>
                         <ContentCard>
                             <span className='dash-upper-line-card-title'>Transaction Per Block</span><br/><br/>
-                            <Bar
-                                data={{
-                                    labels: tbpLabels,
-                                    datasets: [
-                                        {
-                                            label: "Transaction Per Block",
-                                            data: txPerBlock,
-                                            backgroundColor: tpbColor,
-                                            borderColor: tpbColor,
-                                            borderWidth: 1.5,
-                                            pointBackgroundColor: '#87bdd8',
-                                            pointBorderColor: '#fff',
-                                            pointBorderWidth: 2,
-                                        }
-                                    ]
-                                }}
-                                height={40}
-                                options={{
-                                    scales: {
-                                        xAxes: [
+                            <div> {/* IE 대응 */}
+                                <Bar
+                                    data={{
+                                        labels: tbpLabels,
+                                        datasets: [
                                             {
-                                                // display: false,
-                                                gridLines: {
-                                                    display:false,
-                                                    color:'white'
-                                                },
-                                                ticks: {
-                                                    display: false
-                                                }
-                                            }
-                                        ],
-                                        yAxes: [
-                                            {
-                                                // display: false,
-                                                ticks: {
-                                                    suggestedMin: 0,
-                                                    suggestedMax: 5,
-                                                    interval: 1,
-                                                    display: false
-                                                },
-                                                gridLines: {
-                                                    display:false,
-                                                    color:'white'
-                                                }
+                                                label: "Transaction Per Block",
+                                                data: txPerBlock,
+                                                backgroundColor: tpbColor,
+                                                borderColor: tpbColor,
+                                                borderWidth: 1.5,
+                                                pointBackgroundColor: '#87bdd8',
+                                                pointBorderColor: '#fff',
+                                                pointBorderWidth: 2,
                                             }
                                         ]
-                                    }
-                                }}
-                                legend={{
-                                    display: false
-                                }}
-                            />
+                                    }}
+                                    height={40}
+                                    options={{
+                                        scales: {
+                                            xAxes: [
+                                                {
+                                                    gridLines: {
+                                                        display:false,
+                                                        color:'white'
+                                                    },
+                                                    ticks: {
+                                                        display: false
+                                                    }
+                                                }
+                                            ],
+                                            yAxes: [
+                                                {
+                                                    ticks: {
+                                                        suggestedMin: 0,
+                                                        suggestedMax: 5,
+                                                        interval: 1,
+                                                        display: false
+                                                    },
+                                                    gridLines: {
+                                                        display:false,
+                                                        color:'white'
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }}
+                                    legend={{
+                                        display: false
+                                    }}
+                                />
+                            </div>
                         </ContentCard>
                     </ContentCol>
                     <ContentCol xl={6} noMarginBottom={true}>
                         <ContentCard>
                             <span className='dash-upper-line-card-title'>Block Generation Time</span><br/><br/>
-                            <Line
-                                data={{
-                                    labels: tbpLabels,
-                                    datasets: [
-                                        {
-                                            label: "Block Generation Time",
-                                            data: timePass,
-                                            borderColor: '#FFD162',
-                                            borderWidth: 2,
-                                            pointRadius: 1,
-                                            pointHoverBorderWidth: 1
-                                        }
-                                    ]
-                                }}
-                                height={40}
-                                options={{
-                                    scales: {
-                                        xAxes: [
+                            <div> {/* IE 대응 */}
+                                <Line
+                                    data={{
+                                        labels: tbpLabels,
+                                        datasets: [
                                             {
-                                                gridLines: {
-                                                    display:false,
-                                                    color:'white'
-                                                },
-                                                ticks: {
-                                                    display: false
-                                                }
-                                            }
-                                        ],
-                                        yAxes: [
-                                            {
-                                                display: true,
-                                                ticks: {
-                                                    suggestedMin: 0,
-                                                    suggestedMax: 30,
-                                                    display: false
-                                                },
-                                                gridLines: {
-                                                    display:false,
-                                                    color:'white'
-                                                }
+                                                label: "Block Generation Time",
+                                                data: timePass,
+                                                borderColor: '#FFD162',
+                                                borderWidth: 2,
+                                                pointRadius: 1,
+                                                pointHoverBorderWidth: 1
                                             }
                                         ]
-                                    },
-                                }}
-                                legend={{
-                                    display: false
-                                }}
-                            />
+                                    }}
+                                    height={40}
+                                    options={{
+                                        scales: {
+                                            xAxes: [
+                                                {
+                                                    gridLines: {
+                                                        display:false,
+                                                        color:'white'
+                                                    },
+                                                    ticks: {
+                                                        display: false
+                                                    }
+                                                }
+                                            ],
+                                            yAxes: [
+                                                {
+                                                    display: true,
+                                                    ticks: {
+                                                        suggestedMin: 0,
+                                                        suggestedMax: 30,
+                                                        display: false
+                                                    },
+                                                    gridLines: {
+                                                        display:false,
+                                                        color:'white'
+                                                    }
+                                                }
+                                            ]
+                                        },
+                                    }}
+                                    legend={{
+                                        display: false
+                                    }}
+                                />
+                            </div>
                         </ContentCard>
                     </ContentCol>
                 </ContentRow>

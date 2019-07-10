@@ -131,7 +131,7 @@ export default class TxList extends Component {
                 loading={loading}
                 onFetchData={this.getTransaction}
                 pageSizeOptions={[5, 10, 15, 20]}
-                defaultPageSize={20}
+                defaultPageSize={15}
                 noDataText={'No Data found'}
                 getNoDataProps={() => {return {style: {backgroundColor: 'transparent', color: 'white'}}}}
             />

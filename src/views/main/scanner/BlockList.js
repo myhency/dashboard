@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import ContentCard from 'components/ContentCard';
-import { Badge, Button } from 'reactstrap';
+import { Button } from 'reactstrap';
 import ReactTable from 'react-table';
 import { Link } from 'react-router-dom';
 import Fetch from 'utils/Fetch'; 
@@ -23,7 +23,6 @@ export default class BlockList extends Component {
         this.setState({
             loading: true
         });
-        console.log(state.pageSize);
 
         Fetch.GET(`/api/block/?page_size=${state.pageSize}&page=${state.page+1}`)
         .then(res => {
@@ -110,12 +109,12 @@ export default class BlockList extends Component {
                                 minWidth: 80,
                                 Cell: ({row}) => {
                                     let txGasPrice = 0
-                                    row.related_transaction.map((tx)=>{
-                                        txGasPrice += tx.gas_price
+                                    row.related_transaction.forEach((tx)=>{
+                                        txGasPrice += tx.gas_price;
                                     } )
                                     return (
                                         <Button disabled={true} className='eth'>
-                                            {row.related_transaction.length == 0 ? 0 : Validation.noExponents(txGasPrice/row.related_transaction.length)} Eth
+                                            {row.related_transaction.length === 0 ? 0 : Validation.noExponents(txGasPrice/row.related_transaction.length)} Eth
                                         </Button>
                                     )
                                 }
@@ -139,7 +138,7 @@ export default class BlockList extends Component {
                         loading={loading} // Display the loading overlay when we need it
                         onFetchData={this.getBlock} // Request new data when things change
                         pageSizeOptions={[5, 10, 15, 20]}
-                        defaultPageSize={20}
+                        defaultPageSize={15}
                         noDataText={'No Data found'}
                         getNoDataProps={() => {return {style: {backgroundColor: 'transparent', color: 'white'}}}}
                     />
