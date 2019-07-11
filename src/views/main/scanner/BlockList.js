@@ -19,7 +19,7 @@ export default class BlockList extends Component {
         };
     }
 
-    getBlock = (state, instance) => {
+    getBlock = (state) => {
         this.setState({
             loading: true
         });
