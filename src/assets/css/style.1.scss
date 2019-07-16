@@ -300,13 +300,11 @@ a.manualButton {
     bottom: 0;
     width: 100%;
     padding-top: 15px;
-    height: 55px;   // footer height
-    // margin-bottom: 1rem;
+    height: 57px;   // footer height + padding 
     color: #ffffff !important;
     text-align: center;
     padding-right: 40px;
     background-color: rgba(23,23,23, 0.7);
-    // opacity: 0.5;
     
     &:hover {
         background: $sidebar-menu-hover-color;

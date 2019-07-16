@@ -615,7 +615,7 @@ class Monitoring extends Component {
                                         <span className='dash-upper-line-card-title'>Pending Transactions</span>
                                     </Col>
                                     <div style={{maxHeight:'230px', overflowY:'auto', width:'100%'}}>
-                                        <Table striped style={{width:'100%'}}>
+                                        <Table striped style={{width:'100%', tableLayout: 'fixed'}}>
                                             <thead style={{ textAlign: 'center' }}>
                                                 <tr>
                                                     <th style={{width:'15%'}}>Pending..</th>
