@@ -40,7 +40,7 @@ class Monitoring extends Component {
           txPerBlock: [],            // transaction per block 
           tbpLabels: [],            // transaction per block label
           miningBlock: [],             // recent mining block info
-          nodeState : {},       // node state json => disconnect, uncle, connect
+          nodeState : {},       // node state json => disconnect, fork, connect
           angle: 0,      // 그림 회전 각도, 여기부터 d3쪽에서 사용할 state
           numOfNodes: 0,
           simulation: {},
@@ -97,18 +97,18 @@ class Monitoring extends Component {
 
         socket.on('nodeStatus', (data) => {
             let changeState = this.state.nodeState;
-            let isUncle = false;
+            let isFork = false;
             
-            // connect이 와도 다른 애들이 uncle 이면 uncle로 표시
+            // connect이 와도 다른 애들이 fork면 fork로 표시
             jQuery.each(changeState, function (id, state) {
-                if(state === 'uncle'){
-                    isUncle = true;
+                if(state === 'fork'){
+                    isFork = true;
                     return;
                 }
             });
 
-            if(isUncle && data.status === 'connect')
-                changeState[data.id] = 'uncle';
+            if(isFork && data.status === 'connect')
+                changeState[data.id] = 'fork';
             else
                 changeState[data.id] = data.status;
 
@@ -147,7 +147,7 @@ class Monitoring extends Component {
             // disconnect인 경우 바꾸지 않음
             for(var i=0; i < node.length; i++) {
                 changeState[node[i].id] = changeState[node[i].id] === 'disconnect' ? 'disconnect' :
-                    data.value ? 'uncle' : 'connect'
+                    data.value ? 'fork' : 'connect'
             }
 
             this.setState({
@@ -305,7 +305,7 @@ class Monitoring extends Component {
 
         // 노드 색 변경
         jQuery.each(nodeState, function(id, state) {
-            let color = state === 'uncle' ? 'yellow' : 'green';
+            let color = state === 'fork' ? 'yellow' : 'green';
             // discconnect 일때는 무조건 red
             if(state === 'disconnect'){
                 color ='red';
@@ -585,7 +585,7 @@ class Monitoring extends Component {
                                 <ContentCard>
                                     <ContentRow>
                                         <Col xl={4} lg={4} md={4} sm={4} xs={4} style={{textAlign:'center'}}>
-                                            <img alt="GAS USED" src="/img/gas_price.svg" width="90px"/>
+                                            <img alt="GAS USED" src="/img/gas_used.svg" width="90px"/>
                                         </Col>
                                         <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{textAlign:'left', lineHeight:2}}>
                                             <span className='dash-upper-line-card-title'>GAS USED</span><br/>

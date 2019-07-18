@@ -164,7 +164,7 @@ export default class Scannermain extends Component {
            <ContentRow>
               <ContentCol>
                 <ContentCard>
-                  <h3 style={{color:"#FFFFFF"}}>Block Explorer</h3>
+                  <h3 style={{color:"#FFFFFF"}}>Ethereum Blockchain Explorer</h3>
                   <Form>
                     <InputGroup>
                       <Input 
