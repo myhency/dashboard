@@ -4,7 +4,7 @@ import ContentCol from 'components/ContentCol';
 import ContentCard from 'components/ContentCard';
 
 import classnames from 'classnames';
-import { Table, TabContent, TabPane, Nav, NavItem, NavLink, Badge } from 'reactstrap';
+import { Table, TabContent, TabPane, Nav, NavItem, NavLink, Badge, Button } from 'reactstrap';
 import ReactTable from 'react-table';
 import { Link } from 'react-router-dom';
 import Fetch from 'utils/Fetch'
@@ -13,6 +13,7 @@ import { setInfo } from 'store/modules/currentInfo';
 import { setPage } from 'store/modules/tempPageName';
 import moment from 'moment';
 import ReactTooltip from 'react-tooltip';
+import Validation from 'utils/Validation';
 
 import Code from 'views/main/scanner/Contract_code.js';
 import Event from 'views/main/scanner/Contract_event.js';
@@ -41,7 +42,6 @@ class Address extends Component {
         //For dividing page name
         this.props.dispatch(setPage(undefined));
         this.getAddress();
-        console.log(this.state.timestamp);
     }
 
     //Callback for table
@@ -152,18 +152,18 @@ class Address extends Component {
                         Header: "TxHash",
                         accessor: "transaction_hash",
                         Cell: ({row}) => (<Link to={`/main/scanner/transaction/${row.transaction_hash}`}>{row.transaction_hash}</Link>),
-                        width: '20%'
+                        minWidth: 100
                     },
                     {
                         Header: "Block",
                         accessor: "related_block",
                         Cell: ({row}) => (<Link to={`/main/scanner/block/${row.related_block.number}`}>{row.related_block.number}</Link>),
-                        width: '10%'
+                        minWidth: 50
                     },
                     {
                         Header: "Age",
                         accessor: "timestamp",
-                        width: '10%',
+                        minWidth: 50,
                         Cell: ({row}) => {
                             var age = moment(this.state.timestamp).diff(row.timestamp, 'seconds');
                             if(age < 60) {
@@ -202,11 +202,11 @@ class Address extends Component {
                             row.transaction_from === this.state.address ?
                             row.transaction_from :
                             <Link to={`/main/scanner/address/${row.transaction_from}`}>{row.transaction_from}</Link>),
-                        width: '20%'
+                        minWidth: 100
                     },
                     {
                         Header: "",
-                        width: '6%',
+                        minWidth: 30,
                         Cell: ({row}) => (
                             row.transaction_from === this.state.address ?
                             <Badge color='danger' style ={{width: '50px'}}> Out </Badge>:
@@ -220,20 +220,24 @@ class Address extends Component {
                             row.transaction_to === this.state.address ?
                             row.transaction_to :
                             <Link to={`/main/scanner/address/${row.transaction_to}`}>{row.transaction_to}</Link>),
-                        width: '20%'
+                        minWidth: 100
                     },
                     {
                         Header: "Value",
                         accessor: "value",
-                        width: '7%',
+                        minWidth: 90,
                         Cell: ({row}) => {
-                            return (<span>{row.value} Eth</span>)
+                          return (
+                              <Button disabled={true} className='eth'>
+                                  {Validation.noExponents(row.value)} Eth
+                              </Button> 
+                          )
                         }
                     },
                     {
                         Header: "Tx Fee",
                         accessor: "txFee",
-                        width: '7%',
+                        minWidth: 60,
                         Cell: ({row}) => {
                             let gas = row._original.gas;
                             let gas_price = row._original.gas_price;
@@ -251,6 +255,8 @@ class Address extends Component {
                 showPageSizeOptions={false}
                 ref={(instance) => { this.table = instance; }}
                 sortable={false}
+                noDataText={'No Data found'}
+                getNoDataProps={() => {return {style: {backgroundColor: 'transparent', color: 'white'}}}}
             />
         );
     }

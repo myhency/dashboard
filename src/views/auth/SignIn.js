@@ -15,6 +15,7 @@ import { signIn } from 'store/modules/auth';
 import { loadingStart, loadingStop } from 'store/modules/loading';
 import Fetch from 'utils/Fetch';
 import jQuery from "jquery";
+import swal from "sweetalert2";
 
 // import Background from '/img/login_page.jpeg';
 
@@ -104,23 +105,28 @@ class SignIn extends Component {
             // post에 param 전달
             Fetch.POST('/api/auth/login/', params, django)
             .then((res) => {
-                sessionStorage.setItem('userId', userId);
-                this.props.dispatch(signIn(userId));
-                this.props.history.push('/main/dashboard'); 
+                sessionStorage.setItem('userId', res.username);
                 // token = res.result.data.token;
                 // redirect_url = res.result.redirect_url;
+
+                this.props.dispatch(signIn(res.username));
+                this.props.history.push('/main/dashboard'); 
             })
             .catch(error => {
-                this.props.history.push('/auth/SignIn'); 
+                swal.fire(
+                    'Login Denied!',
+                    'Check your id and password',
+                    'error'
+                );
             })
-            .finally((res) => {
-                console.log(res);
-                // if(res.status == undefined) {
-                //    this.props.history.push('/main/dashboard'); 
-                // } else {
-                //     alert('Please Checkup Again')
-                // }
-            })
+            // .finally((res) => {
+            //     console.log(res);
+            //     // if(res.status == undefined) {
+            //     //    this.props.history.push('/main/dashboard'); 
+            //     // } else {
+            //     //     alert('Please Checkup Again')
+            //     // }
+            // })
         // })
 
 

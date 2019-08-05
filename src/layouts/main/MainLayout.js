@@ -13,7 +13,7 @@ import {
     DropdownMenu
 } from "reactstrap";
 import windowSize from 'react-window-size';
-import { IoMdContact, IoIosCloud } from 'react-icons/io';
+import { IoIosCloud, IoMdContact } from 'react-icons/io';
 import { FiChevronDown, FiAlignLeft } from 'react-icons/fi';
 import mainRoutes from 'routes/main';
 import UrlPattern from "url-pattern";
@@ -21,12 +21,10 @@ import { signOut } from 'store/modules/auth';
 import Fetch from 'utils/Fetch';
 import { setInfo } from 'store/modules/currentInfo';
 import { setPage } from 'store/modules/tempPageName';
-import { FaCopy } from 'react-icons/fa';
+import { FaBook } from 'react-icons/fa';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import ReactTooltip from 'react-tooltip';
 import jQuery from "jquery";
-
-// import Background from '/img/login_page.jpeg';
 
 window.$ = window.jQuery = jQuery;
 
@@ -41,8 +39,6 @@ class MainLayout extends Component {
             currentInfo: '',
             tempPageName: undefined,
             isWindowSmall: false,
-
-
             userId: undefined
         };
     }
@@ -116,10 +112,8 @@ class MainLayout extends Component {
         if(isWindowSmall) {
             if(active === true) {
                 document.body.style.overflow = 'auto';
-                // this.bodyScrolling(true);
             }else {
                 document.body.style.overflow = 'hidden';    
-                // this.bodyScrolling(false);
             }
         }
 
@@ -246,6 +240,10 @@ class MainLayout extends Component {
                                 return null;
                             }
                         })}
+                        <a href="http://10.40.111.60:3001" className={'manualButton'} target="blank" >
+                            <FaBook size={20} color={'#0F9EDB'} style={{marginLeft:'.4rem', marginRight:'.75rem'}}/>
+                            User Guide
+                        </a>
                     </Nav>
                 </div>
 
@@ -260,37 +258,38 @@ class MainLayout extends Component {
                             {currentInfo}
                         </span>
                         {(this.getCurrentPageName(currentPath) === "Address") || (this.getCurrentPageName(currentPath) === "Contract") ?
-                            <span data-tip='Copy' >
-                                <CopyToClipboard text={currentInfo}> 
-                                    <FaCopy style={{marginLeft: '10px', color: 'white'}}/>
+                            <span data-tip='Copy'  data-for='addressCopy'>
+                                <CopyToClipboard text={currentInfo} onCopy={() => { this.setState({copied: true}) }}> 
+                                    <img alt="copy" src={'/img/copy.svg'} height='18px' style={{marginLeft: '10px'}}/>
+                                    {/* <FaCopy style={{marginLeft: '10px', color: 'white'}}/> */}
                                 </CopyToClipboard>
-                                <ReactTooltip/>
+                                <ReactTooltip id='addressCopy' getContent={(dataTip) => {if(this.state.copied) return 'Copied'; else return 'Copy';}} afterHide={() => {this.setState({copied: false}) }}/>
                             </span> : null 
                         }
                     </NavbarBrand>
                     
                     <Nav className="ml-auto">
                         <Navbar>
-                        </Navbar>
-                        <UncontrolledDropdown>
-                            <DropdownToggle nav style={{color:'black'}}>
-                                <IoMdContact color='#0F9EDB' size={30}/>{' '}
-                                <span style={{color: 'white'}}>{userId}</span>
-                            </DropdownToggle>
-                            <DropdownMenu right>
-                                {/* <DropdownItem>
-                                    Option 1
-                                </DropdownItem>
-                                <DropdownItem>
-                                    Option 2
-                                </DropdownItem>
-                                <DropdownItem divider /> */}
-                                <DropdownItem onClick={this.signOut}>
-                                    Sign out
-                                </DropdownItem>
-                            </DropdownMenu>
-                        </UncontrolledDropdown>
-                    </Nav>
+                            </Navbar>
+                            <UncontrolledDropdown>
+                                <DropdownToggle nav style={{color:'black'}}>
+                                    <IoMdContact color='#0F9EDB' size={30}/>{' '}
+                                    <span style={{color: 'white'}}>{userId}</span>
+                                </DropdownToggle>
+                                <DropdownMenu right>
+                                    {/* <DropdownItem>
+                                        Option 1
+                                    </DropdownItem>
+                                    <DropdownItem>
+                                        Option 2
+                                    </DropdownItem>
+                                    <DropdownItem divider /> */}
+                                    <DropdownItem onClick={this.signOut}>
+                                        Sign out
+                                    </DropdownItem>
+                                </DropdownMenu>
+                            </UncontrolledDropdown>                    
+                        </Nav>
                 </Navbar>
 
                 {/* Content */}
@@ -298,11 +297,11 @@ class MainLayout extends Component {
                     {/* Inner Content */}
                     <div id="innerContent">
                         <Switch>
+                            {/* {console.log(mainRoutes)} */}
                             {mainRoutes.map((route, key) => {
                                 if(route.subRoutes) {
                                     let subRoutes = [];
                                     route.subRoutes.map((subRoute, subKey) => {
-                                        // console.log(subRoute.path);
                                         subRoutes.push(
                                             <Route exact path={subRoute.path} component={subRoute.component} key={subKey}/>    
                                         )
@@ -321,12 +320,15 @@ class MainLayout extends Component {
                     </div>
 
                     {/* Footer */}
-                    <div className="footer small" align="right">
-                        <ul className="list-inline">
+                    <div className="footer small" align='right'>
+                        <div style={{color:'white'}} >
+                            &nbsp;&nbsp;&nbsp;© HYUNDAI AUTOEVER
+                        </div>
+                        {/* <ul className="list-inline">
                             <li className="list-inline-item" style={{color:'#6C757D'}}>
-                                Developed by 블록체인기술팀
+                                © HYUNDAI
                             </li>
-                        </ul>
+                        </ul> */}
                     </div>
                 </div>
 

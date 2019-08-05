@@ -1,11 +1,12 @@
 import React, { Component, Fragment } from 'react'
 import ContentCard from 'components/ContentCard';
-
+import { Button } from 'reactstrap';
 import ReactTable from 'react-table';
 import { Link } from 'react-router-dom';
 import Fetch from 'utils/Fetch'; 
 import moment from 'moment';
 import ReactTooltip from 'react-tooltip';
+import Validation from 'utils/Validation';
 
 export default class TxList extends Component {
     constructor(props) {
@@ -50,19 +51,19 @@ export default class TxList extends Component {
                     {
                         Header: "TxHash",
                         accessor: "transaction_hash",
-                        Cell: ({row}) => (<Link to={this.props.location.pathname + '/' + row.transaction_hash}>{row.transaction_hash}</Link>),
-                        width: '20%'
+                        minWidth: 100,
+                        Cell: ({row}) => (<Link to={this.props.location.pathname + '/' + row.transaction_hash}>{row.transaction_hash}</Link>)
                     },
                     {
                         Header: "Block",
                         accessor: "related_block",
-                        Cell: ({row}) => (<Link to={`/main/scanner/Block/${row.related_block}`}>{row.related_block.number}</Link>),
-                        width: '10%'
+                        minWidth: 50,
+                        Cell: ({row}) => (<Link to={`/main/scanner/Block/${row.related_block}`}>{row.related_block.number}</Link>)
                     },
                     {
                         Header: "Age",
                         accessor: "timestamp",
-                        width: '10%',
+                        minWidth: 50,
                         Cell: ({row}) => {
                             var age = moment(this.state.timestamp).diff(row.timestamp, 'seconds');
                             if(age < 60) {
@@ -92,27 +93,31 @@ export default class TxList extends Component {
                     {
                         Header: "From",
                         accessor: "transaction_from",
-                        width: '20%',
+                        minWidth: 100,
                         Cell: ({row}) => (<Link to={`/main/scanner/address/${row.transaction_from}`}>{row.transaction_from}</Link>),
                     },
                     {
                         Header: "To",
                         accessor: "transaction_to",
-                        width: '20%',
+                        minWidth: 100,
                         Cell: ({row}) => (<Link to={`/main/scanner/address/${row.transaction_to}`}>{row.transaction_to}</Link>),
                     },
                     {
                         Header: "Value",
                         accessor: "value",
-                        width: '10%',
+                        minWidth: 90,
                         Cell: ({row}) => {
-                            return (<span>{row.value} Eth</span>)
+                          return (
+                              <Button disabled={true} className='eth'>
+                                  {Validation.noExponents(row.value)} Eth
+                              </Button> 
+                          )
                         }
                     },
                     {
                         Header: "Tx Fee",
                         accessor: "gas",
-                        width: '10%',
+                        minWidth: 60,
                         Cell: ({row}) => {
                           let gas = row._original.gas;
                           let gas_price = row._original.gas_price;
@@ -127,6 +132,8 @@ export default class TxList extends Component {
                 onFetchData={this.getTransaction}
                 pageSizeOptions={[5, 10, 15, 20]}
                 defaultPageSize={15}
+                noDataText={'No Data found'}
+                getNoDataProps={() => {return {style: {backgroundColor: 'transparent', color: 'white'}}}}
             />
         </ContentCard>
     </Fragment>

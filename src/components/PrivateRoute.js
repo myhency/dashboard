@@ -30,7 +30,7 @@ class PrivateRoute extends Component {
             <Route {...rest} render={props => (
                 isAuthenticated ?
                     <Component {...props} {...rest} />
-                    : <Redirect to={{ pathname: '/auth/signIn', state: { from: props.location } }} />
+                    : <Redirect to={{ pathname: '/auth/SignIn', state: { from: props.location } }} />
             )} />
         )
     }

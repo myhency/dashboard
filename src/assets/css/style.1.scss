@@ -23,6 +23,34 @@ $navbar-color: #FFFFFF;
 
 $theme-color: #30C0AA;
 
+$originalRed : #F74B4B ;
+$originalOrange : #FD8900 ;
+$originalYellow : #FFD162 ;
+$originalGreen : #7BCC3A ;
+$originalBlue : #0F9EDB ;
+$originalPurple : #B648F6;
+
+$cloudyRed : #DE5959 ;
+$cloudyOrange : #E38417  ;
+$cloudyYellow : #E6C26E ;
+$cloudyGreen : #76B344  ;
+$cloudyBlue : #2192C2 ;
+$cloudyPurple : #AA56DB ;
+
+$darkRed : #8C3C3C;
+$darkOrange : #913D13;
+$darkYellow : #99734D;
+$darkGreen : #4F6228;
+$darkBlue : #166970;
+$darkPurple : #5B3A8A ;
+
+$lightRed : #DEB1B1 ;
+$lightOrange : #E3AE71;
+$lightYellow : #E6DDCA;
+$lightGreen : #9DB38B;
+$lightBlue : #6EA9C2;
+$lightPurple : #CAADDB;
+
 @import './font.scss';
 
 .footer {
@@ -41,6 +69,27 @@ $theme-color: #30C0AA;
     DEMO STYLE
 */
 
+button.eth:disabled {
+    padding-top: 0;
+    padding-bottom: 0;
+    margin: 0;
+    padding-right: 5px;
+    padding-left: 5px;
+    background-color: $lightGreen;
+    color: black;
+    opacity: 1;
+    font-weight: bold;
+}
+
+button.gasPrice:disabled {
+    padding-top: 0;
+    padding-bottom: 0;
+    background-color: #F2D2AA;
+    color: black;
+    opacity: 1;
+    font-weight: bold;
+}
+
 button.-btn { 
     background-color:red;
 }
@@ -57,6 +106,7 @@ body {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    color: 'inherit' !important;
 }
 
 a {
@@ -74,6 +124,7 @@ a:hover {
     color: black;
     border-color: #4F6228;
     background-color: #76B344;
+    // background-color: transparent;
 }
 
 .btn-outline-primary:hover {
@@ -244,6 +295,22 @@ a.homeButton {
     }
 }
 
+a.manualButton {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    padding-top: 15px;
+    height: 57px;   // footer height + padding 
+    color: #ffffff !important;
+    text-align: center;
+    padding-right: 40px;
+    background-color: rgba(23,23,23, 0.7);
+    
+    &:hover {
+        background: $sidebar-menu-hover-color;
+    }
+}
+
 /* Loading Screen class */
 .kBribD {
     opacity: 0.7;
@@ -312,9 +379,6 @@ a.homeButton {
     background-color: transparent;
 }
 
-// .ReactTable .rt-table {
-//     border: 1px solid $table-border-color;
-// }
 
 .ReactTable .rt-tr-group {
     border-top: 1px solid $table-border-color;
@@ -525,6 +589,7 @@ a.homeButton {
 
 .card-header {
     color: #FFFFFF;
+    padding-top: '50px';
 }
 
 
@@ -543,13 +608,68 @@ a.homeButton {
     general
 ----------------------------------------------------- */
 
-.copyicon {
-    color: #0F9EDB;
-}
-
 .form-control {
     background-color: $table-background-color !important;
     border: 2px solid $table-border-color !important;
     color: silver;
 }
 
+
+/* ---------------------------------------------------
+    svg tooltip
+----------------------------------------------------- */
+
+#tooltip {
+	position: absolute;
+	width: 200px;
+	height: auto;
+    padding: 10px;
+	background-color: rgba(128, 128, 128, 0.4);
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+	-webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+	-moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+	box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+    pointer-events: none;
+}
+
+#tooltip.hidden {
+	display: none;
+}
+
+#tooltip p {
+	margin: 0;
+	font-size: 16px;
+    line-height: 20px;
+    color: #c0c0c0;
+}
+
+#tooltip strong {
+    line-height: 25px;
+    color: white;
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+    background-color: white;
+}
+
+::-webkit-scrollbar-track {
+    background-color: black;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: rgba(255,255,255,0.3);
+    border-radius: 10px;
+}
+
+html {
+    scrollbar-face-color: #4d4d4d;
+    scrollbar-track-color: black;
+    scrollbar-arrow-color: #4d4d4d;
+    scrollbar-highlight-color: #847A6F;
+    scrollbar-3dlight-color: #4d4d4d;
+    scrollbar-shadow-color: #1B0E01;
+    scrollbar-darkshadow-color: black;
+}

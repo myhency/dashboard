@@ -1,5 +1,5 @@
 const isNotCorrectID = (inputString) => {
-    if (inputString.match(/^[\@\.\+\=\-\_\w\d]{1,30}$/) === null) {
+    if (inputString.match(/^[@.+=\-_\w\d]{1,30}$/) === null) {
         // not correct case
         return true;
     } else {
@@ -24,9 +24,28 @@ const isNotMatchPassword = (password, confirmPassword) => {
     }
 }
 
+const noExponents = (input) =>{
+    var data= String(input).split(/[eE]/);
+    if(data.length === 1) return data[0]; 
+
+    var  z= '', sign= input<0? '-':'',
+    str= data[0].replace('.', ''),
+    mag= Number(data[1])+ 1;
+
+    if(mag<0){
+        z= sign + '0.';
+        while(mag++) z += '0';
+        return z + str.replace(/^-/,'');
+    }
+    mag -= str.length;  
+    while(mag--) z += '0';
+    return str + z;
+}
+
 
 export default {
     isNotCorrectID,
     isEmpty,
     isNotMatchPassword,
+    noExponents,
 }

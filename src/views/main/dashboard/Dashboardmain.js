@@ -9,9 +9,10 @@ import _ from 'lodash';
 import moment from 'moment';
 import io from 'socket.io-client';
 import * as d3 from "d3";
+import swal from 'sweetalert2';
+
 
 import Fetch from 'utils/Fetch.js';
-import D3component from './nodenetwork/d3component';
 import jQuery from "jquery";
 
 
@@ -39,28 +40,45 @@ class Monitoring extends Component {
           txPerBlock: [],            // transaction per block 
           tbpLabels: [],            // transaction per block label
           miningBlock: [],             // recent mining block info
-          nodeState : {},       // node state json => disconnect, uncle, connect
+          nodeState : {},       // node state json => disconnect, fork, connect
           angle: 0,      // 그림 회전 각도, 여기부터 d3쪽에서 사용할 state
           numOfNodes: 0,
           simulation: {},
           xcenter: 0,
           ycenter: 0,
           nodeImgSize: 0,
+          socketError: false
         };
 
         socket = io.connect(process.env.REACT_APP_BAAS_SOCKET);
         window.addEventListener('resize', this.updatePosition);
 
+
     }
 
     componentDidMount() {
-        this.getDashboardInfo();
         this.getCurrentTime();
 
         // web socket 연결 
-        socket.on('connect', function () {
+        socket.on('connect', () => {
             socket.emit("requestNodeList")
+            this.setState({
+                socketError: false
+            })
         });
+
+        socket.on('connect_error', (error) => {
+            if(!this.state.socketError){
+                this.setState({
+                    socketError: true
+                })
+                swal.fire(
+                    'Node Monitoring Server error!',
+                    'Please check your server status',
+                    'error'
+                  );
+            }
+        })
 
         // 처음에 노드 리스트 왔을 때 
         socket.on('responseNodeList', (data) => {
@@ -73,31 +91,30 @@ class Monitoring extends Component {
                 node: data,
                 nodeState: nodeState
             })
-            console.log(data);
+
             this.updatePosition();
         });
 
         socket.on('nodeStatus', (data) => {
             let changeState = this.state.nodeState;
-            let isUncle = false;
+            let isFork = false;
             
-            // connect이 와도 다른 애들이 uncle 이면 uncle로 표시
+            // connect이 와도 다른 애들이 fork면 fork로 표시
             jQuery.each(changeState, function (id, state) {
-                if(state === 'uncle'){
-                    isUncle = true;
+                if(state === 'fork'){
+                    isFork = true;
                     return;
                 }
             });
 
-            if(isUncle && data.status === 'connect')
-                changeState[data.id] = 'uncle';
+            if(isFork && data.status === 'connect')
+                changeState[data.id] = 'fork';
             else
                 changeState[data.id] = data.status;
 
             this.setState({
                 nodeState: changeState
             })
-            console.log(data);
             this.updateNode();
         });
 
@@ -120,7 +137,6 @@ class Monitoring extends Component {
         });
 
         socket.on('blockMiner', (data) => {
-            console.log(data);
             this.miningNode(data);
         });
 
@@ -131,18 +147,18 @@ class Monitoring extends Component {
             // disconnect인 경우 바꾸지 않음
             for(var i=0; i < node.length; i++) {
                 changeState[node[i].id] = changeState[node[i].id] === 'disconnect' ? 'disconnect' :
-                    data.value ? 'uncle' : 'connect'
+                    data.value ? 'fork' : 'connect'
             }
 
             this.setState({
                 nodeState: changeState
             });
-            console.log(data);
             this.updateNode();
         });
 
         //1초에 한번씩 백엔드에 요청
-        this.intervalId_getInfo = setInterval(this.getDashboardInfo, 1000);
+        this.getFirstInfo();
+        this.intervalId_getInfo = setInterval(this.updateDashboardInfo, 3000);
         this.intervalId_getCurrentTime = setInterval(this.getCurrentTime, 1000); 
         this.intervalId_getPendingTx = setInterval(() => socket.emit("requestPendingTx"), 1000);
 
@@ -162,14 +178,6 @@ class Monitoring extends Component {
         clearInterval(this.intervalId_getCurrentTime);
         clearInterval(this.getPendingTx);
         window.removeEventListener('resize', this.updatePosition);
-    }
-
-    // dashboard info 분기
-    getDashboardInfo = () => {
-        if(this.state.timePass.length > 0)
-            this.updateDashboardInfo();
-        else
-            this.getFirstInfo();
     }
 
     // 첫번째는 최대 60개까지 불러옴
@@ -217,30 +225,32 @@ class Monitoring extends Component {
                 return;
             }
 
-            let newTime = this.state.timePass;
-            let tpb = this.state.txPerBlock;
-            let labels = this.state.tbpLabels;
-            
-            newTime.splice(0,1);
-            tpb.splice(0,1);
-            labels.splice(0,1);
+            let timePass = this.state.timePass.slice();
+            let txPerBlock = this.state.txPerBlock.slice();
+            let tbpLabels = this.state.tbpLabels.slice();
 
-            newTime.push(moment(bestBlock.timestamp).diff(res.results[1].timestamp,'seconds'));
-            tpb.push(bestBlock.transaction_count);
-            labels.push(bestBlock.number);
+            if(this.state.timePass.length >= 60) {
+                timePass.splice(0, 1);
+                txPerBlock.splice(0, 1);
+                tbpLabels.splice(0, 1);
+            }
+
+            timePass.push(moment(bestBlock.timestamp).diff(res.results[1].timestamp,'seconds'));
+            txPerBlock.push(bestBlock.transaction_count);
+            tbpLabels.push(bestBlock.number);
             
-            let avgBlockTime = _.meanBy(newTime).toFixed(3);
-            
+            let avgBlockTime = _.meanBy(timePass).toFixed(3);
+
             this.setState({    
                 blockNo: bestBlock.number,
                 gasLimit: bestBlock.gas_limit,
                 gasUsed: bestBlock.gas_used,
                 timestamp: bestBlock.timestamp,
                 avgBlockTime: avgBlockTime,
-                timePass: newTime,
+                timePass: timePass,
                 passSec: 0,
-                txPerBlock: tpb,
-                tbpLabels: labels,
+                txPerBlock: txPerBlock,
+                tbpLabels: tbpLabels,
                 difficulty: bestBlock.difficulty
             });
 
@@ -272,7 +282,7 @@ class Monitoring extends Component {
                 simulation: d3.forceSimulation()
                     .force("link", d3.forceLink().id(function (d) { return d.id; }))
                     .force('charge', d3.forceManyBody()
-                        .strength(this.state.node.length * (-5000))
+                        .strength((-25000) / this.state.node.length)
                         .theta(0.1)
                     )
                     .force("center", d3.forceCenter()
@@ -280,12 +290,12 @@ class Monitoring extends Component {
                         .y(cardPosition.height / 2 )), // center of the picture
                 xcenter: cardPosition.width / 2 ,      // rotational center of the picture
                 ycenter: cardPosition.height / 2 ,
-                nodeImgSize: cardPosition.width * cardPosition.height * 0.0003,
+                nodeImgSize: cardPosition.width * cardPosition.height * 0.0009 / this.state.node.length,
                 cardPosition: cardPosition
             })
             
             this.drawFrame();
-
+            this.updateNode();
         }
     }
 
@@ -295,9 +305,9 @@ class Monitoring extends Component {
 
         // 노드 색 변경
         jQuery.each(nodeState, function(id, state) {
-            let color = state === 'uncle' ? 'yellow' : 'green';
+            let color = state === 'fork' ? 'yellow' : 'green';
             // discconnect 일때는 무조건 red
-            if(state == 'disconnect'){
+            if(state === 'disconnect'){
                 color ='red';
                 disconnectNode.push(id);
             }
@@ -313,7 +323,7 @@ class Monitoring extends Component {
         d3.selectAll(`line[src]`).attr("style", "display:true");
 
         // disconnect인 것들 선을 없앰
-        disconnectNode.map(id => {
+        disconnectNode.forEach(id => {
             d3.selectAll(`line[src='${id}']`).attr("style", "display:none");
             d3.selectAll(`line[target='${id}']`).attr("style", "display:none");
         })
@@ -365,14 +375,16 @@ class Monitoring extends Component {
 
     // d3 그리기
     drawFrame() {
+        let State = this.state;
+
         let links = [];
-        for (var i = 0; i < this.state.node.length; i++) {          // 노드 개수별로 선긋기
-            for (var j = i + 1; j < this.state.node.length; j++) {
-                links.push({ source: this.state.node[i].id, target: this.state.node[j].id, value: 1 });
+        for (var i = 0; i < State.node.length; i++) {          // 노드 개수별로 선긋기
+            for (var j = i + 1; j < State.node.length; j++) {
+                links.push({ source: State.node[i].id, target: State.node[j].id, value: 1 });
             }
         }
 
-        let nodes = _.map(this.state.node, (node) => {
+        let nodes = _.map(State.node, (node) => {
             return { id: node.id, group: 1, img: "/img/blockchain_green.svg" };
         });        
         
@@ -395,35 +407,63 @@ class Monitoring extends Component {
             .enter().append("image")
             .attr("id", function (d) { return d.id; })
             .attr("xlink:href", function (d) { return d.img; })
-            .attr("width", this.state.nodeImgSize)
-            .attr("height", this.state.nodeImgSize);
+            .attr("width", State.nodeImgSize)
+            .attr("height", State.nodeImgSize);
 
-        let label = this.svg.append("g")
-            .attr("class", "labels")
-            .selectAll("text")
-            .data(nodes)
-            .enter().append("text")
-            .attr("class", "label")
-            .attr("class", "fa")
-            .attr('font-size', function (d) { return '20px' })
-            .text(function (d) { return d.id });
+        // let label = this.svg.append("g")
+        //     .attr("class", "labels")
+        //     .selectAll("text")
+        //     .data(nodes)
+        //     .enter().append("text")
+        //     .attr("class", "label")
+        //     .attr("class", "fa")
+        //     .attr('font-size', function (d) { return '20px' })
+        //     .text(function (d) { return d.id });
 
             
 
-        this.state.simulation
+        State.simulation
             .nodes(nodes)
             .on("tick", ticked);
 
-        this.state.simulation
+        State.simulation
             .force("link")
             .links(links);
 
-        let nodeG = this.state.nodeImgSize * 0.5; //node image 무게중심 구하기
-        let labelGX = this.state.nodeImgSize * 0.05; //node image 무게중심 구하기
-        let labelGY = this.state.nodeImgSize * 0.13; //node image 무게중심 구하기
+        let nodeG = State.nodeImgSize * 0.5; //node image 무게중심 구하기
+        // let labelGX = State.nodeImgSize * 0.05; //node image 무게중심 구하기
+        // let labelGY = State.nodeImgSize * 0.13; //node image 무게중심 구하기
 
         
-        
+
+        // mouseover시 tooltip에 node 정보 추가
+        node.on('mouseover', function (d) {
+            d3.select("#tooltip")
+            .style("right", "0px")
+            .style("top",  "0px")
+            .select('#info')
+            .html(tooltipText(d, State));
+
+            d3.select("#tooltip").classed("hidden", false);
+        })
+        .on('mouseout', function () {
+            d3.select("#tooltip").classed("hidden", true);
+        })
+
+        function tooltipText(d, stateParam) {
+            let info;
+            let myNode = stateParam.node[d.id-1];
+            let myStatus = stateParam.nodeState[d.id];
+            
+            info = '<p>id: ' + myNode.id + '</p>'
+            + '<p>ip: ' + myNode.ip + '</p>'
+            + '<p>port: ' +  myNode.port + '</p>'
+            + '<p>status: ' +  myStatus + '</p>';
+
+
+            return info;
+        }
+          
 
         function ticked() {
             link
@@ -436,24 +476,26 @@ class Monitoring extends Component {
                 .attr("x", function (d) { return d.x - nodeG; })
                 .attr("y", function (d) { return d.y - nodeG; });
 
-            label
-                .attr("x", function (d) { return d.x - labelGX; })
-                .attr("y", function (d) { return d.y - labelGY; })
-                .style("font-size", "16px").style("fill", "#000");
+            // label
+            //     .attr("x", function (d) { return d.x - labelGX; })
+            //     .attr("y", function (d) { return d.y - labelGY; })
+            //     .style("font-size", "16px").style("fill", "#000");
         }
     }
 
+    
+
     render() {
         const { blockNo, avgBlockTime, gasLimit, gasUsed, passSec, difficulty, 
-            cardPosition, node, tbpLabels, txPerBlock, timePass, pendingTx } = this.state;
+            tbpLabels, txPerBlock, timePass, pendingTx } = this.state;
         
         // pending Transaction Table 
         var rows = [];
-        pendingTx.map((txInfo) => {
+        pendingTx.forEach((txInfo) => {
             rows.push(
                 <tr key={txInfo.hash}>
                     <td>{txInfo.time}s ago</td>
-                    <td>{txInfo.hash}</td>
+                    <td className="ellipsis">{txInfo.hash}</td>
                 </tr>
             );
         });
@@ -473,15 +515,12 @@ class Monitoring extends Component {
             <Fragment>
                 <ContentRow>
                     <ContentCol xl={3} lg={6} md={6} sm={12} xs={12}>
-                        {/* <ContentCard inverse backgroundColor='#e06377' borderColor='#c83349'> */}
                         <ContentCard>
                             <ContentRow>
                                 <Col xl={4} lg={4} md={4} sm={4} xs={4} style={{ textAlign: 'center' }}>
-                                    {/* <FiBox size={100} color="#0F9EDB" /> */}
-                                    <img src="/img/best_block.svg" width="90px"/>
+                                    <img alt="BEST BLOCK" src="/img/best_block.svg" width="90px"/>
                                 </Col>
                                 <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{ textAlign: 'left', lineHeight: 2 }}>
-                                    {/* <span class='dash-upper-line-card' style={{fontSize:'0.9rem', color:"#FFFFFF"}}>BEST BLOCK</span><br/> */}
                                     <span className='dash-upper-line-card-title' >BEST BLOCK</span><br />
                                     <span className='dash-upper-line-card-value' style={{color: '#B648F6'}}># {blockNo === undefined ? '' : blockNo}</span>
                                 </Col>
@@ -489,15 +528,12 @@ class Monitoring extends Component {
                         </ContentCard>
                     </ContentCol>
                     <ContentCol xl={3} lg={6} md={6} sm={12} xs={12}>
-                        {/* <ContentCard inverse backgroundColor='#e06377' borderColor='#c83349'> */}
                         <ContentCard>
                             <ContentRow>
                                 <Col xl={4} lg={4} md={4} sm={4} xs={4} style={{textAlign:'center'}}>
-                                    {/* <MdHourglassEmpty size={100} color="#8B9DC3"/> */}
-                                    <img src="/img/last_block.svg" width="90px"/>
+                                    <img alt="LAST BLOCK" src="/img/last_block.svg" width="90px"/>
                                 </Col>
                                 <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{textAlign:'left', lineHeight:2}}>
-                                    {/* <span class='dash-upper-line-card' style={{fontSize:'0.9rem', color:"#FFFFFF"}}>BEST BLOCK</span><br/> */}
                                     <span className='dash-upper-line-card-title' >LAST BLOCK</span><br/>
                                     <span className='dash-upper-line-card-value' style={{color: '#0F9EDB'}}>{passSec === undefined ? '' : passSec} s ago</span>
                                 </Col>
@@ -505,12 +541,10 @@ class Monitoring extends Component {
                         </ContentCard>
                     </ContentCol>
                     <ContentCol xl={3} lg={6} md={6} sm={12} xs={12}>
-                        {/* <ContentCard inverse backgroundColor='#339AED' borderColor='#3B5998'> */}
                         <ContentCard>
                             <ContentRow>
                                 <Col xl={4} lg={4} md={4} sm={4} xs={4} style={{textAlign:'center'}}>
-                                    {/* <MdTimer size={100} color='#339AED'/> */}
-                                    <img src="/img/avg_block_time.svg" width="90px"/>
+                                    <img alt="AVG BLOCK TIME" src="/img/avg_block_time.svg" width="90px"/>
                                 </Col>
                                 <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{textAlign:'left', lineHeight:2}}>
                                     <span className='dash-upper-line-card-title'>AVG BLOCK TIME</span><br/>
@@ -520,12 +554,10 @@ class Monitoring extends Component {
                         </ContentCard>
                     </ContentCol>
                     <ContentCol xl={3} lg={6} md={6} sm={12} xs={12}>
-                        {/* <ContentCard inverse backgroundColor='#34A853' borderColor='#A4C639'> */}
                         <ContentCard>
                             <ContentRow>
                                 <Col xl={4} lg={4} md={4} sm={4} xs={4} style={{ textAlign: 'center' }}>
-                                    {/* <TiKeyOutline size={100} color='#34A853' /> */}
-                                    <img src="/img/difficulty.svg" width="90px"/>
+                                    <img alt="DIFFICULTY" src="/img/difficulty.svg" width="90px"/>
                                 </Col>
                                 <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{textAlign:'left', lineHeight:2}}>
                                     <span className='dash-upper-line-card-title'>DIFFICULTY</span><br/>
@@ -541,7 +573,10 @@ class Monitoring extends Component {
                             <svg width="100%" height="450"//width="620" height="450"  //켄버스 크기
                                 ref={handle => (this.svg = d3.select(handle))}>
                             </svg>
-                            {/* <D3component ref='D3' cardPosition={d3card} node={node}/> */}
+                            <div id="tooltip" className="hidden">
+                                <p><strong>Node information</strong></p>
+                                <p><span id="info"></span></p>
+                            </div>
                         </ContentCard>
                     </ContentCol>
                     <ContentCol xl={6} lg={12} md={12} sm={12} xs={12} noMarginBottom={true}>
@@ -550,21 +585,20 @@ class Monitoring extends Component {
                                 <ContentCard>
                                     <ContentRow>
                                         <Col xl={4} lg={4} md={4} sm={4} xs={4} style={{textAlign:'center'}}>
-                                            <img src="/img/gas_price.svg" width="90px"/>
+                                            <img alt="GAS USED" src="/img/gas_used.svg" width="90px"/>
                                         </Col>
                                         <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{textAlign:'left', lineHeight:2}}>
-                                            <span className='dash-upper-line-card-title'>GAS PRICE</span><br/>
-                                            <span className='dash-upper-line-card-value' style={{color: '#FD8900'}}>{gasUsed === undefined ? '' : gasUsed} gwei</span>
+                                            <span className='dash-upper-line-card-title'>GAS USED</span><br/>
+                                            <span className='dash-upper-line-card-value' style={{color: '#FD8900'}}>{gasUsed === undefined ? '' : gasUsed} gas</span>
                                         </Col>
                                     </ContentRow>
                                 </ContentCard>
                             </ContentCol>
                             <ContentCol xl={6} lg={12} md={12} sm={12} xs={12}>
-                                {/* <ContentCard inverse backgroundColor='#34A853' borderColor='#A4C639'> */}
                                 <ContentCard>
                                     <ContentRow>
                                         <Col xl={4} lg={4} md={4} sm={4} xs={4} style={{textAlign:'center'}}>
-                                            <img src="/img/gas_limit.svg" width="90px"/>
+                                            <img alt="GAS LIMIT" src="/img/gas_limit.svg" width="90px"/>
                                         </Col>
                                         <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{textAlign:'left', lineHeight:2}}>
                                             <span className='dash-upper-line-card-title'>GAS LIMIT</span><br/>
@@ -576,13 +610,13 @@ class Monitoring extends Component {
                         </ContentRow>
                         <ContentRow>
                             <ContentCol>
-                                <ContentCard style={{height: '305px'}} bodyNoPaddingBottom={true}>
+                                <ContentCard style={{height: '289px'}} bodyNoPaddingBottom={true} className="scrollbar" id="style-2">
                                     <Col style={{ textAlign: 'left', marginBottom: '10px' }}>
                                         <span className='dash-upper-line-card-title'>Pending Transactions</span>
                                     </Col>
-                                    <Col>
-                                        <Table bordered >
-                                            <thead style={{ backgroundColor: 'skyblue', textAlign: 'center' }}>
+                                    <div style={{maxHeight:'230px', overflowY:'auto', width:'100%'}}>
+                                        <Table striped style={{width:'100%', tableLayout: 'fixed'}}>
+                                            <thead style={{ textAlign: 'center' }}>
                                                 <tr>
                                                     <th style={{width:'15%'}}>Pending..</th>
                                                     <th style={{width:'85%'}}>txHash</th>
@@ -592,7 +626,14 @@ class Monitoring extends Component {
                                                 { rows }
                                             </tbody>
                                         </Table>
-                                    </Col>
+                                        {pendingTx.length === 0 && 
+                                            <div style={{
+                                                display: 'block',
+                                                position: 'absolute',
+                                                left: '38%',
+                                                top: '50%',
+                                                color: 'white'}}>No Pending Transactions</div>}
+                                    </div>
                                 </ContentCard>
                             </ContentCol>
                         </ContentRow>
@@ -602,113 +643,113 @@ class Monitoring extends Component {
                     <ContentCol xl={6} noMarginBottom={true}>
                         <ContentCard>
                             <span className='dash-upper-line-card-title'>Transaction Per Block</span><br/><br/>
-                            <Bar
-                                data={{
-                                    labels: tbpLabels,
-                                    datasets: [
-                                        {
-                                            label: "Transaction Per Block",
-                                            data: txPerBlock,
-                                            backgroundColor: tpbColor,
-                                            borderColor: tpbColor,
-                                            borderWidth: 1.5,
-                                            pointBackgroundColor: '#87bdd8',
-                                            pointBorderColor: '#fff',
-                                            pointBorderWidth: 2,
-                                        }
-                                    ]
-                                }}
-                                height={40}
-                                options={{
-                                    scales: {
-                                        xAxes: [
+                            <div> {/* IE 대응 */}
+                                <Bar
+                                    data={{
+                                        labels: tbpLabels,
+                                        datasets: [
                                             {
-                                                // display: false,
-                                                gridLines: {
-                                                    display:false,
-                                                    color:'white'
-                                                },
-                                                ticks: {
-                                                    display: false
-                                                }
-                                            }
-                                        ],
-                                        yAxes: [
-                                            {
-                                                // display: false,
-                                                ticks: {
-                                                    suggestedMin: 0,
-                                                    suggestedMax: 5,
-                                                    interval: 1,
-                                                    display: false
-                                                },
-                                                gridLines: {
-                                                    display:false,
-                                                    color:'white'
-                                                }
+                                                label: "Transaction Per Block",
+                                                data: txPerBlock,
+                                                backgroundColor: tpbColor,
+                                                borderColor: tpbColor,
+                                                borderWidth: 1.5,
+                                                pointBackgroundColor: '#87bdd8',
+                                                pointBorderColor: '#fff',
+                                                pointBorderWidth: 2,
                                             }
                                         ]
-                                    }
-                                }}
-                                legend={{
-                                    display: false
-                                }}
-                            />
+                                    }}
+                                    height={40}
+                                    options={{
+                                        scales: {
+                                            xAxes: [
+                                                {
+                                                    gridLines: {
+                                                        display:false,
+                                                        color:'white'
+                                                    },
+                                                    ticks: {
+                                                        display: false
+                                                    }
+                                                }
+                                            ],
+                                            yAxes: [
+                                                {
+                                                    ticks: {
+                                                        suggestedMin: 0,
+                                                        suggestedMax: 5,
+                                                        interval: 1,
+                                                        display: false
+                                                    },
+                                                    gridLines: {
+                                                        display:false,
+                                                        color:'white'
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }}
+                                    legend={{
+                                        display: false
+                                    }}
+                                />
+                            </div>
                         </ContentCard>
                     </ContentCol>
                     <ContentCol xl={6} noMarginBottom={true}>
                         <ContentCard>
                             <span className='dash-upper-line-card-title'>Block Generation Time</span><br/><br/>
-                            <Line
-                                data={{
-                                    labels: tbpLabels,
-                                    datasets: [
-                                        {
-                                            label: "Block Generation Time",
-                                            data: timePass,
-                                            // fill: false,
-                                            // backgroundColor: '#b7d7e8',
-                                            borderColor: '#FFD162',
-                                            borderWidth: 2,
-                                            pointRadius: 0,
-                                            pointHoverBorderWidth: 1
-                                        }
-                                    ]
-                                }}
-                                height={40}
-                                options={{
-                                    scales: {
-                                        xAxes: [
+                            <div> {/* IE 대응 */}
+                                <Line
+                                    data={{
+                                        labels: tbpLabels,
+                                        datasets: [
                                             {
-                                                gridLines: {
-                                                    display:false,
-                                                    color:'white'
-                                                },
-                                                ticks: {
-                                                    display: false
-                                                }
-                                            }
-                                        ],
-                                        yAxes: [
-                                            {
-                                                display: true,
-                                                ticks: {
-                                                    suggestedMin: 0,
-                                                    suggestedMax: 60,
-                                                    display: false
-                                                },
-                                                gridLines: {
-                                                    display:false,
-                                                    color:'white'
-                                                }
+                                                label: "Block Generation Time",
+                                                data: timePass,
+                                                borderColor: '#FFD162',
+                                                borderWidth: 2,
+                                                pointRadius: 1,
+                                                pointHoverBorderWidth: 1
                                             }
                                         ]
-                                    },
-                                }}
-                                legend={{
-                                    display: false
-                                }}
-                            />
+                                    }}
+                                    height={40}
+                                    options={{
+                                        scales: {
+                                            xAxes: [
+                                                {
+                                                    gridLines: {
+                                                        display:false,
+                                                        color:'white'
+                                                    },
+                                                    ticks: {
+                                                        display: false
+                                                    }
+                                                }
+                                            ],
+                                            yAxes: [
+                                                {
+                                                    display: true,
+                                                    ticks: {
+                                                        suggestedMin: 0,
+                                                        suggestedMax: 30,
+                                                        display: false
+                                                    },
+                                                    gridLines: {
+                                                        display:false,
+                                                        color:'white'
+                                                    }
+                                                }
+                                            ]
+                                        },
+                                    }}
+                                    legend={{
+                                        display: false
+                                    }}
+                                />
+                            </div>
                         </ContentCard>
                     </ContentCol>
                 </ContentRow>

@@ -3,10 +3,6 @@ import { Card, CardHeader, CardBody } from 'reactstrap';
 
 class ContentCard extends Component {
 
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         let ContentCardStyle = {
             marginBottom:'1rem',
@@ -67,7 +63,10 @@ class ContentCard extends Component {
         if(this.props.bodyNoPaddingBottom) {
             // ContentCardStyle.marginBottom = '0'
             CardBodyStyle.paddingBottom = '0';
-            CardBodyStyle.marginBottom = '0'
+            CardBodyStyle.marginBottom = '0';
+            CardBodyStyle.overflow = 'auto';
+            CardBody.className = 'scrollbar';
+            CardBody.id = 'style-2';
         }
 
         return (
