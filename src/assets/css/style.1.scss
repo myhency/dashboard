@@ -22,6 +22,7 @@ $table-font-color: rgb(192, 192, 192);
 $navbar-color: #FFFFFF;
 
 $theme-color: #30C0AA;
+$sign-up-color: #2BB23E;
 
 $originalRed : #F74B4B ;
 $originalOrange : #FD8900 ;
@@ -461,9 +462,32 @@ a.manualButton {
     border-color: $theme-color;
 }
 
+.signUpMain {
+
+}
+
 .signUpButton {
-    background-color: $theme-color;
-    border-color: $theme-color;
+    background-color: $sign-up-color;
+    border-color: $sign-up-color;
+    margin: 0px 20px 0px 20px;
+}
+
+.signUpCol {
+    text-align: center;
+    margin: 0px;
+    padding: 0px;
+}
+
+.signUpRow {
+    text-align: center;
+    margin: 0px;
+    padding: 0px;
+}
+
+.signUpCard {
+    text-align: center;
+    margin: 0px;
+    padding: 0px;
 }
 
 

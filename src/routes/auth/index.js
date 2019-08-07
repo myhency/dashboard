@@ -1,4 +1,5 @@
 import SignIn from 'views/auth/SignIn';
+import SignUp from 'views/auth/SignUp';
 import InitAdmin from 'views/auth/InitAdmin';
 import FindHost from 'views/auth/FindHost';
 import TempSignIn from 'views/auth/TempSignIn';
@@ -10,6 +11,11 @@ const authRoutes = [
         path: contextPath + 'signIn',
         name: 'Sign In',
         component: SignIn
+    },
+    {
+        path: contextPath + 'signUp',
+        name: 'Sign Up',
+        component: SignUp
     },
     {
         path: contextPath + 'initAdmin',

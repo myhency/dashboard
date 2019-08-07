@@ -62,7 +62,7 @@ class SignIn extends Component {
 
         function getCookies(name) {
             var value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
-            return value? value[2] : null;
+            return value ? value[2] : null;
         }
 
         // 쿠키로부터 csrf 토큰 값 추출 
@@ -81,36 +81,36 @@ class SignIn extends Component {
         let isInvalidUserId = false;
         let isInvalidPassword = false;
 
-        if(userId === '') {
+        if (userId === '') {
             isInvalidUserId = true;
         }
 
-        if(password === '') {
+        if (password === '') {
             isInvalidPassword = true;
         }
-    
+
         this.setState({
             isInvalidUserId,
             isInvalidPassword
         });
 
-        if(isInvalidUserId || isInvalidPassword) {
+        if (isInvalidUserId || isInvalidPassword) {
             return;
         }
-        
+
 
         //서버와 통신하여 로그인 성공/실패 판단
         // this.props.dispatch(loadingStart())
         // .then(() => {
-            // post에 param 전달
-            Fetch.POST('/api/auth/login/', params, django)
+        // post에 param 전달
+        Fetch.POST('/api/auth/login/', params, django)
             .then((res) => {
                 sessionStorage.setItem('userId', res.username);
                 // token = res.result.data.token;
                 // redirect_url = res.result.redirect_url;
 
                 this.props.dispatch(signIn(res.username));
-                this.props.history.push('/main/dashboard'); 
+                this.props.history.push('/main/dashboard');
             })
             .catch(error => {
                 swal.fire(
@@ -119,14 +119,14 @@ class SignIn extends Component {
                     'error'
                 );
             })
-            // .finally((res) => {
-            //     console.log(res);
-            //     // if(res.status == undefined) {
-            //     //    this.props.history.push('/main/dashboard'); 
-            //     // } else {
-            //     //     alert('Please Checkup Again')
-            //     // }
-            // })
+        // .finally((res) => {
+        //     console.log(res);
+        //     // if(res.status == undefined) {
+        //     //    this.props.history.push('/main/dashboard'); 
+        //     // } else {
+        //     //     alert('Please Checkup Again')
+        //     // }
+        // })
         // })
 
 
@@ -192,6 +192,10 @@ class SignIn extends Component {
         // sessionStorage.clear();
     }
 
+    onClickSignUp = () => {
+        this.props.history.push('/auth/signUp');
+    }
+
     onChangeUserId = (event) => {
         this.setState({
             userId: event.target.value
@@ -204,7 +208,7 @@ class SignIn extends Component {
         })
     }
 
-    
+
     render() {
         const { isInvalidUserId, isInvalidPassword } = this.state;
 
@@ -213,24 +217,24 @@ class SignIn extends Component {
                 <ContentCard>
                     <ContentRow>
                         <ContentCol>
-                            <h3 style={{color: 'white'}}>HMG BaaS</h3>
+                            <h3 style={{ color: 'white' }}>HMG BaaS</h3>
                         </ContentCol>
                     </ContentRow>
-                    <Form style={{marginBottom:'1rem'}}>
+                    <Form style={{ marginBottom: '1rem' }}>
                         <FormGroup>
-                            <Input 
+                            <Input
                                 invalid={isInvalidUserId}
-                                placeholder="ID" 
+                                placeholder="ID"
                                 onChange={this.onChangeUserId}
                             />
                             <FormFeedback invalid={"true"}>ID is required.</FormFeedback>
                             {/* <FormText>Example help text that remains unchanged.</FormText> */}
                         </FormGroup>
                         <FormGroup>
-                            <Input 
+                            <Input
                                 invalid={isInvalidPassword}
-                                type="password" 
-                                placeholder="Password" 
+                                type="password"
+                                placeholder="Password"
                                 onChange={this.onChangePassword}
                             />
                             <FormFeedback invalid={"true"}>Password is required.</FormFeedback>
@@ -239,6 +243,7 @@ class SignIn extends Component {
                     <ContentRow>
                         <ContentCol>
                             <Button className={'authButton'} onClick={this.onClickSignIn}>Sign in</Button>
+                            <Button className={'signUpButton'} onClick={this.onClickSignUp}>Sign up for HMG BaaS</Button>
                         </ContentCol>
                     </ContentRow>
                 </ContentCard>
