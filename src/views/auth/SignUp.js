@@ -222,7 +222,16 @@ class SignUp extends Component {
         //             'error'
         //         );
         //     })
-        this.props.history.push('/auth/signIn');
+
+        // this.props.history.push('/auth/signIn');
+
+        Fetch.GET(`/auth`)
+            .then(res => {
+                console.log(res);
+            })
+            .finally(() => {
+
+            })
     }
 
     onChangeUserId = (event) => {

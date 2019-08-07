@@ -1,5 +1,5 @@
 import Dashboardmain from 'views/main/dashboard/Dashboardmain';
-
+import AdminMain from 'views/main/admin/AdminMain';
 import Scanner from 'views/main/scanner/Scannermain';
 import BlockList from 'views/main/scanner/BlockList';
 import BlockInfo from 'views/main/scanner/BlockInfo';
@@ -7,7 +7,7 @@ import TxList from 'views/main/scanner/TxList';
 import TxInfo from 'views/main/scanner/TxInfo';
 import Address from 'views/main/scanner/Address.js';
 
-import { FaChartBar, FaSearch } from 'react-icons/fa';
+import { FaChartBar, FaSearch, FaUserTie } from 'react-icons/fa';
 
 const contextPath = '/main/';
 
@@ -31,6 +31,13 @@ const mainRoutes = [
         sidebar: true,
         path: contextPath + 'scanner',
         component: Scanner
+    },
+    {
+        name: 'Admin',
+        icon: FaUserTie,
+        sidebar: true,
+        path: contextPath + 'admin',
+        component: AdminMain
     },
     {
         path: contextPath + 'scanner/block',
