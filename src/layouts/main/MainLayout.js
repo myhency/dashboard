@@ -188,6 +188,10 @@ class MainLayout extends Component {
             })
     }
 
+    myProfile = () => {
+        this.props.history.push('/main/myprofile');
+    }
+
     render() {
         const { active, currentPath, currentInfo, isWindowSmall, userId } = this.state;
         return (
@@ -283,7 +287,10 @@ class MainLayout extends Component {
                                     <DropdownItem>
                                         Option 2
                                     </DropdownItem>
-                                    <DropdownItem divider /> */}
+                                <DropdownItem divider /> */}
+                                <DropdownItem onClick={this.myProfile}>
+                                    My profile
+                                </DropdownItem>
                                 <DropdownItem onClick={this.signOut}>
                                     Sign out
                                     </DropdownItem>

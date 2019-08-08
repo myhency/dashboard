@@ -268,13 +268,23 @@ class SignUp extends Component {
                         <ContentCol>
                             <Form>
                                 <FormGroup>
-                                    <Input placeholder="ID" onChange={this.onChangeUserId} />
+                                    <Input
+                                        invalid={isInvalidPassword}
+                                        placeholder="Account" onChange={this.onChangeUserId} />
                                     <FormFeedback invalid={"true"}>ID is required.</FormFeedback>
                                 </FormGroup>
                                 <FormGroup>
                                     <Input
                                         type="password"
                                         placeholder="Password"
+                                        onChange={this.onChangePassword}
+                                    />
+                                    <FormFeedback invalid={"true"}>Password is required.</FormFeedback>
+                                </FormGroup>
+                                <FormGroup>
+                                    <Input
+                                        type="password"
+                                        placeholder="Confirm your password"
                                         onChange={this.onChangePassword}
                                     />
                                     <FormFeedback invalid={"true"}>Password is required.</FormFeedback>
