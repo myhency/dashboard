@@ -8,6 +8,7 @@ import {
     Input,
     FormFeedback
 } from "reactstrap";
+import { AvForm, AvField } from 'availity-reactstrap-validation';
 import ContentRow from 'components/ContentRow';
 import ContentCol from 'components/ContentCol';
 import ContentCard from 'components/ContentCard';
@@ -195,6 +196,7 @@ class SignUp extends Component {
     // }
 
     onClickSignUp = () => {
+        console.log('aaaaaasldkjalkdjlakjs')
         // const { userId, password, userName, email } = this.state;
         // const params = {
         //     userName: userId,
@@ -225,8 +227,9 @@ class SignUp extends Component {
 
         // this.props.history.push('/auth/signIn');
 
-        Fetch.GET(`/auth`)
+        Fetch.GET(`/auth/account`)
             .then(res => {
+                console.log('aaaaaaa');
                 console.log(res);
             })
             .finally(() => {
@@ -266,11 +269,49 @@ class SignUp extends Component {
                         </ContentCol>
 
                         <ContentCol>
-                            <Form>
+                            <AvForm
+                            // onValidSubmit={this.handleValidSubmit}
+                            // onInvalidSubmit={this.handleInvalidSubmit}
+                            >
+                                <label style={{ color: 'white' }}>Account</label>
+                                <AvField
+                                    type="text"
+                                    name="account"
+                                    placeholder="Your account name"
+                                    errorMessage="Invalid account name, at least 3 characters required, maximum is 24"
+                                    validate={{
+                                        required: { value: true },
+                                        pattern: { value: '^[a-z0-9_-]{3,24}$' }
+                                    }} />
+                                <label style={{ color: 'white' }}>Password</label>
+                                <AvField
+                                    type="password"
+                                    name="password"
+                                    placeholder="Your password"
+                                    errorMessage="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters"
+                                    validate={{
+                                        required: { value: true },
+                                        // pattern: { value: '(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}' }
+                                    }} />
+                                <label style={{ color: 'white' }}>Name</label>
+                                <AvField
+                                    type="text"
+                                    name="name"
+                                    placeholder="Your full name" />
+                                <label style={{ color: 'white' }}>Email</label>
+                                <AvField
+                                    type="email"
+                                    name="email"
+                                    placeholder="Your email address"
+                                    validate={{ email: true }} />
+                            </AvForm>
+                            {/* <Form>
                                 <FormGroup>
                                     <Input
-                                        invalid={isInvalidPassword}
-                                        placeholder="Account" onChange={this.onChangeUserId} />
+                                        // invalid={isInvalidPassword}
+                                        placeholder="Account"
+                                        onChange={this.onChangeUserId}
+                                        required />
                                     <FormFeedback invalid={"true"}>ID is required.</FormFeedback>
                                 </FormGroup>
                                 <FormGroup>
@@ -282,22 +323,16 @@ class SignUp extends Component {
                                     <FormFeedback invalid={"true"}>Password is required.</FormFeedback>
                                 </FormGroup>
                                 <FormGroup>
-                                    <Input
-                                        type="password"
-                                        placeholder="Confirm your password"
-                                        onChange={this.onChangePassword}
-                                    />
-                                    <FormFeedback invalid={"true"}>Password is required.</FormFeedback>
-                                </FormGroup>
-                                <FormGroup>
                                     <Input placeholder="Your name" />
                                     <FormFeedback invalid={"true"}>ID is required.</FormFeedback>
                                 </FormGroup>
                                 <FormGroup>
-                                    <Input placeholder="Email" />
+                                    <Input
+                                        type="email"
+                                        placeholder="Email" />
                                     <FormFeedback invalid={"true"}>ID is required.</FormFeedback>
                                 </FormGroup>
-                            </Form>
+                            </Form> */}
                         </ContentCol>
                     </ContentRow>
                     <ContentRow className={'signUpRow'}>
