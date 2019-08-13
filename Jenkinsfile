@@ -19,8 +19,10 @@ node {
     stage("Save container"){
         try {
             previousBuildNumber = "${env.BUILD_ID}" as Integer
-            sh "docker save -o baas-portal-front-end-latest.tar baas-portal-front-end:${env.BUILD_ID}"
             sh "docker rmi baas-portal-front-end:" + (previousBuildNumber - 1)
+            sh "docker tag baas-portal-front-end:${env.BUILD_ID} baas-portal-front-end:latest"
+            sh "docker save -o baas-portal-front-end-latest.tar baas-portal-front-end:latest"
+            sh "docker rmi baas-portal-front-end:" + (previousBuildNumber)
             sh "scp -P 1322 baas-portal-front-end-latest.tar devadmin@10.40.111.56:/var/www/html"
             sh "ssh devadmin@10.40.111.56 -p 1322 chmod 664 /var/www/html/baas-portal-front-end-latest.tar"
             echo 'baas-portal-front-end file copy completed'
