@@ -1,9 +1,9 @@
 const proxy = require('http-proxy-middleware');
 
-module.exports = function(app) {
+module.exports = function (app) {
   app.use(
     proxy('/api', {
-      target: 'http://10.40.111.60:8000/',
+      target: process.env.REACT_APP_BAAS_BACKEND_URL,
       changeOrigin: true
     })
   );
