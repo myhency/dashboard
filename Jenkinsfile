@@ -19,7 +19,7 @@ node {
     stage("Save container"){
         try {
             previousBuildNumber = "${env.BUILD_ID}" as Integer
-            sh "docker rmi baas-portal-front-end:" + (previousBuildNumber - 1)
+            // sh "docker rmi baas-portal-front-end:" + (previousBuildNumber - 1)
             sh "docker tag baas-portal-front-end:${env.BUILD_ID} baas-portal-front-end:latest"
             sh "docker save -o baas-portal-front-end-latest.tar baas-portal-front-end:latest"
             sh "docker rmi baas-portal-front-end:" + (previousBuildNumber)
