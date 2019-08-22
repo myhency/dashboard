@@ -24,30 +24,30 @@ class Monitoring extends Component {
 
     constructor(props) {
         super(props);
-    
-        this.state={
-          blockNo: undefined,
-          gasLimit: undefined,
-          gasUsed: undefined,
-          timestamp: undefined,
-          avgBlockTime: undefined,
-          timePass: [],                 // average block time 계산
-          node: [],
-          pendingTx: [],                // key가 hash, value가 시간
-          cardPosition : undefined,
-          passSec: undefined,
-          difficulty: undefined,
-          txPerBlock: [],            // transaction per block 
-          tbpLabels: [],            // transaction per block label
-          miningBlock: [],             // recent mining block info
-          nodeState : {},       // node state json => disconnect, fork, connect
-          angle: 0,      // 그림 회전 각도, 여기부터 d3쪽에서 사용할 state
-          numOfNodes: 0,
-          simulation: {},
-          xcenter: 0,
-          ycenter: 0,
-          nodeImgSize: 0,
-          socketError: false
+
+        this.state = {
+            blockNo: undefined,
+            gasLimit: undefined,
+            gasUsed: undefined,
+            timestamp: undefined,
+            avgBlockTime: undefined,
+            timePass: [],                 // average block time 계산
+            node: [],
+            pendingTx: [],                // key가 hash, value가 시간
+            cardPosition: undefined,
+            passSec: undefined,
+            difficulty: undefined,
+            txPerBlock: [],            // transaction per block 
+            tbpLabels: [],            // transaction per block label
+            miningBlock: [],             // recent mining block info
+            nodeState: {},       // node state json => disconnect, fork, connect
+            angle: 0,      // 그림 회전 각도, 여기부터 d3쪽에서 사용할 state
+            numOfNodes: 0,
+            simulation: {},
+            xcenter: 0,
+            ycenter: 0,
+            nodeImgSize: 0,
+            socketError: false
         };
 
         socket = io.connect('/socket');
@@ -59,22 +59,15 @@ class Monitoring extends Component {
     componentDidMount() {
         this.getCurrentTime();
 
-        // setInterval(() => {
-        //     console.log(socket);
-        // }, 2000);
-
         // web socket 연결 
         socket.on('connect', () => {
-            console.log('aaaaaaa');
             socket.emit("requestNodeList")
-            console.log("emitted");
             this.setState({
                 socketError: false
             })
         });
 
         socket.on('connect_error', (error) => {
-            console.log('aaaadfdfdfdfdfd');
             if (!this.state.socketError) {
                 this.setState({
                     socketError: true
@@ -105,16 +98,16 @@ class Monitoring extends Component {
         socket.on('nodeStatus', (data) => {
             let changeState = this.state.nodeState;
             let isFork = false;
-            
+
             // connect이 와도 다른 애들이 fork면 fork로 표시
             jQuery.each(changeState, function (id, state) {
-                if(state === 'fork'){
+                if (state === 'fork') {
                     isFork = true;
                     return;
                 }
             });
 
-            if(isFork && data.status === 'connect')
+            if (isFork && data.status === 'connect')
                 changeState[data.id] = 'fork';
             else
                 changeState[data.id] = data.status;
@@ -225,22 +218,22 @@ class Monitoring extends Component {
     // 두번째 부터는 하나씩 값 갖고오기
     updateDashboardInfo = () => {
         Fetch.GET('/api/block/?page_size=2&page=1')
-        .then(res => {
-            let bestBlock = res.results[0];
-            // update 안할 때
-            if(this.state.blockNo === bestBlock.number) {
-                return;
-            }
+            .then(res => {
+                let bestBlock = res.results[0];
+                // update 안할 때
+                if (this.state.blockNo === bestBlock.number) {
+                    return;
+                }
 
                 let timePass = this.state.timePass.slice();
                 let txPerBlock = this.state.txPerBlock.slice();
                 let tbpLabels = this.state.tbpLabels.slice();
 
-            if(this.state.timePass.length >= 60) {
-                timePass.splice(0, 1);
-                txPerBlock.splice(0, 1);
-                tbpLabels.splice(0, 1);
-            }
+                if (this.state.timePass.length >= 60) {
+                    timePass.splice(0, 1);
+                    txPerBlock.splice(0, 1);
+                    tbpLabels.splice(0, 1);
+                }
 
                 timePass.push(moment(bestBlock.timestamp).diff(res.results[1].timestamp, 'seconds'));
                 txPerBlock.push(bestBlock.transaction_count);
@@ -311,11 +304,11 @@ class Monitoring extends Component {
         let disconnectNode = [];
 
         // 노드 색 변경
-        jQuery.each(nodeState, function(id, state) {
+        jQuery.each(nodeState, function (id, state) {
             let color = state === 'fork' ? 'yellow' : 'green';
             // discconnect 일때는 무조건 red
-            if(state === 'disconnect'){
-                color ='red';
+            if (state === 'disconnect') {
+                color = 'red';
                 disconnectNode.push(id);
             }
             let changeNodeImg = '/img/blockchain_' + color + '.svg';
@@ -493,9 +486,9 @@ class Monitoring extends Component {
 
 
     render() {
-        const { blockNo, avgBlockTime, gasLimit, gasUsed, passSec, difficulty, 
+        const { blockNo, avgBlockTime, gasLimit, gasUsed, passSec, difficulty,
             tbpLabels, txPerBlock, timePass, pendingTx } = this.state;
-        
+
         // pending Transaction Table 
         var rows = [];
         pendingTx.forEach((txInfo) => {
@@ -525,7 +518,7 @@ class Monitoring extends Component {
                         <ContentCard>
                             <ContentRow>
                                 <Col xl={4} lg={4} md={4} sm={4} xs={4} style={{ textAlign: 'center' }}>
-                                    <img alt="BEST BLOCK" src="/img/best_block.svg" width="90px"/>
+                                    <img alt="BEST BLOCK" src="/img/best_block.svg" width="90px" />
                                 </Col>
                                 <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{ textAlign: 'left', lineHeight: 2 }}>
                                     <span className='dash-upper-line-card-title' >BEST BLOCK</span><br />
@@ -537,12 +530,12 @@ class Monitoring extends Component {
                     <ContentCol xl={3} lg={6} md={6} sm={12} xs={12}>
                         <ContentCard>
                             <ContentRow>
-                                <Col xl={4} lg={4} md={4} sm={4} xs={4} style={{textAlign:'center'}}>
-                                    <img alt="LAST BLOCK" src="/img/last_block.svg" width="90px"/>
+                                <Col xl={4} lg={4} md={4} sm={4} xs={4} style={{ textAlign: 'center' }}>
+                                    <img alt="LAST BLOCK" src="/img/last_block.svg" width="90px" />
                                 </Col>
-                                <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{textAlign:'left', lineHeight:2}}>
-                                    <span className='dash-upper-line-card-title' >LAST BLOCK</span><br/>
-                                    <span className='dash-upper-line-card-value' style={{color: '#0F9EDB'}}>{passSec === undefined ? '' : passSec} s ago</span>
+                                <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{ textAlign: 'left', lineHeight: 2 }}>
+                                    <span className='dash-upper-line-card-title' >LAST BLOCK</span><br />
+                                    <span className='dash-upper-line-card-value' style={{ color: '#0F9EDB' }}>{passSec === undefined ? '' : passSec} s ago</span>
                                 </Col>
                             </ContentRow>
                         </ContentCard>
@@ -550,8 +543,8 @@ class Monitoring extends Component {
                     <ContentCol xl={3} lg={6} md={6} sm={12} xs={12}>
                         <ContentCard>
                             <ContentRow>
-                                <Col xl={4} lg={4} md={4} sm={4} xs={4} style={{textAlign:'center'}}>
-                                    <img alt="AVG BLOCK TIME" src="/img/avg_block_time.svg" width="90px"/>
+                                <Col xl={4} lg={4} md={4} sm={4} xs={4} style={{ textAlign: 'center' }}>
+                                    <img alt="AVG BLOCK TIME" src="/img/avg_block_time.svg" width="90px" />
                                 </Col>
                                 <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{ textAlign: 'left', lineHeight: 2 }}>
                                     <span className='dash-upper-line-card-title'>AVG BLOCK TIME</span><br />
@@ -564,7 +557,7 @@ class Monitoring extends Component {
                         <ContentCard>
                             <ContentRow>
                                 <Col xl={4} lg={4} md={4} sm={4} xs={4} style={{ textAlign: 'center' }}>
-                                    <img alt="DIFFICULTY" src="/img/difficulty.svg" width="90px"/>
+                                    <img alt="DIFFICULTY" src="/img/difficulty.svg" width="90px" />
                                 </Col>
                                 <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{ textAlign: 'left', lineHeight: 2 }}>
                                     <span className='dash-upper-line-card-title'>DIFFICULTY</span><br />
@@ -591,8 +584,8 @@ class Monitoring extends Component {
                             <ContentCol xl={6} lg={12} md={12} sm={12} xs={12} noMarginBottom={true}>
                                 <ContentCard>
                                     <ContentRow>
-                                        <Col xl={4} lg={4} md={4} sm={4} xs={4} style={{textAlign:'center'}}>
-                                            <img alt="GAS USED" src="/img/gas_used.svg" width="90px"/>
+                                        <Col xl={4} lg={4} md={4} sm={4} xs={4} style={{ textAlign: 'center' }}>
+                                            <img alt="GAS USED" src="/img/gas_used.svg" width="90px" />
                                         </Col>
                                         <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{ textAlign: 'left', lineHeight: 2 }}>
                                             <span className='dash-upper-line-card-title'>GAS USED</span><br />
@@ -604,8 +597,8 @@ class Monitoring extends Component {
                             <ContentCol xl={6} lg={12} md={12} sm={12} xs={12}>
                                 <ContentCard>
                                     <ContentRow>
-                                        <Col xl={4} lg={4} md={4} sm={4} xs={4} style={{textAlign:'center'}}>
-                                            <img alt="GAS LIMIT" src="/img/gas_limit.svg" width="90px"/>
+                                        <Col xl={4} lg={4} md={4} sm={4} xs={4} style={{ textAlign: 'center' }}>
+                                            <img alt="GAS LIMIT" src="/img/gas_limit.svg" width="90px" />
                                         </Col>
                                         <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{ textAlign: 'left', lineHeight: 2 }}>
                                             <span className='dash-upper-line-card-title'>GAS LIMIT</span><br />
@@ -621,25 +614,26 @@ class Monitoring extends Component {
                                     <Col style={{ textAlign: 'left', marginBottom: '10px' }}>
                                         <span className='dash-upper-line-card-title'>Pending Transactions</span>
                                     </Col>
-                                    <div style={{maxHeight:'230px', overflowY:'auto', width:'100%'}}>
-                                        <Table striped style={{width:'100%', tableLayout: 'fixed'}}>
+                                    <div style={{ maxHeight: '230px', overflowY: 'auto', width: '100%' }}>
+                                        <Table striped style={{ width: '100%', tableLayout: 'fixed' }}>
                                             <thead style={{ textAlign: 'center' }}>
                                                 <tr>
-                                                    <th style={{width:'15%'}}>Pending..</th>
-                                                    <th style={{width:'85%'}}>txHash</th>
+                                                    <th style={{ width: '15%' }}>Pending..</th>
+                                                    <th style={{ width: '85%' }}>txHash</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                { rows }
+                                                {rows}
                                             </tbody>
                                         </Table>
-                                        {pendingTx.length === 0 && 
+                                        {pendingTx.length === 0 &&
                                             <div style={{
                                                 display: 'block',
                                                 position: 'absolute',
                                                 left: '38%',
                                                 top: '50%',
-                                                color: 'white'}}>No Pending Transactions</div>}
+                                                color: 'white'
+                                            }}>No Pending Transactions</div>}
                                     </div>
                                 </ContentCard>
                             </ContentCol>
@@ -649,7 +643,7 @@ class Monitoring extends Component {
                 <ContentRow>
                     <ContentCol xl={6} noMarginBottom={true}>
                         <ContentCard>
-                            <span className='dash-upper-line-card-title'>Transaction Per Block</span><br/><br/>
+                            <span className='dash-upper-line-card-title'>Transaction Per Block</span><br /><br />
                             <div> {/* IE 대응 */}
                                 <Bar
                                     data={{
@@ -673,8 +667,8 @@ class Monitoring extends Component {
                                             xAxes: [
                                                 {
                                                     gridLines: {
-                                                        display:false,
-                                                        color:'white'
+                                                        display: false,
+                                                        color: 'white'
                                                     },
                                                     ticks: {
                                                         display: false
@@ -690,8 +684,8 @@ class Monitoring extends Component {
                                                         display: false
                                                     },
                                                     gridLines: {
-                                                        display:false,
-                                                        color:'white'
+                                                        display: false,
+                                                        color: 'white'
                                                     }
                                                 }
                                             ]
@@ -706,7 +700,7 @@ class Monitoring extends Component {
                     </ContentCol>
                     <ContentCol xl={6} noMarginBottom={true}>
                         <ContentCard>
-                            <span className='dash-upper-line-card-title'>Block Generation Time</span><br/><br/>
+                            <span className='dash-upper-line-card-title'>Block Generation Time</span><br /><br />
                             <div> {/* IE 대응 */}
                                 <Line
                                     data={{
@@ -728,8 +722,8 @@ class Monitoring extends Component {
                                             xAxes: [
                                                 {
                                                     gridLines: {
-                                                        display:false,
-                                                        color:'white'
+                                                        display: false,
+                                                        color: 'white'
                                                     },
                                                     ticks: {
                                                         display: false
@@ -745,8 +739,8 @@ class Monitoring extends Component {
                                                         display: false
                                                     },
                                                     gridLines: {
-                                                        display:false,
-                                                        color:'white'
+                                                        display: false,
+                                                        color: 'white'
                                                     }
                                                 }
                                             ]
