@@ -8,7 +8,7 @@ module.exports = function (app) {
     }),
     proxy('/socket', {
       target: process.env.REACT_APP_BAAS_SOCKET,
-      changeOrigin: true
+      ws: true
     })
   );
 };
