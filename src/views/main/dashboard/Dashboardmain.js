@@ -50,7 +50,7 @@ class Monitoring extends Component {
           socketError: false
         };
 
-        socket = io.connect(process.env.REACT_APP_BAAS_SOCKET);
+        socket = io.connect('/socket');
         window.addEventListener('resize', this.updatePosition);
 
 
