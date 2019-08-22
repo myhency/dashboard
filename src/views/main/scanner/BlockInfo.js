@@ -16,7 +16,6 @@ class BlockInfo extends Component {
     super(props);
 
     this.state={
-      passSec: undefined,
       blockNo: this.props.match.params.blockNo,
       blockHash: undefined,
       difficulty: undefined,
@@ -43,7 +42,6 @@ class BlockInfo extends Component {
   }
 
   getBlockInfo = () => {
-    // console.log(this.state.blockNo);
 
     this.props.dispatch(setInfo('# ' + this.state.blockNo));
 
@@ -55,7 +53,6 @@ class BlockInfo extends Component {
       }
 
       this.setState({
-        passSec: 0,
         blockHash: res.block_hash,
         difficulty: res.difficulty,
         gasLimit: res.gas_limit,
@@ -106,7 +103,7 @@ class BlockInfo extends Component {
 
 
   render() {
-    const { passSec, difficulty, gasLimit, gasUsed, timestamp, parentHash, miner, blockReward,
+    const { difficulty, gasLimit, gasUsed, timestamp, parentHash, miner, blockReward,
       nonce, totalDifficulty, size, extraData, blockNo, transcationCount, blockHash,
       preblock, nextblock} = this.state;
     
@@ -141,7 +138,7 @@ class BlockInfo extends Component {
             <tbody>
               <tr>
                 <td style={{width: '20%'}}>
-                  <img src='/img/information.svg' height='18px' 
+                  <img alt="info" src='/img/information.svg' height='18px' 
                   style={{marginTop: '9px', marginBottom: '9px'}}
                   data-for='blockHeight'
                   data-tip={"Also known as Block Number. The block height, <br/>which indicates the length of the blockchain, <br/>increases after the addition of the new block."}/>
@@ -152,18 +149,18 @@ class BlockInfo extends Component {
               </tr>
               <tr>
                 <td>
-                  <img src='/img/information.svg' height='18px' 
+                  <img alt="info" src='/img/information.svg' height='18px' 
                   style={{marginTop: '9px', marginBottom: '9px'}} 
                   data-for='timestamp'
                   data-tip={"The date and time at which a transaction is mined."}/>
                   <ReactTooltip id='timestamp' multiline={true}/>
                    &nbsp; TimeStamp: 
                 </td>
-                <td><img src='/img/clock.svg' height='15px'/>&nbsp;{moment(timestamp).format('YYYY-MM-DD HH:mm:ss')}</td>
+                <td><img alt="clock" src='/img/clock.svg' height='15px'/>&nbsp;{moment(timestamp).format('YYYY-MM-DD HH:mm:ss')}</td>
               </tr>
               <tr>
                 <td>
-                  <img src='/img/information.svg' height='18px' 
+                  <img alt="info" src='/img/information.svg' height='18px' 
                   style={{marginTop: '9px', marginBottom: '9px'}} 
                   data-for='transcationCount'
                   data-tip={"The number of transactions in the block. Internal <br/>transactions are transactions as a result of contract <br/>execution that involves Ether value."}/>
@@ -174,7 +171,7 @@ class BlockInfo extends Component {
               </tr>
               <tr>
                 <td>
-                  <img src='/img/information.svg' height='18px' 
+                  <img alt="info" src='/img/information.svg' height='18px' 
                   style={{marginTop: '9px', marginBottom: '9px'}} 
                   data-for='miner'
                   data-tip={"Miner who successfully included the block onto the blockchain."}/>
@@ -185,7 +182,7 @@ class BlockInfo extends Component {
               </tr>
               <tr>
                 <td>
-                  <img src='/img/information.svg' height='18px' 
+                  <img alt="info" src='/img/information.svg' height='18px' 
                   style={{marginTop: '9px', marginBottom: '9px'}} 
                   data-for='blockReward'
                   data-tip={"For each block, the miner is rewarded with a finite <br/>amount of Ether on top of the fees paid for all <br/>transactions in the block."}/>
@@ -200,7 +197,7 @@ class BlockInfo extends Component {
               </tr>
               <tr>
                 <td>
-                <img src='/img/information.svg' height='18px' 
+                <img alt="info" src='/img/information.svg' height='18px' 
                   style={{marginTop: '9px', marginBottom: '9px'}} 
                   data-for='difficulty'
                   data-tip={"The amount of effort required to mine a new block. <br/>The difficulty algorithm may adjust according to <br/>time."}/>
@@ -211,29 +208,29 @@ class BlockInfo extends Component {
               </tr>
               <tr>
                 <td>
-                  <img src='/img/information.svg' height='18px' 
+                  <img alt="info" src='/img/information.svg' height='18px' 
                   style={{marginTop: '9px', marginBottom: '9px'}} 
                   data-for='totalDifficulty'
                   data-tip={"Total difficulty of the chain until this block."}/>
                   <ReactTooltip id='totalDifficulty' multiline={true}/>
                    &nbsp; Total Difficulty:
                 </td>
-                <td>{parseInt(totalDifficulty)}</td>
+                <td>{totalDifficulty}</td>
               </tr>
               <tr>
                 <td>
-                  <img src='/img/information.svg' height='18px' 
+                  <img alt="info" src='/img/information.svg' height='18px' 
                   style={{marginTop: '9px', marginBottom: '9px'}} 
                   data-for='size'
                   data-tip={"The block size is actually determined by the <br/>block's gas limit."}/>
                   <ReactTooltip id='size' multiline={true}/>
                    &nbsp; Size:
                 </td>
-                <td>{parseInt(size)}</td>
+                <td>{size}</td>
               </tr>
               <tr>
                 <td>
-                  <img src='/img/information.svg' height='18px' 
+                  <img alt="info" src='/img/information.svg' height='18px' 
                   style={{marginTop: '9px', marginBottom: '9px'}} 
                   data-for='gasUsed'
                   data-tip={"The total gas used in the block and its percentage <br/>of gas filled in the block."}/>
@@ -244,7 +241,7 @@ class BlockInfo extends Component {
               </tr>
               <tr>
                 <td>
-                  <img src='/img/information.svg' height='18px' 
+                  <img alt="info" src='/img/information.svg' height='18px' 
                   style={{marginTop: '9px', marginBottom: '9px'}} 
                   data-for='gasLimit'
                   data-tip={"Total gas limit provieded by all transactions in the block."}/>
@@ -255,7 +252,7 @@ class BlockInfo extends Component {
               </tr>
               <tr>
                 <td>
-                  <img src='/img/information.svg' height='18px' 
+                  <img alt="info" src='/img/information.svg' height='18px' 
                   style={{marginTop: '9px', marginBottom: '9px'}} 
                   data-for='extraData'
                   data-tip={"Any data that can be included by the miner in the block."}/>
@@ -266,7 +263,7 @@ class BlockInfo extends Component {
               </tr>
               <tr>
                 <td>
-                  <img src='/img/information.svg' height='18px' 
+                  <img alt="info" src='/img/information.svg' height='18px' 
                   style={{marginTop: '9px', marginBottom: '9px'}} 
                   data-for='blockHash'
                   data-tip={"Hash of the block."}/>
@@ -277,7 +274,7 @@ class BlockInfo extends Component {
               </tr>
               <tr>
                 <td>
-                  <img src='/img/information.svg' height='18px' 
+                  <img alt="info" src='/img/information.svg' height='18px' 
                   style={{marginTop: '9px', marginBottom: '9px'}} 
                   data-for='parentHash'
                   data-tip={"The hash of the block from which this block was <br/>generated, also known as its parent block."}/>
@@ -288,7 +285,7 @@ class BlockInfo extends Component {
               </tr>
               <tr>
                 <td>
-                  <img src='/img/information.svg' height='18px' 
+                  <img alt="info" src='/img/information.svg' height='18px' 
                   style={{marginTop: '9px', marginBottom: '9px'}} 
                   data-for='nonce'
                   data-tip={"Block nonce is a value used during mining to <br/>demonstrate proof of work for a block."}/>

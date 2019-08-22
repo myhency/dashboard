@@ -42,7 +42,6 @@ class Address extends Component {
         //For dividing page name
         this.props.dispatch(setPage(undefined));
         this.getAddress();
-        console.log(this.state.timestamp);
     }
 
     //Callback for table

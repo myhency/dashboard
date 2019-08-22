@@ -3,10 +3,6 @@ import { Card, CardHeader, CardBody } from 'reactstrap';
 
 class ContentCard extends Component {
 
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         let ContentCardStyle = {
             marginBottom:'1rem',
