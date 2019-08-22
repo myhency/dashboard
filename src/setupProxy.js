@@ -5,12 +5,9 @@ module.exports = function (app) {
     proxy('/api', {
       target: process.env.REACT_APP_BAAS_BACKEND_URL,
       changeOrigin: true
-    })
-  );
-  app.use(
+    }),
     proxy('/socket', {
       target: process.env.REACT_APP_BAAS_SOCKET,
-      changeOrigin: true,
       ws: true
     })
   );
