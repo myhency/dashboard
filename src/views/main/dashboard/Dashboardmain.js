@@ -60,10 +60,6 @@ class Monitoring extends Component {
     componentDidMount() {
         this.getCurrentTime();
 
-        // setInterval(() => {
-        //     console.log(socket);
-        // }, 2000);
-
         // web socket 연결 
         socket.on('connect', () => {
             console.log('aaaaaaa');
