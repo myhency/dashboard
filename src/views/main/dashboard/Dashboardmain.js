@@ -59,16 +59,23 @@ class Monitoring extends Component {
     componentDidMount() {
         this.getCurrentTime();
 
+        // setInterval(() => {
+        //     console.log(socket);
+        // }, 2000);
+
         // web socket 연결 
         socket.on('connect', () => {
+            console.log('aaaaaaa');
             socket.emit("requestNodeList")
+            console.log("emitted");
             this.setState({
                 socketError: false
             })
         });
 
         socket.on('connect_error', (error) => {
-            if(!this.state.socketError){
+            console.log('aaaadfdfdfdfdfd');
+            if (!this.state.socketError) {
                 this.setState({
                     socketError: true
                 })
@@ -76,7 +83,7 @@ class Monitoring extends Component {
                     'Node Monitoring Server error!',
                     'Please check your server status',
                     'error'
-                  );
+                );
             }
         })
 
@@ -84,7 +91,7 @@ class Monitoring extends Component {
         socket.on('responseNodeList', (data) => {
             let nodeState = {};
             // 첫 state는 red(disconncet)로 초기화
-            for(var i=0; i<data.length; i++){
+            for (var i = 0; i < data.length; i++) {
                 nodeState[data[i].id] = 'disconnect'
             }
             this.setState({
@@ -122,12 +129,12 @@ class Monitoring extends Component {
             let pendingTimeTx = [];
             let prevList = this.state.pendingTx;
             // 최근에 온게 리스트 뒤쪽에 오도록
-            for(var i = data.length-1; i>=0; i--) {
+            for (var i = data.length - 1; i >= 0; i--) {
                 let txHash = data[i];
-                let temp = {'time': 0, 'hash': txHash};
+                let temp = { 'time': 0, 'hash': txHash };
                 var index = _.indexOf(prevList, _.find(prevList, { 'hash': txHash }));
-                if(index >= 0 ) {
-                    temp.time = prevList[index].time +1;
+                if (index >= 0) {
+                    temp.time = prevList[index].time + 1;
                 }
                 pendingTimeTx.push(temp);
             }
@@ -145,7 +152,7 @@ class Monitoring extends Component {
             let node = this.state.node;
 
             // disconnect인 경우 바꾸지 않음
-            for(var i=0; i < node.length; i++) {
+            for (var i = 0; i < node.length; i++) {
                 changeState[node[i].id] = changeState[node[i].id] === 'disconnect' ? 'disconnect' :
                     data.value ? 'fork' : 'connect'
             }
@@ -159,7 +166,7 @@ class Monitoring extends Component {
         //1초에 한번씩 백엔드에 요청
         this.getFirstInfo();
         this.intervalId_getInfo = setInterval(this.updateDashboardInfo, 3000);
-        this.intervalId_getCurrentTime = setInterval(this.getCurrentTime, 1000); 
+        this.intervalId_getCurrentTime = setInterval(this.getCurrentTime, 1000);
         this.intervalId_getPendingTx = setInterval(() => socket.emit("requestPendingTx"), 1000);
 
         this.setState({
@@ -183,40 +190,40 @@ class Monitoring extends Component {
     // 첫번째는 최대 60개까지 불러옴
     getFirstInfo = () => {
         Fetch.GET('/api/block/?page_size=61&page=1')
-        .then(res => {
-            let newTime = [];
-            let tpb = [];
-            let labels = [];
+            .then(res => {
+                let newTime = [];
+                let tpb = [];
+                let labels = [];
 
-            for(var i = res.results.length-1; i> 0; i--) {
-                newTime.push(moment(res.results[i-1].timestamp).diff(res.results[i].timestamp,'seconds'));
-                tpb.push(res.results[i].transaction_count);
-                labels.push(res.results[i].number);
-            }
-            let avgBlockTime = _.meanBy(newTime).toFixed(3);
-            
-            let bestBlock = res.results[0];
-            this.setState({
-                blockNo: bestBlock.number,
-                gasLimit: bestBlock.gas_limit,
-                gasUsed: bestBlock.gas_used,
-                timestamp: bestBlock.timestamp,
-                avgBlockTime: avgBlockTime,
-                timePass: newTime,
-                passSec: 0,
-                txPerBlock: tpb,
-                tbpLabels: labels,
-                difficulty: bestBlock.difficulty,
-            });
+                for (var i = res.results.length - 1; i > 0; i--) {
+                    newTime.push(moment(res.results[i - 1].timestamp).diff(res.results[i].timestamp, 'seconds'));
+                    tpb.push(res.results[i].transaction_count);
+                    labels.push(res.results[i].number);
+                }
+                let avgBlockTime = _.meanBy(newTime).toFixed(3);
 
-        })
-        .catch(error => {
-            console.log(error);
-        })
+                let bestBlock = res.results[0];
+                this.setState({
+                    blockNo: bestBlock.number,
+                    gasLimit: bestBlock.gas_limit,
+                    gasUsed: bestBlock.gas_used,
+                    timestamp: bestBlock.timestamp,
+                    avgBlockTime: avgBlockTime,
+                    timePass: newTime,
+                    passSec: 0,
+                    txPerBlock: tpb,
+                    tbpLabels: labels,
+                    difficulty: bestBlock.difficulty,
+                });
+
+            })
+            .catch(error => {
+                console.log(error);
+            })
     }
 
     // 두번째 부터는 하나씩 값 갖고오기
-    updateDashboardInfo =() => {
+    updateDashboardInfo = () => {
         Fetch.GET('/api/block/?page_size=2&page=1')
         .then(res => {
             let bestBlock = res.results[0];
@@ -225,9 +232,9 @@ class Monitoring extends Component {
                 return;
             }
 
-            let timePass = this.state.timePass.slice();
-            let txPerBlock = this.state.txPerBlock.slice();
-            let tbpLabels = this.state.tbpLabels.slice();
+                let timePass = this.state.timePass.slice();
+                let txPerBlock = this.state.txPerBlock.slice();
+                let tbpLabels = this.state.tbpLabels.slice();
 
             if(this.state.timePass.length >= 60) {
                 timePass.splice(0, 1);
@@ -235,29 +242,29 @@ class Monitoring extends Component {
                 tbpLabels.splice(0, 1);
             }
 
-            timePass.push(moment(bestBlock.timestamp).diff(res.results[1].timestamp,'seconds'));
-            txPerBlock.push(bestBlock.transaction_count);
-            tbpLabels.push(bestBlock.number);
-            
-            let avgBlockTime = _.meanBy(timePass).toFixed(3);
+                timePass.push(moment(bestBlock.timestamp).diff(res.results[1].timestamp, 'seconds'));
+                txPerBlock.push(bestBlock.transaction_count);
+                tbpLabels.push(bestBlock.number);
 
-            this.setState({    
-                blockNo: bestBlock.number,
-                gasLimit: bestBlock.gas_limit,
-                gasUsed: bestBlock.gas_used,
-                timestamp: bestBlock.timestamp,
-                avgBlockTime: avgBlockTime,
-                timePass: timePass,
-                passSec: 0,
-                txPerBlock: txPerBlock,
-                tbpLabels: tbpLabels,
-                difficulty: bestBlock.difficulty
-            });
+                let avgBlockTime = _.meanBy(timePass).toFixed(3);
 
-        })
-        .catch(error => {
-            console.log(error);
-        })
+                this.setState({
+                    blockNo: bestBlock.number,
+                    gasLimit: bestBlock.gas_limit,
+                    gasUsed: bestBlock.gas_used,
+                    timestamp: bestBlock.timestamp,
+                    avgBlockTime: avgBlockTime,
+                    timePass: timePass,
+                    passSec: 0,
+                    txPerBlock: txPerBlock,
+                    tbpLabels: tbpLabels,
+                    difficulty: bestBlock.difficulty
+                });
+
+            })
+            .catch(error => {
+                console.log(error);
+            })
     }
 
     // pass sec 처리
@@ -273,8 +280,8 @@ class Monitoring extends Component {
 
     // window resize 
     updatePosition = () => {
-        if(this.state.node.length > 0){
-            if(ReactDOM.findDOMNode(this.svgCard) === undefined)
+        if (this.state.node.length > 0) {
+            if (ReactDOM.findDOMNode(this.svgCard) === undefined)
                 return;
             let cardPosition = ReactDOM.findDOMNode(this.svgCard).getBoundingClientRect();
             this.setState({
@@ -287,13 +294,13 @@ class Monitoring extends Component {
                     )
                     .force("center", d3.forceCenter()
                         .x(cardPosition.width / 2)
-                        .y(cardPosition.height / 2 )), // center of the picture
-                xcenter: cardPosition.width / 2 ,      // rotational center of the picture
-                ycenter: cardPosition.height / 2 ,
+                        .y(cardPosition.height / 2)), // center of the picture
+                xcenter: cardPosition.width / 2,      // rotational center of the picture
+                ycenter: cardPosition.height / 2,
                 nodeImgSize: cardPosition.width * cardPosition.height * 0.0009 / this.state.node.length,
                 cardPosition: cardPosition
             })
-            
+
             this.drawFrame();
             this.updateNode();
         }
@@ -312,7 +319,7 @@ class Monitoring extends Component {
                 disconnectNode.push(id);
             }
             let changeNodeImg = '/img/blockchain_' + color + '.svg';
-            
+
             // node image 태그 가져오기
             let imageTag = d3.select(`image[id='${id}']`);
             // 노드 이미지 변경
@@ -327,7 +334,7 @@ class Monitoring extends Component {
             d3.selectAll(`line[src='${id}']`).attr("style", "display:none");
             d3.selectAll(`line[target='${id}']`).attr("style", "display:none");
         })
-        
+
     }
 
     miningNode = (data) => {
@@ -336,19 +343,19 @@ class Monitoring extends Component {
         // node image 태그 가져오기
         let imageTag = d3.select(`image[id='${miner}']`);
 
-        var blinkNode = setInterval(function() {
+        var blinkNode = setInterval(function () {
             imageTag.attr("style", "opacity:0.7");
             setTimeout(() => {
                 imageTag.attr("style", "opacity:1");
             }, 150);
         }, 300);
-        
-        setTimeout(function() {
+
+        setTimeout(function () {
             clearTimeout(blinkNode);
         }, 1000);
-        
+
     }
-    
+
     // d3 움직임 정도
     updateTime() {
         this.setState({
@@ -386,10 +393,10 @@ class Monitoring extends Component {
 
         let nodes = _.map(State.node, (node) => {
             return { id: node.id, group: 1, img: "/img/blockchain_green.svg" };
-        });        
-        
+        });
+
         this.svg.selectAll('*').remove();
-        
+
         let link = this.svg.append("g")
             .attr("class", "stroke")
             .style("stroke", "#fff")
@@ -420,7 +427,7 @@ class Monitoring extends Component {
         //     .attr('font-size', function (d) { return '20px' })
         //     .text(function (d) { return d.id });
 
-            
+
 
         State.simulation
             .nodes(nodes)
@@ -434,36 +441,36 @@ class Monitoring extends Component {
         // let labelGX = State.nodeImgSize * 0.05; //node image 무게중심 구하기
         // let labelGY = State.nodeImgSize * 0.13; //node image 무게중심 구하기
 
-        
+
 
         // mouseover시 tooltip에 node 정보 추가
         node.on('mouseover', function (d) {
             d3.select("#tooltip")
-            .style("right", "0px")
-            .style("top",  "0px")
-            .select('#info')
-            .html(tooltipText(d, State));
+                .style("right", "0px")
+                .style("top", "0px")
+                .select('#info')
+                .html(tooltipText(d, State));
 
             d3.select("#tooltip").classed("hidden", false);
         })
-        .on('mouseout', function () {
-            d3.select("#tooltip").classed("hidden", true);
-        })
+            .on('mouseout', function () {
+                d3.select("#tooltip").classed("hidden", true);
+            })
 
         function tooltipText(d, stateParam) {
             let info;
-            let myNode = stateParam.node[d.id-1];
+            let myNode = stateParam.node[d.id - 1];
             let myStatus = stateParam.nodeState[d.id];
-            
+
             info = '<p>id: ' + myNode.id + '</p>'
-            + '<p>ip: ' + myNode.ip + '</p>'
-            + '<p>port: ' +  myNode.port + '</p>'
-            + '<p>status: ' +  myStatus + '</p>';
+                + '<p>ip: ' + myNode.ip + '</p>'
+                + '<p>port: ' + myNode.port + '</p>'
+                + '<p>status: ' + myStatus + '</p>';
 
 
             return info;
         }
-          
+
 
         function ticked() {
             link
@@ -483,7 +490,7 @@ class Monitoring extends Component {
         }
     }
 
-    
+
 
     render() {
         const { blockNo, avgBlockTime, gasLimit, gasUsed, passSec, difficulty, 
@@ -499,8 +506,8 @@ class Monitoring extends Component {
                 </tr>
             );
         });
-        for(var i = 0; i < 5-pendingTx.length; i++) {
-            rows.push( 
+        for (var i = 0; i < 5 - pendingTx.length; i++) {
+            rows.push(
                 <tr key={i}>
                     <td>&nbsp;</td>
                     <td>&nbsp;</td>
@@ -522,7 +529,7 @@ class Monitoring extends Component {
                                 </Col>
                                 <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{ textAlign: 'left', lineHeight: 2 }}>
                                     <span className='dash-upper-line-card-title' >BEST BLOCK</span><br />
-                                    <span className='dash-upper-line-card-value' style={{color: '#B648F6'}}># {blockNo === undefined ? '' : blockNo}</span>
+                                    <span className='dash-upper-line-card-value' style={{ color: '#B648F6' }}># {blockNo === undefined ? '' : blockNo}</span>
                                 </Col>
                             </ContentRow>
                         </ContentCard>
@@ -546,9 +553,9 @@ class Monitoring extends Component {
                                 <Col xl={4} lg={4} md={4} sm={4} xs={4} style={{textAlign:'center'}}>
                                     <img alt="AVG BLOCK TIME" src="/img/avg_block_time.svg" width="90px"/>
                                 </Col>
-                                <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{textAlign:'left', lineHeight:2}}>
-                                    <span className='dash-upper-line-card-title'>AVG BLOCK TIME</span><br/>
-                                    <span className='dash-upper-line-card-value' style={{color: '#7BCC3A'}}>{avgBlockTime} s</span>
+                                <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{ textAlign: 'left', lineHeight: 2 }}>
+                                    <span className='dash-upper-line-card-title'>AVG BLOCK TIME</span><br />
+                                    <span className='dash-upper-line-card-value' style={{ color: '#7BCC3A' }}>{avgBlockTime} s</span>
                                 </Col>
                             </ContentRow>
                         </ContentCard>
@@ -559,9 +566,9 @@ class Monitoring extends Component {
                                 <Col xl={4} lg={4} md={4} sm={4} xs={4} style={{ textAlign: 'center' }}>
                                     <img alt="DIFFICULTY" src="/img/difficulty.svg" width="90px"/>
                                 </Col>
-                                <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{textAlign:'left', lineHeight:2}}>
-                                    <span className='dash-upper-line-card-title'>DIFFICULTY</span><br/>
-                                    <span className='dash-upper-line-card-value' style={{color: '#FFD162'}}>{difficulty === undefined ? '' : difficulty} H</span>
+                                <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{ textAlign: 'left', lineHeight: 2 }}>
+                                    <span className='dash-upper-line-card-title'>DIFFICULTY</span><br />
+                                    <span className='dash-upper-line-card-value' style={{ color: '#FFD162' }}>{difficulty === undefined ? '' : difficulty} H</span>
                                 </Col>
                             </ContentRow>
                         </ContentCard>
@@ -569,7 +576,7 @@ class Monitoring extends Component {
                 </ContentRow>
                 <ContentRow>
                     <ContentCol xl={6} lg={12} md={12} sm={12} xs={12} noMarginBottom={true}>
-                        <ContentCard imgBackground={true} ref={(ref) => { this.svgCard = ref; }}>
+                        <ContentCard imgBackground={true} ref={(ref) => { this.svgCard = ref; }}>
                             <svg width="100%" height="450"//width="620" height="450"  //켄버스 크기
                                 ref={handle => (this.svg = d3.select(handle))}>
                             </svg>
@@ -587,9 +594,9 @@ class Monitoring extends Component {
                                         <Col xl={4} lg={4} md={4} sm={4} xs={4} style={{textAlign:'center'}}>
                                             <img alt="GAS USED" src="/img/gas_used.svg" width="90px"/>
                                         </Col>
-                                        <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{textAlign:'left', lineHeight:2}}>
-                                            <span className='dash-upper-line-card-title'>GAS USED</span><br/>
-                                            <span className='dash-upper-line-card-value' style={{color: '#FD8900'}}>{gasUsed === undefined ? '' : gasUsed} gas</span>
+                                        <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{ textAlign: 'left', lineHeight: 2 }}>
+                                            <span className='dash-upper-line-card-title'>GAS USED</span><br />
+                                            <span className='dash-upper-line-card-value' style={{ color: '#FD8900' }}>{gasUsed === undefined ? '' : gasUsed} gas</span>
                                         </Col>
                                     </ContentRow>
                                 </ContentCard>
@@ -600,9 +607,9 @@ class Monitoring extends Component {
                                         <Col xl={4} lg={4} md={4} sm={4} xs={4} style={{textAlign:'center'}}>
                                             <img alt="GAS LIMIT" src="/img/gas_limit.svg" width="90px"/>
                                         </Col>
-                                        <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{textAlign:'left', lineHeight:2}}>
-                                            <span className='dash-upper-line-card-title'>GAS LIMIT</span><br/>
-                                            <span className='dash-upper-line-card-value' style={{color: '#F74B4B'}}>{gasLimit === undefined ? '' : gasLimit} gas</span>
+                                        <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{ textAlign: 'left', lineHeight: 2 }}>
+                                            <span className='dash-upper-line-card-title'>GAS LIMIT</span><br />
+                                            <span className='dash-upper-line-card-value' style={{ color: '#F74B4B' }}>{gasLimit === undefined ? '' : gasLimit} gas</span>
                                         </Col>
                                     </ContentRow>
                                 </ContentCard>
@@ -610,7 +617,7 @@ class Monitoring extends Component {
                         </ContentRow>
                         <ContentRow>
                             <ContentCol>
-                                <ContentCard style={{height: '289px'}} bodyNoPaddingBottom={true} className="scrollbar" id="style-2">
+                                <ContentCard style={{ height: '289px' }} bodyNoPaddingBottom={true} className="scrollbar" id="style-2">
                                     <Col style={{ textAlign: 'left', marginBottom: '10px' }}>
                                         <span className='dash-upper-line-card-title'>Pending Transactions</span>
                                     </Col>
