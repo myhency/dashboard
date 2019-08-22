@@ -12,7 +12,7 @@ node {
             echo 'baas-portal-front-end exists'
             // throw
         } finally {
-            sh "docker run -dt --name baas-portal-front-end -p 3006:3006 baas-portal-front-end:${env.BUILD_ID}"
+            sh "docker run -dt --name baas-portal-front-end -p 3006:3006 -e REACT_APP_BAAS_BACKEND_URL=http://10.40.111.60:8000/ -e REACT_APP_BAAS_SOCKET=http://10.40.111.60:3000 baas-portal-front-end:${env.BUILD_ID}"
         }
     }
 
