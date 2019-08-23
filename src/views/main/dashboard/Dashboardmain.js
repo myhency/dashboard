@@ -9,6 +9,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import io from 'socket.io-client';
 import * as d3 from "d3";
+import { Scrollbars } from 'react-custom-scrollbars';
 import swal from 'sweetalert2';
 
 
@@ -24,30 +25,30 @@ class Monitoring extends Component {
 
     constructor(props) {
         super(props);
-    
-        this.state={
-          blockNo: undefined,
-          gasLimit: undefined,
-          gasUsed: undefined,
-          timestamp: undefined,
-          avgBlockTime: undefined,
-          timePass: [],                 // average block time 계산
-          node: [],
-          pendingTx: [],                // key가 hash, value가 시간
-          cardPosition : undefined,
-          passSec: undefined,
-          difficulty: undefined,
-          txPerBlock: [],            // transaction per block 
-          tbpLabels: [],            // transaction per block label
-          miningBlock: [],             // recent mining block info
-          nodeState : {},       // node state json => disconnect, fork, connect
-          angle: 0,      // 그림 회전 각도, 여기부터 d3쪽에서 사용할 state
-          numOfNodes: 0,
-          simulation: {},
-          xcenter: 0,
-          ycenter: 0,
-          nodeImgSize: 0,
-          socketError: false
+
+        this.state = {
+            blockNo: undefined,
+            gasLimit: undefined,
+            gasUsed: undefined,
+            timestamp: undefined,
+            avgBlockTime: undefined,
+            timePass: [],                 // average block time 계산
+            node: [],
+            pendingTx: [],                // key가 hash, value가 시간
+            cardPosition: undefined,
+            passSec: undefined,
+            difficulty: undefined,
+            txPerBlock: [],            // transaction per block 
+            tbpLabels: [],            // transaction per block label
+            miningBlock: [],             // recent mining block info
+            nodeState: {},       // node state json => disconnect, fork, connect
+            angle: 0,      // 그림 회전 각도, 여기부터 d3쪽에서 사용할 state
+            numOfNodes: 0,
+            simulation: {},
+            xcenter: 0,
+            ycenter: 0,
+            nodeImgSize: 0,
+            socketError: false
         };
 
         socket = io.connect(process.env.REACT_APP_BAAS_SOCKET);
@@ -68,7 +69,7 @@ class Monitoring extends Component {
         });
 
         socket.on('connect_error', (error) => {
-            if(!this.state.socketError){
+            if (!this.state.socketError) {
                 this.setState({
                     socketError: true
                 })
@@ -76,7 +77,7 @@ class Monitoring extends Component {
                     'Node Monitoring Server error!',
                     'Please check your server status',
                     'error'
-                  );
+                );
             }
         })
 
@@ -84,7 +85,7 @@ class Monitoring extends Component {
         socket.on('responseNodeList', (data) => {
             let nodeState = {};
             // 첫 state는 red(disconncet)로 초기화
-            for(var i=0; i<data.length; i++){
+            for (var i = 0; i < data.length; i++) {
                 nodeState[data[i].id] = 'disconnect'
             }
             this.setState({
@@ -98,16 +99,16 @@ class Monitoring extends Component {
         socket.on('nodeStatus', (data) => {
             let changeState = this.state.nodeState;
             let isFork = false;
-            
+
             // connect이 와도 다른 애들이 fork면 fork로 표시
             jQuery.each(changeState, function (id, state) {
-                if(state === 'fork'){
+                if (state === 'fork') {
                     isFork = true;
                     return;
                 }
             });
 
-            if(isFork && data.status === 'connect')
+            if (isFork && data.status === 'connect')
                 changeState[data.id] = 'fork';
             else
                 changeState[data.id] = data.status;
@@ -115,6 +116,7 @@ class Monitoring extends Component {
             this.setState({
                 nodeState: changeState
             })
+            // console.log(data);
             this.updateNode();
         });
 
@@ -122,12 +124,12 @@ class Monitoring extends Component {
             let pendingTimeTx = [];
             let prevList = this.state.pendingTx;
             // 최근에 온게 리스트 뒤쪽에 오도록
-            for(var i = data.length-1; i>=0; i--) {
+            for (var i = data.length - 1; i >= 0; i--) {
                 let txHash = data[i];
-                let temp = {'time': 0, 'hash': txHash};
+                let temp = { 'time': 0, 'hash': txHash };
                 var index = _.indexOf(prevList, _.find(prevList, { 'hash': txHash }));
-                if(index >= 0 ) {
-                    temp.time = prevList[index].time +1;
+                if (index >= 0) {
+                    temp.time = prevList[index].time + 1;
                 }
                 pendingTimeTx.push(temp);
             }
@@ -137,7 +139,9 @@ class Monitoring extends Component {
         });
 
         socket.on('blockMiner', (data) => {
+            // console.log(data);
             this.miningNode(data);
+            // this.getDashboardInfo();
         });
 
         socket.on('uncle', (data) => {
@@ -145,7 +149,7 @@ class Monitoring extends Component {
             let node = this.state.node;
 
             // disconnect인 경우 바꾸지 않음
-            for(var i=0; i < node.length; i++) {
+            for (var i = 0; i < node.length; i++) {
                 changeState[node[i].id] = changeState[node[i].id] === 'disconnect' ? 'disconnect' :
                     data.value ? 'fork' : 'connect'
             }
@@ -153,13 +157,14 @@ class Monitoring extends Component {
             this.setState({
                 nodeState: changeState
             });
+            // console.log(data);
             this.updateNode();
         });
 
         //1초에 한번씩 백엔드에 요청
         this.getFirstInfo();
         this.intervalId_getInfo = setInterval(this.updateDashboardInfo, 3000);
-        this.intervalId_getCurrentTime = setInterval(this.getCurrentTime, 1000); 
+        this.intervalId_getCurrentTime = setInterval(this.getCurrentTime, 1000);
         this.intervalId_getPendingTx = setInterval(() => socket.emit("requestPendingTx"), 1000);
 
         this.setState({
@@ -183,81 +188,83 @@ class Monitoring extends Component {
     // 첫번째는 최대 60개까지 불러옴
     getFirstInfo = () => {
         Fetch.GET('/api/block/?page_size=61&page=1')
-        .then(res => {
-            let newTime = [];
-            let tpb = [];
-            let labels = [];
+            .then(res => {
+                let newTime = [];
+                let tpb = [];
+                let labels = [];
 
-            for(var i = res.results.length-1; i> 0; i--) {
-                newTime.push(moment(res.results[i-1].timestamp).diff(res.results[i].timestamp,'seconds'));
-                tpb.push(res.results[i].transaction_count);
-                labels.push(res.results[i].number);
-            }
-            let avgBlockTime = _.meanBy(newTime).toFixed(3);
-            
-            let bestBlock = res.results[0];
-            this.setState({
-                blockNo: bestBlock.number,
-                gasLimit: bestBlock.gas_limit,
-                gasUsed: bestBlock.gas_used,
-                timestamp: bestBlock.timestamp,
-                avgBlockTime: avgBlockTime,
-                timePass: newTime,
-                passSec: 0,
-                txPerBlock: tpb,
-                tbpLabels: labels,
-                difficulty: bestBlock.difficulty,
-            });
+                for (var i = res.results.length - 1; i > 0; i--) {
+                    newTime.push(moment(res.results[i - 1].timestamp).diff(res.results[i].timestamp, 'seconds'));
+                    tpb.push(res.results[i].transaction_count);
+                    labels.push(res.results[i].number);
+                }
+                let avgBlockTime = _.meanBy(newTime).toFixed(3);
 
-        })
-        .catch(error => {
-            console.log(error);
-        })
+                let bestBlock = res.results[0];
+                this.setState({
+                    blockNo: bestBlock.number,
+                    gasLimit: bestBlock.gas_limit,
+                    gasUsed: bestBlock.gas_used,
+                    timestamp: bestBlock.timestamp,
+                    avgBlockTime: avgBlockTime,
+                    timePass: newTime,
+                    passSec: 0,
+                    txPerBlock: tpb,
+                    tbpLabels: labels,
+                    difficulty: bestBlock.difficulty,
+                });
+
+            })
+            .catch(error => {
+                console.log(error);
+            })
     }
 
     // 두번째 부터는 하나씩 값 갖고오기
-    updateDashboardInfo =() => {
+    updateDashboardInfo = () => {
         Fetch.GET('/api/block/?page_size=2&page=1')
-        .then(res => {
-            let bestBlock = res.results[0];
-            // update 안할 때
-            if(this.state.blockNo === bestBlock.number) {
-                return;
-            }
+            .then(res => {
+                // console.log(res.results[0]);
+                let bestBlock = res.results[0];
+                // update 안할 때
+                if (this.state.blockNo === bestBlock.number) {
+                    return;
+                }
 
-            let timePass = this.state.timePass.slice();
-            let txPerBlock = this.state.txPerBlock.slice();
-            let tbpLabels = this.state.tbpLabels.slice();
+                let timePass = this.state.timePass.slice();
+                let txPerBlock = this.state.txPerBlock.slice();
+                let tbpLabels = this.state.tbpLabels.slice();
 
-            if(this.state.timePass.length >= 60) {
-                timePass.splice(0, 1);
-                txPerBlock.splice(0, 1);
-                tbpLabels.splice(0, 1);
-            }
+                // console.log(newTime);
+                if (this.state.timePass.length >= 60) {
+                    timePass.splice(0, 1);
+                    txPerBlock.splice(0, 1);
+                    tbpLabels.splice(0, 1);
+                }
 
-            timePass.push(moment(bestBlock.timestamp).diff(res.results[1].timestamp,'seconds'));
-            txPerBlock.push(bestBlock.transaction_count);
-            tbpLabels.push(bestBlock.number);
-            
-            let avgBlockTime = _.meanBy(timePass).toFixed(3);
+                timePass.push(moment(bestBlock.timestamp).diff(res.results[1].timestamp, 'seconds'));
+                txPerBlock.push(bestBlock.transaction_count);
+                tbpLabels.push(bestBlock.number);
 
-            this.setState({    
-                blockNo: bestBlock.number,
-                gasLimit: bestBlock.gas_limit,
-                gasUsed: bestBlock.gas_used,
-                timestamp: bestBlock.timestamp,
-                avgBlockTime: avgBlockTime,
-                timePass: timePass,
-                passSec: 0,
-                txPerBlock: txPerBlock,
-                tbpLabels: tbpLabels,
-                difficulty: bestBlock.difficulty
-            });
+                let avgBlockTime = _.meanBy(timePass).toFixed(3);
 
-        })
-        .catch(error => {
-            console.log(error);
-        })
+                this.setState({
+                    blockNo: bestBlock.number,
+                    gasLimit: bestBlock.gas_limit,
+                    gasUsed: bestBlock.gas_used,
+                    timestamp: bestBlock.timestamp,
+                    avgBlockTime: avgBlockTime,
+                    timePass: timePass,
+                    passSec: 0,
+                    txPerBlock: txPerBlock,
+                    tbpLabels: tbpLabels,
+                    difficulty: bestBlock.difficulty
+                });
+
+            })
+            .catch(error => {
+                console.log(error);
+            })
     }
 
     // pass sec 처리
@@ -273,8 +280,8 @@ class Monitoring extends Component {
 
     // window resize 
     updatePosition = () => {
-        if(this.state.node.length > 0){
-            if(ReactDOM.findDOMNode(this.svgCard) === undefined)
+        if (this.state.node.length > 0) {
+            if (ReactDOM.findDOMNode(this.svgCard) === undefined)
                 return;
             let cardPosition = ReactDOM.findDOMNode(this.svgCard).getBoundingClientRect();
             this.setState({
@@ -287,13 +294,13 @@ class Monitoring extends Component {
                     )
                     .force("center", d3.forceCenter()
                         .x(cardPosition.width / 2)
-                        .y(cardPosition.height / 2 )), // center of the picture
-                xcenter: cardPosition.width / 2 ,      // rotational center of the picture
-                ycenter: cardPosition.height / 2 ,
+                        .y(cardPosition.height / 2)), // center of the picture
+                xcenter: cardPosition.width / 2,      // rotational center of the picture
+                ycenter: cardPosition.height / 2,
                 nodeImgSize: cardPosition.width * cardPosition.height * 0.0009 / this.state.node.length,
                 cardPosition: cardPosition
             })
-            
+
             this.drawFrame();
             this.updateNode();
         }
@@ -304,15 +311,15 @@ class Monitoring extends Component {
         let disconnectNode = [];
 
         // 노드 색 변경
-        jQuery.each(nodeState, function(id, state) {
+        jQuery.each(nodeState, function (id, state) {
             let color = state === 'fork' ? 'yellow' : 'green';
             // discconnect 일때는 무조건 red
-            if(state === 'disconnect'){
-                color ='red';
+            if (state === 'disconnect') {
+                color = 'red';
                 disconnectNode.push(id);
             }
             let changeNodeImg = '/img/blockchain_' + color + '.svg';
-            
+
             // node image 태그 가져오기
             let imageTag = d3.select(`image[id='${id}']`);
             // 노드 이미지 변경
@@ -327,7 +334,7 @@ class Monitoring extends Component {
             d3.selectAll(`line[src='${id}']`).attr("style", "display:none");
             d3.selectAll(`line[target='${id}']`).attr("style", "display:none");
         })
-        
+
     }
 
     miningNode = (data) => {
@@ -336,19 +343,19 @@ class Monitoring extends Component {
         // node image 태그 가져오기
         let imageTag = d3.select(`image[id='${miner}']`);
 
-        var blinkNode = setInterval(function() {
+        var blinkNode = setInterval(function () {
             imageTag.attr("style", "opacity:0.7");
             setTimeout(() => {
                 imageTag.attr("style", "opacity:1");
             }, 150);
         }, 300);
-        
-        setTimeout(function() {
+
+        setTimeout(function () {
             clearTimeout(blinkNode);
         }, 1000);
-        
+
     }
-    
+
     // d3 움직임 정도
     updateTime() {
         this.setState({
@@ -386,10 +393,10 @@ class Monitoring extends Component {
 
         let nodes = _.map(State.node, (node) => {
             return { id: node.id, group: 1, img: "/img/blockchain_green.svg" };
-        });        
-        
+        });
+
         this.svg.selectAll('*').remove();
-        
+
         let link = this.svg.append("g")
             .attr("class", "stroke")
             .style("stroke", "#fff")
@@ -420,7 +427,7 @@ class Monitoring extends Component {
         //     .attr('font-size', function (d) { return '20px' })
         //     .text(function (d) { return d.id });
 
-            
+
 
         State.simulation
             .nodes(nodes)
@@ -434,36 +441,36 @@ class Monitoring extends Component {
         // let labelGX = State.nodeImgSize * 0.05; //node image 무게중심 구하기
         // let labelGY = State.nodeImgSize * 0.13; //node image 무게중심 구하기
 
-        
+
 
         // mouseover시 tooltip에 node 정보 추가
         node.on('mouseover', function (d) {
             d3.select("#tooltip")
-            .style("right", "0px")
-            .style("top",  "0px")
-            .select('#info')
-            .html(tooltipText(d, State));
+                .style("right", "0px")
+                .style("top", "0px")
+                .select('#info')
+                .html(tooltipText(d, State));
 
             d3.select("#tooltip").classed("hidden", false);
         })
-        .on('mouseout', function () {
-            d3.select("#tooltip").classed("hidden", true);
-        })
+            .on('mouseout', function () {
+                d3.select("#tooltip").classed("hidden", true);
+            })
 
         function tooltipText(d, stateParam) {
             let info;
-            let myNode = stateParam.node[d.id-1];
+            let myNode = stateParam.node[d.id - 1];
             let myStatus = stateParam.nodeState[d.id];
-            
+
             info = '<p>id: ' + myNode.id + '</p>'
-            + '<p>ip: ' + myNode.ip + '</p>'
-            + '<p>port: ' +  myNode.port + '</p>'
-            + '<p>status: ' +  myStatus + '</p>';
+                + '<p>ip: ' + myNode.ip + '</p>'
+                + '<p>port: ' + myNode.port + '</p>'
+                + '<p>status: ' + myStatus + '</p>';
 
 
             return info;
         }
-          
+
 
         function ticked() {
             link
@@ -483,12 +490,12 @@ class Monitoring extends Component {
         }
     }
 
-    
+
 
     render() {
-        const { blockNo, avgBlockTime, gasLimit, gasUsed, passSec, difficulty, 
+        const { blockNo, avgBlockTime, gasLimit, gasUsed, passSec, difficulty,
             tbpLabels, txPerBlock, timePass, pendingTx } = this.state;
-        
+
         // pending Transaction Table 
         var rows = [];
         pendingTx.forEach((txInfo) => {
@@ -499,8 +506,8 @@ class Monitoring extends Component {
                 </tr>
             );
         });
-        for(var i = 0; i < 5-pendingTx.length; i++) {
-            rows.push( 
+        for (var i = 0; i < 5 - pendingTx.length; i++) {
+            rows.push(
                 <tr key={i}>
                     <td>&nbsp;</td>
                     <td>&nbsp;</td>
@@ -518,37 +525,11 @@ class Monitoring extends Component {
                         <ContentCard>
                             <ContentRow>
                                 <Col xl={4} lg={4} md={4} sm={4} xs={4} style={{ textAlign: 'center' }}>
-                                    <img alt="BEST BLOCK" src="/img/best_block.svg" width="90px"/>
+                                    <img alt="BEST BLOCK" src="/img/best_block.svg" width="90px" />
                                 </Col>
                                 <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{ textAlign: 'left', lineHeight: 2 }}>
                                     <span className='dash-upper-line-card-title' >BEST BLOCK</span><br />
-                                    <span className='dash-upper-line-card-value' style={{color: '#B648F6'}}># {blockNo === undefined ? '' : blockNo}</span>
-                                </Col>
-                            </ContentRow>
-                        </ContentCard>
-                    </ContentCol>
-                    <ContentCol xl={3} lg={6} md={6} sm={12} xs={12}>
-                        <ContentCard>
-                            <ContentRow>
-                                <Col xl={4} lg={4} md={4} sm={4} xs={4} style={{textAlign:'center'}}>
-                                    <img alt="LAST BLOCK" src="/img/last_block.svg" width="90px"/>
-                                </Col>
-                                <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{textAlign:'left', lineHeight:2}}>
-                                    <span className='dash-upper-line-card-title' >LAST BLOCK</span><br/>
-                                    <span className='dash-upper-line-card-value' style={{color: '#0F9EDB'}}>{passSec === undefined ? '' : passSec} s ago</span>
-                                </Col>
-                            </ContentRow>
-                        </ContentCard>
-                    </ContentCol>
-                    <ContentCol xl={3} lg={6} md={6} sm={12} xs={12}>
-                        <ContentCard>
-                            <ContentRow>
-                                <Col xl={4} lg={4} md={4} sm={4} xs={4} style={{textAlign:'center'}}>
-                                    <img alt="AVG BLOCK TIME" src="/img/avg_block_time.svg" width="90px"/>
-                                </Col>
-                                <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{textAlign:'left', lineHeight:2}}>
-                                    <span className='dash-upper-line-card-title'>AVG BLOCK TIME</span><br/>
-                                    <span className='dash-upper-line-card-value' style={{color: '#7BCC3A'}}>{avgBlockTime} s</span>
+                                    <span className='dash-upper-line-card-value' style={{ color: '#B648F6' }}># {blockNo === undefined ? '' : blockNo}</span>
                                 </Col>
                             </ContentRow>
                         </ContentCard>
@@ -557,11 +538,37 @@ class Monitoring extends Component {
                         <ContentCard>
                             <ContentRow>
                                 <Col xl={4} lg={4} md={4} sm={4} xs={4} style={{ textAlign: 'center' }}>
-                                    <img alt="DIFFICULTY" src="/img/difficulty.svg" width="90px"/>
+                                    <img alt="LAST BLOCK" src="/img/last_block.svg" width="90px" />
                                 </Col>
-                                <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{textAlign:'left', lineHeight:2}}>
-                                    <span className='dash-upper-line-card-title'>DIFFICULTY</span><br/>
-                                    <span className='dash-upper-line-card-value' style={{color: '#FFD162'}}>{difficulty === undefined ? '' : difficulty} H</span>
+                                <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{ textAlign: 'left', lineHeight: 2 }}>
+                                    <span className='dash-upper-line-card-title' >LAST BLOCK</span><br />
+                                    <span className='dash-upper-line-card-value' style={{ color: '#0F9EDB' }}>{passSec === undefined ? '' : passSec} s ago</span>
+                                </Col>
+                            </ContentRow>
+                        </ContentCard>
+                    </ContentCol>
+                    <ContentCol xl={3} lg={6} md={6} sm={12} xs={12}>
+                        <ContentCard>
+                            <ContentRow>
+                                <Col xl={4} lg={4} md={4} sm={4} xs={4} style={{ textAlign: 'center' }}>
+                                    <img alt="AVG BLOCK TIME" src="/img/avg_block_time.svg" width="90px" />
+                                </Col>
+                                <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{ textAlign: 'left', lineHeight: 2 }}>
+                                    <span className='dash-upper-line-card-title'>AVG BLOCK TIME</span><br />
+                                    <span className='dash-upper-line-card-value' style={{ color: '#7BCC3A' }}>{avgBlockTime} s</span>
+                                </Col>
+                            </ContentRow>
+                        </ContentCard>
+                    </ContentCol>
+                    <ContentCol xl={3} lg={6} md={6} sm={12} xs={12}>
+                        <ContentCard>
+                            <ContentRow>
+                                <Col xl={4} lg={4} md={4} sm={4} xs={4} style={{ textAlign: 'center' }}>
+                                    <img alt="DIFFICULTY" src="/img/difficulty.svg" width="90px" />
+                                </Col>
+                                <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{ textAlign: 'left', lineHeight: 2 }}>
+                                    <span className='dash-upper-line-card-title'>DIFFICULTY</span><br />
+                                    <span className='dash-upper-line-card-value' style={{ color: '#FFD162' }}>{difficulty === undefined ? '' : difficulty} H</span>
                                 </Col>
                             </ContentRow>
                         </ContentCard>
@@ -569,7 +576,7 @@ class Monitoring extends Component {
                 </ContentRow>
                 <ContentRow>
                     <ContentCol xl={6} lg={12} md={12} sm={12} xs={12} noMarginBottom={true}>
-                        <ContentCard imgBackground={true} ref={(ref) => { this.svgCard = ref; }}>
+                        <ContentCard imgBackground={true} ref={(ref) => { this.svgCard = ref; }}>
                             <svg width="100%" height="450"//width="620" height="450"  //켄버스 크기
                                 ref={handle => (this.svg = d3.select(handle))}>
                             </svg>
@@ -584,12 +591,12 @@ class Monitoring extends Component {
                             <ContentCol xl={6} lg={12} md={12} sm={12} xs={12} noMarginBottom={true}>
                                 <ContentCard>
                                     <ContentRow>
-                                        <Col xl={4} lg={4} md={4} sm={4} xs={4} style={{textAlign:'center'}}>
-                                            <img alt="GAS USED" src="/img/gas_used.svg" width="90px"/>
+                                        <Col xl={4} lg={4} md={4} sm={4} xs={4} style={{ textAlign: 'center' }}>
+                                            <img alt="GAS USED" src="/img/gas_used.svg" width="90px" />
                                         </Col>
-                                        <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{textAlign:'left', lineHeight:2}}>
-                                            <span className='dash-upper-line-card-title'>GAS USED</span><br/>
-                                            <span className='dash-upper-line-card-value' style={{color: '#FD8900'}}>{gasUsed === undefined ? '' : gasUsed} gas</span>
+                                        <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{ textAlign: 'left', lineHeight: 2 }}>
+                                            <span className='dash-upper-line-card-title'>GAS USED</span><br />
+                                            <span className='dash-upper-line-card-value' style={{ color: '#FD8900' }}>{gasUsed === undefined ? '' : gasUsed} gas</span>
                                         </Col>
                                     </ContentRow>
                                 </ContentCard>
@@ -597,12 +604,12 @@ class Monitoring extends Component {
                             <ContentCol xl={6} lg={12} md={12} sm={12} xs={12}>
                                 <ContentCard>
                                     <ContentRow>
-                                        <Col xl={4} lg={4} md={4} sm={4} xs={4} style={{textAlign:'center'}}>
-                                            <img alt="GAS LIMIT" src="/img/gas_limit.svg" width="90px"/>
+                                        <Col xl={4} lg={4} md={4} sm={4} xs={4} style={{ textAlign: 'center' }}>
+                                            <img alt="GAS LIMIT" src="/img/gas_limit.svg" width="90px" />
                                         </Col>
-                                        <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{textAlign:'left', lineHeight:2}}>
-                                            <span className='dash-upper-line-card-title'>GAS LIMIT</span><br/>
-                                            <span className='dash-upper-line-card-value' style={{color: '#F74B4B'}}>{gasLimit === undefined ? '' : gasLimit} gas</span>
+                                        <Col xl={8} lg={8} md={8} sm={8} xs={8} style={{ textAlign: 'left', lineHeight: 2 }}>
+                                            <span className='dash-upper-line-card-title'>GAS LIMIT</span><br />
+                                            <span className='dash-upper-line-card-value' style={{ color: '#F74B4B' }}>{gasLimit === undefined ? '' : gasLimit} gas</span>
                                         </Col>
                                     </ContentRow>
                                 </ContentCard>
@@ -610,30 +617,36 @@ class Monitoring extends Component {
                         </ContentRow>
                         <ContentRow>
                             <ContentCol>
-                                <ContentCard style={{height: '289px'}} bodyNoPaddingBottom={true} className="scrollbar" id="style-2">
+                                <ContentCard style={{ height: '289px' }} bodyNoPaddingBottom={true} className="scrollbar" id="style-2">
                                     <Col style={{ textAlign: 'left', marginBottom: '10px' }}>
                                         <span className='dash-upper-line-card-title'>Pending Transactions</span>
                                     </Col>
-                                    <div style={{maxHeight:'230px', overflowY:'auto', width:'100%'}}>
-                                        <Table striped style={{width:'100%', tableLayout: 'fixed'}}>
-                                            <thead style={{ textAlign: 'center' }}>
-                                                <tr>
-                                                    <th style={{width:'15%'}}>Pending..</th>
-                                                    <th style={{width:'85%'}}>txHash</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                { rows }
-                                            </tbody>
-                                        </Table>
-                                        {pendingTx.length === 0 && 
-                                            <div style={{
-                                                display: 'block',
-                                                position: 'absolute',
-                                                left: '38%',
-                                                top: '50%',
-                                                color: 'white'}}>No Pending Transactions</div>}
-                                    </div>
+                                    <Col>
+                                        <Scrollbars style={{ width: '100%', height: '100%' }}
+                                            renderView={() => {
+                                                return <span>Write</span>
+                                            }}>
+                                            <Table bordered>
+                                                <thead style={{ textAlign: 'center' }}>
+                                                    <tr>
+                                                        <th style={{ width: '15%' }}>Pending..</th>
+                                                        <th style={{ width: '85%' }}>txHash</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {rows}
+                                                </tbody>
+                                            </Table>
+                                            {pendingTx.length === 0 &&
+                                                <div style={{
+                                                    display: 'block',
+                                                    position: 'absolute',
+                                                    left: '38%',
+                                                    top: '44%',
+                                                    color: 'white'
+                                                }}>No Pending Transactions</div>}
+                                        </Scrollbars>
+                                    </Col>
                                 </ContentCard>
                             </ContentCol>
                         </ContentRow>
@@ -642,7 +655,7 @@ class Monitoring extends Component {
                 <ContentRow>
                     <ContentCol xl={6} noMarginBottom={true}>
                         <ContentCard>
-                            <span className='dash-upper-line-card-title'>Transaction Per Block</span><br/><br/>
+                            <span className='dash-upper-line-card-title'>Transaction Per Block</span><br /><br />
                             <div> {/* IE 대응 */}
                                 <Bar
                                     data={{
@@ -666,8 +679,8 @@ class Monitoring extends Component {
                                             xAxes: [
                                                 {
                                                     gridLines: {
-                                                        display:false,
-                                                        color:'white'
+                                                        display: false,
+                                                        color: 'white'
                                                     },
                                                     ticks: {
                                                         display: false
@@ -683,8 +696,8 @@ class Monitoring extends Component {
                                                         display: false
                                                     },
                                                     gridLines: {
-                                                        display:false,
-                                                        color:'white'
+                                                        display: false,
+                                                        color: 'white'
                                                     }
                                                 }
                                             ]
@@ -699,7 +712,7 @@ class Monitoring extends Component {
                     </ContentCol>
                     <ContentCol xl={6} noMarginBottom={true}>
                         <ContentCard>
-                            <span className='dash-upper-line-card-title'>Block Generation Time</span><br/><br/>
+                            <span className='dash-upper-line-card-title'>Block Generation Time</span><br /><br />
                             <div> {/* IE 대응 */}
                                 <Line
                                     data={{
@@ -721,8 +734,8 @@ class Monitoring extends Component {
                                             xAxes: [
                                                 {
                                                     gridLines: {
-                                                        display:false,
-                                                        color:'white'
+                                                        display: false,
+                                                        color: 'white'
                                                     },
                                                     ticks: {
                                                         display: false
@@ -738,8 +751,8 @@ class Monitoring extends Component {
                                                         display: false
                                                     },
                                                     gridLines: {
-                                                        display:false,
-                                                        color:'white'
+                                                        display: false,
+                                                        color: 'white'
                                                     }
                                                 }
                                             ]

@@ -26,7 +26,11 @@ const isNotMatchPassword = (password, confirmPassword) => {
 
 const noExponents = (input) =>{
     var data= String(input).split(/[eE]/);
+<<<<<<< HEAD
     if(data.length === 1) return data[0]; 
+=======
+    if(data.length== 1) return data[0]; 
+>>>>>>> jamestest
 
     var  z= '', sign= input<0? '-':'',
     str= data[0].replace('.', ''),
@@ -35,7 +39,11 @@ const noExponents = (input) =>{
     if(mag<0){
         z= sign + '0.';
         while(mag++) z += '0';
+<<<<<<< HEAD
         return z + str.replace(/^-/,'');
+=======
+        return z + str.replace(/^\-/,'');
+>>>>>>> jamestest
     }
     mag -= str.length;  
     while(mag--) z += '0';

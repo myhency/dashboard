@@ -25,6 +25,7 @@ import { FaBook } from 'react-icons/fa';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import ReactTooltip from 'react-tooltip';
 import jQuery from "jquery";
+import { callbackify } from 'util';
 
 window.$ = window.jQuery = jQuery;
 
@@ -163,17 +164,17 @@ class MainLayout extends Component {
             return cookieValue;
         }
 
-        // 쿠키로부터 csrf 토큰 값 추출 
-        var csrftoken = getCookie('csrftoken');
-        // fetch post 옵션으로 보낼 dict 생성
-        // API 보낼 때 헤더 생략되면 MIME타입으로 요청 -> 응답 불가
-        const options = {
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'X-CSRFToken': csrftoken,
-            }
-        }
+    //     // 쿠키로부터 csrf 토큰 값 추출 
+    //     var csrftoken = getCookie('csrftoken');
+    //     // fetch post 옵션으로 보낼 dict 생성
+    //     // API 보낼 때 헤더 생략되면 MIME타입으로 요청 -> 응답 불가
+    //     const options = {
+    //         headers: {
+    //             'Accept': 'application/json',
+    //             'Content-Type': 'application/json',
+    //             'X-CSRFToken': csrftoken,
+    //         }
+    //     }
 
         Fetch.POST('/api/auth/logout/', {}, options)
             .then(res => {
@@ -296,7 +297,7 @@ class MainLayout extends Component {
                                     </DropdownItem>
                             </DropdownMenu>
                         </UncontrolledDropdown>
-                    </Nav>
+                    </Nav> */}
                 </Navbar>
 
                 {/* Content */}

@@ -138,7 +138,11 @@ class BlockInfo extends Component {
             <tbody>
               <tr>
                 <td style={{width: '20%'}}>
+<<<<<<< HEAD
                   <img alt="info" src='/img/information.svg' height='18px' 
+=======
+                  <img src='/img/information.svg' height='18px' 
+>>>>>>> jamestest
                   style={{marginTop: '9px', marginBottom: '9px'}}
                   data-for='blockHeight'
                   data-tip={"Also known as Block Number. The block height, <br/>which indicates the length of the blockchain, <br/>increases after the addition of the new block."}/>
@@ -215,7 +219,7 @@ class BlockInfo extends Component {
                   <ReactTooltip id='totalDifficulty' multiline={true}/>
                    &nbsp; Total Difficulty:
                 </td>
-                <td>{totalDifficulty}</td>
+                <td>{parseInt(totalDifficulty)}</td>
               </tr>
               <tr>
                 <td>
@@ -226,7 +230,7 @@ class BlockInfo extends Component {
                   <ReactTooltip id='size' multiline={true}/>
                    &nbsp; Size:
                 </td>
-                <td>{size}</td>
+                <td>{parseInt(size)}</td>
               </tr>
               <tr>
                 <td>

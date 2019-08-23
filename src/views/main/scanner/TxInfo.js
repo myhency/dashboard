@@ -115,7 +115,11 @@ export default class TxInfo extends Component {
                     {TxHash}
                     <span className="copyicon" data-tip='Copy' data-for='hashCopy' >
                     <CopyToClipboard text={TxHash} onCopy={() => { this.setState({copied: true}) }}>
+<<<<<<< HEAD
                       <img alt="copy" src={CopyImg} height='18px' style={{marginLeft: '10px'}}/>
+=======
+                      <img src={CopyImg} height='18px' style={{marginLeft: '10px'}}/>
+>>>>>>> jamestest
                     </CopyToClipboard>
                     </span>
                     <ReactTooltip id='hashCopy' getContent={(dataTip) => {if(this.state.copied) return 'Copied'; else return 'Copy';}} afterHide={() => {this.setState({copied: false}) }}/>
@@ -167,7 +171,11 @@ export default class TxInfo extends Component {
                   <Link to={`/main/scanner/address/${txFrom}`}>{txFrom}</Link>
                   <span data-tip='Copy' className="copyicon" data-for='fromCopy' >
                     <CopyToClipboard text={txFrom} onCopy={() => { this.setState({copied: true}) }}> 
+<<<<<<< HEAD
                       <img alt="copy" src={CopyImg} height='18px' style={{marginLeft: '10px'}}/>
+=======
+                      <img src={CopyImg} height='18px' style={{marginLeft: '10px'}}/>
+>>>>>>> jamestest
                     </CopyToClipboard>
                   </span>
                   <ReactTooltip id='fromCopy' getContent={(dataTip) => {if(this.state.copied) return 'Copied'; else return 'Copy';}} afterHide={() => {this.setState({copied: false}) }}/>
@@ -186,7 +194,11 @@ export default class TxInfo extends Component {
                   <Link to={`/main/scanner/address/${txTo}`}>{txTo}</Link>
                   <span data-tip='Copy' className="copyicon" data-for='toCopy'>
                     <CopyToClipboard text={txTo} onCopy={() => { this.setState({copied: true}) }}> 
+<<<<<<< HEAD
                       <img alt="copy" src={CopyImg} height='18px' style={{marginLeft: '10px'}}/>
+=======
+                      <img src={CopyImg} height='18px' style={{marginLeft: '10px'}}/>
+>>>>>>> jamestest
                     </CopyToClipboard>
                   </span>
                   <ReactTooltip id='toCopy' getContent={(dataTip) => {if(this.state.copied) return 'Copied'; else return 'Copy';}} afterHide={() => {this.setState({copied: false}) }}/>

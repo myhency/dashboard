@@ -16,31 +16,31 @@ import AuthLayout from './layouts/auth/AuthLayout';
 class App extends Component {
     constructor(props) {
         super(props);
-        
+
         // Login Check
-        let isAuthenticated = false;
-        const userId = sessionStorage.getItem('userId');
-        if(userId) {
-            isAuthenticated = true;
-            props.dispatch(signIn(userId));
-        }
+        // let isAuthenticated = false;
+        // const userId = sessionStorage.getItem('userId');
+        // if(userId) {
+        //     isAuthenticated = true;
+        //     props.dispatch(signIn(userId));
+        // }
 
         this.state = {
             isLoading: false,
             isAuthenticated: isAuthenticated,
         };
     }
-    
+
     static getDerivedStateFromProps(props, state) {
         let { isLoading, userId, isAuthenticated } = state;
 
-        if(props.isLoading !== isLoading) {
+        if (props.isLoading !== isLoading) {
             isLoading = props.isLoading;
         }
 
-        if(props.auth.userId !== userId) {
+        if (props.auth.userId !== userId) {
             userId = props.auth.userId;
-            if(userId !== undefined) {
+            if (userId !== undefined) {
                 isAuthenticated = true;
             }
         }
@@ -52,18 +52,18 @@ class App extends Component {
         }
     }
 
-    render() {    
+    render() {
         const { isLoading, isAuthenticated } = this.state;
 
         return (
             <Router>
                 <ScrollToTop>
                     <Switch>
-                        <Route path="/auth" component={AuthLayout}/>
+                        <Route path="/auth" component={AuthLayout} />
                         <PrivateRoute path="/main" component={MainLayout} isAuthenticated={isAuthenticated} />
                         <Route component={NotFound} />
                     </Switch>
-                    
+
                     <div id={'loadingOverlay'} className={isLoading ? 'active' : ''} />
                 </ScrollToTop>
             </Router>

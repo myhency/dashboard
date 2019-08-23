@@ -1,6 +1,10 @@
 import React, { Component, Fragment } from 'react'
 import ContentCard from 'components/ContentCard';
+<<<<<<< HEAD
 import { Button } from 'reactstrap';
+=======
+import { Badge, Button } from 'reactstrap';
+>>>>>>> jamestest
 import ReactTable from 'react-table';
 import { Link } from 'react-router-dom';
 import Fetch from 'utils/Fetch'; 
@@ -114,7 +118,11 @@ export default class BlockList extends Component {
                                     } )
                                     return (
                                         <Button disabled={true} className='eth'>
+<<<<<<< HEAD
                                             {row.related_transaction.length === 0 ? 0 : Validation.noExponents(txGasPrice/row.related_transaction.length)} Eth
+=======
+                                            {row.related_transaction.length == 0 ? 0 : Validation.noExponents(txGasPrice/row.related_transaction.length)} Eth
+>>>>>>> jamestest
                                         </Button>
                                     )
                                 }
@@ -138,7 +146,11 @@ export default class BlockList extends Component {
                         loading={loading} // Display the loading overlay when we need it
                         onFetchData={this.getBlock} // Request new data when things change
                         pageSizeOptions={[5, 10, 15, 20]}
+<<<<<<< HEAD
                         defaultPageSize={15}
+=======
+                        defaultPageSize={20}
+>>>>>>> jamestest
                         noDataText={'No Data found'}
                         getNoDataProps={() => {return {style: {backgroundColor: 'transparent', color: 'white'}}}}
                     />
