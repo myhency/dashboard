@@ -19,6 +19,7 @@ class App extends Component {
 
         // Login Check
         // let isAuthenticated = false;
+        let isAuthenticated = true;
         // const userId = sessionStorage.getItem('userId');
         // if(userId) {
         //     isAuthenticated = true;

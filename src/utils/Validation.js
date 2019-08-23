@@ -24,29 +24,21 @@ const isNotMatchPassword = (password, confirmPassword) => {
     }
 }
 
-const noExponents = (input) =>{
-    var data= String(input).split(/[eE]/);
-<<<<<<< HEAD
-    if(data.length === 1) return data[0]; 
-=======
-    if(data.length== 1) return data[0]; 
->>>>>>> jamestest
+const noExponents = (input) => {
+    var data = String(input).split(/[eE]/);
+    if (data.length === 1) return data[0];
 
-    var  z= '', sign= input<0? '-':'',
-    str= data[0].replace('.', ''),
-    mag= Number(data[1])+ 1;
+    var z = '', sign = input < 0 ? '-' : '',
+        str = data[0].replace('.', ''),
+        mag = Number(data[1]) + 1;
 
-    if(mag<0){
-        z= sign + '0.';
-        while(mag++) z += '0';
-<<<<<<< HEAD
-        return z + str.replace(/^-/,'');
-=======
-        return z + str.replace(/^\-/,'');
->>>>>>> jamestest
+    if (mag < 0) {
+        z = sign + '0.';
+        while (mag++) z += '0';
+        return z + str.replace(/^\-/, '');
     }
-    mag -= str.length;  
-    while(mag--) z += '0';
+    mag -= str.length;
+    while (mag--) z += '0';
     return str + z;
 }
 

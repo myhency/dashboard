@@ -13,4 +13,10 @@ module.exports = function (app) {
       changeOrigin: true
     })
   );
+  app.use(
+    proxy('/socket', {
+      target: process.env.REACT_APP_BAAS_SOCKET,
+      ws: true
+    })
+  );
 };

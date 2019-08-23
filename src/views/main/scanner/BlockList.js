@@ -1,20 +1,16 @@
 import React, { Component, Fragment } from 'react'
 import ContentCard from 'components/ContentCard';
-<<<<<<< HEAD
 import { Button } from 'reactstrap';
-=======
-import { Badge, Button } from 'reactstrap';
->>>>>>> jamestest
 import ReactTable from 'react-table';
 import { Link } from 'react-router-dom';
-import Fetch from 'utils/Fetch'; 
+import Fetch from 'utils/Fetch';
 import moment from 'moment';
 import ReactTooltip from 'react-tooltip';
 import Validation from 'utils/Validation';
 
 export default class BlockList extends Component {
     constructor(props) {
-        super(props);     
+        super(props);
 
         this.state = {
             blocks: [],
@@ -28,19 +24,19 @@ export default class BlockList extends Component {
             loading: true
         });
 
-        Fetch.GET(`/api/block/?page_size=${state.pageSize}&page=${state.page+1}`)
-        .then(res => {
-            this.setState({
-                blocks: res.results,
-                pages: Math.ceil(res.count/state.pageSize)
+        Fetch.GET(`/api/block/?page_size=${state.pageSize}&page=${state.page + 1}`)
+            .then(res => {
+                this.setState({
+                    blocks: res.results,
+                    pages: Math.ceil(res.count / state.pageSize)
+                })
             })
-        })
-        .finally(() => {
-            this.setState({
-                loading: false
-            });
-        })
-      }
+            .finally(() => {
+                this.setState({
+                    loading: false
+                });
+            })
+    }
 
     render() {
         const { blocks, pages, loading } = this.state;
@@ -54,34 +50,34 @@ export default class BlockList extends Component {
                                 Header: "Block",
                                 accessor: "number",
                                 minWidth: 50,
-                                Cell: ({row}) => (<Link to={this.props.location.pathname + '/' + row.number}>{row.number}</Link>)
+                                Cell: ({ row }) => (<Link to={this.props.location.pathname + '/' + row.number}>{row.number}</Link>)
                             },
                             {
                                 Header: "Age",
                                 accessor: "timestamp",
                                 minWidth: 50,
-                                Cell: ({row}) => {
+                                Cell: ({ row }) => {
                                     var age = moment(this.state.timestamp).diff(row.timestamp, 'seconds');
-                                    if(age < 60) {
-                                      age = age + ' sec';
+                                    if (age < 60) {
+                                        age = age + ' sec';
                                     }
-                                    else if(age < 3600) {
-                                      age = Math.floor(age/60) + ' min';
+                                    else if (age < 3600) {
+                                        age = Math.floor(age / 60) + ' min';
                                     }
-                                    else if(age < 84600) {
-                                      age = Math.floor(age/3600) + ' hour(s)';
+                                    else if (age < 84600) {
+                                        age = Math.floor(age / 3600) + ' hour(s)';
                                     }
-                                    else if(age < 2538000) {
-                                      age = Math.floor(age/84600) + ' day(s)';
+                                    else if (age < 2538000) {
+                                        age = Math.floor(age / 84600) + ' day(s)';
                                     }
                                     else {
-                                      return (<span>{moment(row.timestamp).format("YYYY-MM-DD HH:mm:ss")}</span>)
+                                        return (<span>{moment(row.timestamp).format("YYYY-MM-DD HH:mm:ss")}</span>)
                                     }
-        
+
                                     return (
                                         <Fragment>
                                             <span data-tip={moment(row.timestamp).format("YYYY-MM-DD HH:mm:ss")}>{age} ago</span>
-                                            <ReactTooltip/>
+                                            <ReactTooltip />
                                         </Fragment>
                                     )
                                 }
@@ -95,7 +91,7 @@ export default class BlockList extends Component {
                                 Header: "Miner",
                                 accessor: "miner",
                                 minWidth: 150,
-                                Cell: ({row}) => (<Link to={`/main/scanner/address/${row.miner}`}>{row.miner}</Link>)
+                                Cell: ({ row }) => (<Link to={`/main/scanner/address/${row.miner}`}>{row.miner}</Link>)
                             },
                             {
                                 Header: "Gas Used",
@@ -111,18 +107,14 @@ export default class BlockList extends Component {
                                 Header: "Avg Gas Price",
                                 accessor: "related_transaction",
                                 minWidth: 80,
-                                Cell: ({row}) => {
+                                Cell: ({ row }) => {
                                     let txGasPrice = 0
-                                    row.related_transaction.forEach((tx)=>{
+                                    row.related_transaction.forEach((tx) => {
                                         txGasPrice += tx.gas_price;
-                                    } )
+                                    })
                                     return (
                                         <Button disabled={true} className='eth'>
-<<<<<<< HEAD
-                                            {row.related_transaction.length === 0 ? 0 : Validation.noExponents(txGasPrice/row.related_transaction.length)} Eth
-=======
-                                            {row.related_transaction.length == 0 ? 0 : Validation.noExponents(txGasPrice/row.related_transaction.length)} Eth
->>>>>>> jamestest
+                                            {row.related_transaction.length === 0 ? 0 : Validation.noExponents(txGasPrice / row.related_transaction.length)} Eth
                                         </Button>
                                     )
                                 }
@@ -131,7 +123,7 @@ export default class BlockList extends Component {
                                 Header: "Reward",
                                 accessor: "reward",
                                 minWidth: 80,
-                                Cell: ({row}) => {
+                                Cell: ({ row }) => {
                                     return (
                                         <Button disabled={true} className='eth'>
                                             {row.reward} Eth
@@ -146,17 +138,13 @@ export default class BlockList extends Component {
                         loading={loading} // Display the loading overlay when we need it
                         onFetchData={this.getBlock} // Request new data when things change
                         pageSizeOptions={[5, 10, 15, 20]}
-<<<<<<< HEAD
                         defaultPageSize={15}
-=======
-                        defaultPageSize={20}
->>>>>>> jamestest
                         noDataText={'No Data found'}
-                        getNoDataProps={() => {return {style: {backgroundColor: 'transparent', color: 'white'}}}}
+                        getNoDataProps={() => { return { style: { backgroundColor: 'transparent', color: 'white' } } }}
                     />
                 </ContentCard>
             </Fragment>
-      
-    )
-  }
+
+        )
+    }
 }
