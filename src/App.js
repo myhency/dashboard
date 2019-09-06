@@ -18,13 +18,12 @@ class App extends Component {
         super(props);
 
         // Login Check
-        let isAuthenticated = true;
-        // let isAuthenticated = true;
-        // const userId = sessionStorage.getItem('userId');
-        // if(userId) {
-        //     isAuthenticated = true;
-        //     props.dispatch(signIn(userId));
-        // }
+        let isAuthenticated = false;
+        const account = sessionStorage.getItem('account');
+        if (account) {
+            isAuthenticated = true;
+            props.dispatch(signIn(account));
+        }
 
         this.state = {
             isLoading: false,

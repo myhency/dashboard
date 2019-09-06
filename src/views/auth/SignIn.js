@@ -107,6 +107,7 @@ class SignIn extends Component {
             .then((res) => {
                 console.log(res);
                 sessionStorage.setItem('token', res.token);
+                sessionStorage.setItem('account', params.account);
                 this.props.history.push('/main/dashboard');
             })
             .catch(error => {
