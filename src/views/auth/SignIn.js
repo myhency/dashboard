@@ -11,8 +11,8 @@ import {
 import ContentRow from 'components/ContentRow';
 import ContentCol from 'components/ContentCol';
 import ContentCard from 'components/ContentCard';
-import { signIn } from 'store/modules/auth';
-import { loadingStart, loadingStop } from 'store/modules/loading';
+// import { signIn } from 'store/modules/auth';
+// import { loadingStart, loadingStop } from 'store/modules/loading';
 import Fetch from 'utils/Fetch';
 import jQuery from "jquery";
 import swal from "sweetalert2";
@@ -36,45 +36,45 @@ class SignIn extends Component {
         const { userId, password } = this.state;
 
         const params = {
-            username: userId,
+            account: userId,
             password: password
         };
 
-        let token = '';
-        let redirect_url = '';
+        // let token = '';
+        // let redirect_url = '';
 
-        // csrf 생성을 위한 장고 cookie 얻기
-        function getCookie(name) {
-            var cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                var cookies = document.cookie.split(';');
-                console.log(cookies);
-                for (var i = 0; i < cookies.length; i++) {
-                    var cookie = jQuery.trim(cookies[i]);
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
-            }
-            return cookieValue;
-        }
+        // // csrf 생성을 위한 장고 cookie 얻기
+        // function getCookie(name) {
+        //     var cookieValue = null;
+        //     if (document.cookie && document.cookie !== '') {
+        //         var cookies = document.cookie.split(';');
+        //         console.log(cookies);
+        //         for (var i = 0; i < cookies.length; i++) {
+        //             var cookie = jQuery.trim(cookies[i]);
+        //             if (cookie.substring(0, name.length + 1) === (name + '=')) {
+        //                 cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        //                 break;
+        //             }
+        //         }
+        //     }
+        //     return cookieValue;
+        // }
 
-        function getCookies(name) {
-            var value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
-            return value ? value[2] : null;
-        }
+        // function getCookies(name) {
+        //     var value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+        //     return value ? value[2] : null;
+        // }
 
         // 쿠키로부터 csrf 토큰 값 추출 
-        var csrftoken = getCookie('csrftoken');
+        // var csrftoken = getCookie('csrftoken');
 
         // fetch post 옵션으로 보낼 dict 생성
         // API 보낼 때 헤더 생략되면 MIME타입으로 요청 -> 응답 불가
-        const django = {
+        const headers = {
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'X-CSRFToken': csrftoken,
+                'Content-Type': 'application/json'
+                // 'X-CSRFToken': csrftoken,
             }
         }
 
@@ -103,13 +103,10 @@ class SignIn extends Component {
         // this.props.dispatch(loadingStart())
         // .then(() => {
         // post에 param 전달
-        Fetch.POST('/api/auth/login/', params, django)
+        Fetch.POST('/user/signin/', params, headers)
             .then((res) => {
-                sessionStorage.setItem('userId', res.username);
-                // token = res.result.data.token;
-                // redirect_url = res.result.redirect_url;
-
-                this.props.dispatch(signIn(res.username));
+                console.log(res);
+                sessionStorage.setItem('token', res.token);
                 this.props.history.push('/main/dashboard');
             })
             .catch(error => {
@@ -119,77 +116,6 @@ class SignIn extends Component {
                     'error'
                 );
             })
-        // .finally((res) => {
-        //     console.log(res);
-        //     // if(res.status == undefined) {
-        //     //    this.props.history.push('/main/dashboard'); 
-        //     // } else {
-        //     //     alert('Please Checkup Again')
-        //     // }
-        // })
-        // })
-
-
-        // const logoutUrl = '/api/auth/logout/';
-        // const params = {
-        //     userId: userId,
-        //     password: password,
-        // };
-
-        // // 쿠키 얻고 장고로 csrf 보내는 부분 함수화시킬 것
-        // function getCookie(name) {
-        //     var cookieValue = null;
-        //     if (document.cookie && document.cookie !== '') {
-        //         var cookies = document.cookie.split(';');
-        //         for (var i = 0; i < cookies.length; i++) {
-        //             var cookie = jQuery.trim(cookies[i]);
-        //             if (cookie.substring(0, name.length + 1) === (name + '=')) {
-        //                 cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-        //                 break;
-        //             }
-        //         }
-        //     }
-        //     return cookieValue;
-        // }
-
-        // // 쿠키로부터 csrf 토큰 값 추출 
-        // var csrftoken = getCookie('csrftoken');
-
-        // // fetch post 옵션으로 보낼 dict 생성
-        // const django = {
-        //     headers: {
-        //         'Accept': 'application/json',
-        //         'Content-Type': 'application/json',
-        //         'X-CSRFToken': csrftoken,
-        //     }
-        // }
-
-        // let signInFlag = false;
-
-        // this.props.dispatch(loadingStart())
-        // .then(() => {
-        //     // post에 param 전달
-        //     Fetch.POST(url, params, django)
-        //     .then(res => {
-        //         signInFlag = 'true';
-        //         // 나중에 연동하면 바꿀 것
-        //         // signInFlag = res.signInFlag;
-        //     })
-        //     .catch(error => {
-        //         alert(error);
-        //     })
-        //     .finally(() => {
-        //         this.props.dispatch(loadingStop());
-        //         if(signInFlag === 'true') {
-        //             this.props.history.push('/auth/SignIn/');
-        //             console.log("logout success")
-        //         } else {
-        //             console.log("logout fail")
-        //         }
-        //     })
-        // })
-
-        // sessionStorage.clear();
     }
 
     onClickSignUp = () => {

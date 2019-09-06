@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-table/react-table.css';
 import 'react-quill/dist/quill.snow.css';
@@ -18,8 +18,8 @@ class App extends Component {
         super(props);
 
         // Login Check
-        // let isAuthenticated = false;
         let isAuthenticated = true;
+        // let isAuthenticated = true;
         // const userId = sessionStorage.getItem('userId');
         // if(userId) {
         //     isAuthenticated = true;
@@ -60,8 +60,13 @@ class App extends Component {
             <Router>
                 <ScrollToTop>
                     <Switch>
-                        <Route path="/auth" component={AuthLayout} />
+                        <Route exact path="/" render={() =>
+                            isAuthenticated ? <Redirect to="/main" /> : <Redirect to="/auth" />
+                        } />
+
                         <PrivateRoute path="/main" component={MainLayout} isAuthenticated={isAuthenticated} />
+
+                        <Route path="/auth" component={AuthLayout} />
                         <Route component={NotFound} />
                     </Switch>
 

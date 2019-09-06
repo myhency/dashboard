@@ -51,7 +51,12 @@ class Monitoring extends Component {
             socketError: false
         };
 
-        socket = io.connect(process.env.REACT_APP_BAAS_SOCKET);
+        // socket = io.connect('/socket');
+
+        socket = io.connect('/socket', {
+            query: { token: sessionStorage.getItem("token") }
+        });
+
         window.addEventListener('resize', this.updatePosition);
 
 
@@ -59,6 +64,8 @@ class Monitoring extends Component {
 
     componentDidMount() {
         this.getCurrentTime();
+
+
 
         // web socket 연결 
         socket.on('connect', () => {
@@ -166,6 +173,7 @@ class Monitoring extends Component {
         this.intervalId_getInfo = setInterval(this.updateDashboardInfo, 3000);
         this.intervalId_getCurrentTime = setInterval(this.getCurrentTime, 1000);
         this.intervalId_getPendingTx = setInterval(() => socket.emit("requestPendingTx"), 1000);
+        // this.intervalId_logsocket = setInterval(() => console.log(socket), 1000);
 
         this.setState({
             cardPosition: ReactDOM.findDOMNode(this.svgCard).getBoundingClientRect()
@@ -459,7 +467,7 @@ class Monitoring extends Component {
 
         function tooltipText(d, stateParam) {
             let info;
-            let myNode = stateParam.node[d.id - 1];
+            let myNode = stateParam.node[d.id];
             let myStatus = stateParam.nodeState[d.id];
 
             info = '<p>id: ' + myNode.id + '</p>'

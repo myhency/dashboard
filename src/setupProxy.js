@@ -8,7 +8,7 @@ module.exports = function (app) {
     })
   );
   app.use(
-    proxy('/auth', {
+    proxy('/user', {
       target: process.env.REACT_APP_BAAS_AUTH_BACKEND_URL,
       changeOrigin: true
     })
