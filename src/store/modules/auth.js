@@ -5,15 +5,15 @@ const SIGN_IN = 'auth/SIGN_IN';
 const SIGN_OUT = 'auth/SIGN_OUT';
 
 // **** 액션 생섬함수 정의
-export const signIn = (userId) => dispatch => { 
+export const signIn = (userId) => dispatch => {
     dispatch({
         type: SIGN_IN,
-        payload: userId 
+        payload: userId
     })
     return Promise.resolve();
 };
 
-export const signOut = () => dispatch => { 
+export const signOut = () => dispatch => {
     dispatch({
         type: SIGN_OUT
     })

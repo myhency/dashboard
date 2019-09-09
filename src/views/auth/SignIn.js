@@ -11,13 +11,11 @@ import {
 import ContentRow from 'components/ContentRow';
 import ContentCol from 'components/ContentCol';
 import ContentCard from 'components/ContentCard';
-// import { signIn } from 'store/modules/auth';
-// import { loadingStart, loadingStop } from 'store/modules/loading';
 import Fetch from 'utils/Fetch';
 import jQuery from "jquery";
 import swal from "sweetalert2";
+import { signIn } from 'store/modules/auth';
 
-// import Background from '/img/login_page.jpeg';
 
 window.$ = window.jQuery = jQuery;
 
@@ -40,41 +38,10 @@ class SignIn extends Component {
             password: password
         };
 
-        // let token = '';
-        // let redirect_url = '';
-
-        // // csrf 생성을 위한 장고 cookie 얻기
-        // function getCookie(name) {
-        //     var cookieValue = null;
-        //     if (document.cookie && document.cookie !== '') {
-        //         var cookies = document.cookie.split(';');
-        //         console.log(cookies);
-        //         for (var i = 0; i < cookies.length; i++) {
-        //             var cookie = jQuery.trim(cookies[i]);
-        //             if (cookie.substring(0, name.length + 1) === (name + '=')) {
-        //                 cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-        //                 break;
-        //             }
-        //         }
-        //     }
-        //     return cookieValue;
-        // }
-
-        // function getCookies(name) {
-        //     var value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
-        //     return value ? value[2] : null;
-        // }
-
-        // 쿠키로부터 csrf 토큰 값 추출 
-        // var csrftoken = getCookie('csrftoken');
-
-        // fetch post 옵션으로 보낼 dict 생성
-        // API 보낼 때 헤더 생략되면 MIME타입으로 요청 -> 응답 불가
         const headers = {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
-                // 'X-CSRFToken': csrftoken,
             }
         }
 
@@ -108,7 +75,8 @@ class SignIn extends Component {
                 console.log(res);
                 sessionStorage.setItem('token', res.token);
                 sessionStorage.setItem('account', params.account);
-                this.props.history.push('/main/dashboard');
+                this.props.dispatch(signIn(params.account));
+                this.props.history.push('/main/dashboard/');
             })
             .catch(error => {
                 swal.fire(
@@ -116,7 +84,7 @@ class SignIn extends Component {
                     'Check your id and password',
                     'error'
                 );
-            })
+            });
     }
 
     onClickSignUp = () => {
@@ -133,6 +101,10 @@ class SignIn extends Component {
         this.setState({
             password: event.target.value
         })
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
 
@@ -155,7 +127,6 @@ class SignIn extends Component {
                                 onChange={this.onChangeUserId}
                             />
                             <FormFeedback invalid={"true"}>ID is required.</FormFeedback>
-                            {/* <FormText>Example help text that remains unchanged.</FormText> */}
                         </FormGroup>
                         <FormGroup>
                             <Input
@@ -179,4 +150,7 @@ class SignIn extends Component {
     }
 }
 
-export default connect(null)(withRouter(SignIn));
+export default connect(state => ({
+    isLoading: state.loading.isLoading,
+    auth: state.auth
+}))(withRouter(SignIn));

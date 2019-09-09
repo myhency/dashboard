@@ -10,7 +10,6 @@ import ScrollToTop from 'utils/ScrollToTop';
 import MainLayout from 'layouts/main/MainLayout';
 import NotFound from 'views/common/NotFound';
 import PrivateRoute from 'components/PrivateRoute';
-import { signIn } from 'store/modules/auth';
 import AuthLayout from './layouts/auth/AuthLayout';
 
 class App extends Component {
@@ -19,30 +18,33 @@ class App extends Component {
 
         // Login Check
         let isAuthenticated = false;
-        const account = sessionStorage.getItem('account');
-        if (account) {
+        let userId = sessionStorage.getItem('account') === undefined ? '' : sessionStorage.getItem('account');
+
+        if (userId) {
             isAuthenticated = true;
-            props.dispatch(signIn(account));
         }
 
         this.state = {
             isLoading: false,
-            isAuthenticated: isAuthenticated,
-        };
+            isAuthenticated,
+            userId
+        }
     }
 
-    static getDerivedStateFromProps(props, state) {
-        let { isLoading, userId, isAuthenticated } = state;
+    static getDerivedStateFromProps(nextProps, prevState) {
+        let { isLoading, userId, isAuthenticated } = prevState;
 
-        if (props.isLoading !== isLoading) {
-            isLoading = props.isLoading;
+        if (nextProps.isLoading !== isLoading) {
+            isLoading = nextProps.isLoading;
         }
 
-        if (props.auth.userId !== userId) {
-            userId = props.auth.userId;
+        if (nextProps.auth.userId !== userId) {
+            userId = nextProps.auth.userId;
             if (userId !== undefined) {
                 isAuthenticated = true;
             }
+        } else {
+            isAuthenticated = true;
         }
 
         return {
