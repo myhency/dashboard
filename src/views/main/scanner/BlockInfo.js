@@ -11,6 +11,7 @@ import { setInfo } from 'store/modules/currentInfo';
 import moment from 'moment';
 import ReactTooltip from 'react-tooltip';
 
+
 class BlockInfo extends Component {
   constructor(props) {
     super(props);
@@ -42,10 +43,17 @@ class BlockInfo extends Component {
   }
 
   getBlockInfo = () => {
+    const headers = {
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+      }
+    }
 
     this.props.dispatch(setInfo('# ' + this.state.blockNo));
 
-    Fetch.GET('/api/block/' + this.state.blockNo)
+    Fetch.GET('/api/block/' + this.state.blockNo, headers)
       .then(res => {
         //update 안할 때
         if (res === undefined) {

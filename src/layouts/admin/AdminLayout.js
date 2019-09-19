@@ -15,7 +15,7 @@ import {
 import windowSize from 'react-window-size';
 import { IoIosCloud, IoMdContact } from 'react-icons/io';
 import { FiChevronDown, FiAlignLeft } from 'react-icons/fi';
-import mainRoutes from 'routes/main';
+import adminRoutes from 'routes/admin';
 import UrlPattern from "url-pattern";
 import { signOut } from 'store/modules/auth';
 import Fetch from 'utils/Fetch';
@@ -29,7 +29,7 @@ import { callbackify } from 'util';
 
 window.$ = window.jQuery = jQuery;
 
-class MainLayout extends Component {
+class AdminLayout extends Component {
     constructor(props) {
         super(props);
 
@@ -67,8 +67,8 @@ class MainLayout extends Component {
             isWindowSmall = true;
         }
 
-        if (userId !== props.auth.userId) {
-            userId = props.auth.userId;
+        if (userId !== props.userId) {
+            userId = props.userId;
         }
 
         return {
@@ -81,8 +81,8 @@ class MainLayout extends Component {
     }
 
     getCurrentPageName = (currentPath) => {
-        for (var i = 0; i < mainRoutes.length; i++) {
-            const route = mainRoutes[i];
+        for (var i = 0; i < adminRoutes.length; i++) {
+            const route = adminRoutes[i];
 
             if (this.state.tempPageName !== undefined) {
                 return this.state.tempPageName;
@@ -207,7 +207,7 @@ class MainLayout extends Component {
                             </span>
                         </NavLink>
 
-                        {mainRoutes.map((route, key) => {
+                        {adminRoutes.map((route, key) => {
                             if (route.sidebar) {
                                 if (route.subRoutes) {
                                     return (
@@ -305,8 +305,8 @@ class MainLayout extends Component {
                     {/* Inner Content */}
                     < div id="innerContent" >
                         <Switch>
-                            {/* {console.log(mainRoutes)} */}
-                            {mainRoutes.map((route, key) => {
+                            {/* {console.log(adminRoutes)} */}
+                            {adminRoutes.map((route, key) => {
                                 if (route.subRoutes) {
                                     let subRoutes = [];
                                     route.subRoutes.map((subRoute, subKey) => {
@@ -348,8 +348,8 @@ class MainLayout extends Component {
 
 export default connect(
     state => ({
-        auth: state.auth,
+        userId: state.auth.userId,
         currentInfo: state.currentInfo.info,
         tempPageName: state.tempPageName.pageName
     })
-)(withRouter(windowSize(MainLayout)))
+)(withRouter(windowSize(AdminLayout)))

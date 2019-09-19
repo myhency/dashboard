@@ -21,6 +21,7 @@ window.$ = window.jQuery = jQuery;
 
 let socket;
 
+
 class Monitoring extends Component {
 
     constructor(props) {
@@ -195,7 +196,15 @@ class Monitoring extends Component {
 
     // 첫번째는 최대 60개까지 불러옴
     getFirstInfo = () => {
-        Fetch.GET('/api/block/?page_size=61&page=1')
+        const headers = {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+            }
+        }
+
+        Fetch.GET('/api/block/?page_size=61&page=1', headers)
             .then(res => {
                 let newTime = [];
                 let tpb = [];
@@ -230,7 +239,15 @@ class Monitoring extends Component {
 
     // 두번째 부터는 하나씩 값 갖고오기
     updateDashboardInfo = () => {
-        Fetch.GET('/api/block/?page_size=2&page=1')
+        const headers = {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+            }
+        }
+
+        Fetch.GET('/api/block/?page_size=2&page=1', headers)
             .then(res => {
                 // console.log(res.results[0]);
                 let bestBlock = res.results[0];

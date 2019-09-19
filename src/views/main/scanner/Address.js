@@ -46,66 +46,81 @@ class Address extends Component {
 
     //Callback for table
     getAddress = (callback) => {
-        
-        Fetch.GET(`/api/address/${this.state.address}`)
-        .then(res=>{
-            this.setState({
-                balance: res.balance,
-                transaction_count: res.transaction_count,
-                is_contract: res.is_contract
-            })
-            
-            //Fetch Contract info
-            if(this.state.is_contract){
-                this.props.dispatch(setPage('Contract'));
-                Fetch.GET(`/api/contract/${this.state.address}`)
-                .then(res =>{
-                    this.setState({
-                        contract_deployer: res.creator_created_from,
-                        contract_deployed_at: res.creator_created_transaction,
-                        byte_code: res.byte_codes
-                    }, () => {
-                        if(callback) {
-                            callback();
-                        }
-                    })
-                })
-            }else {
-                this.props.dispatch(setPage('Address'));
-                if(callback) {
-                    callback();
-                }
+        const headers = {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + sessionStorage.getItem('token')
             }
-            this.props.dispatch(setInfo(this.state.address));
-            
-        })
+        }
+
+        Fetch.GET(`/api/address/${this.state.address}`, headers)
+            .then(res => {
+                this.setState({
+                    balance: res.balance,
+                    transaction_count: res.transaction_count,
+                    is_contract: res.is_contract
+                })
+
+                //Fetch Contract info
+                if (this.state.is_contract) {
+                    this.props.dispatch(setPage('Contract'));
+                    Fetch.GET(`/api/contract/${this.state.address}`, headers)
+                        .then(res => {
+                            this.setState({
+                                contract_deployer: res.creator_created_from,
+                                contract_deployed_at: res.creator_created_transaction,
+                                byte_code: res.byte_codes
+                            }, () => {
+                                if (callback) {
+                                    callback();
+                                }
+                            })
+                        })
+                } else {
+                    this.props.dispatch(setPage('Address'));
+                    if (callback) {
+                        callback();
+                    }
+                }
+                this.props.dispatch(setInfo(this.state.address));
+
+            })
     }
 
 
     getTransaction = (state, instance) => {
+        const headers = {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+            }
+        }
+
         this.setState({
             loading: true
         });
 
-        Fetch.GET(`/api/address/?account=${this.state.address}&page_size=${state.pageSize}&page=${state.page+1}`)
-        .then(res => {
-            //update안할때
-            // if(this.state.transactions.length !== 0 && this.state.transactions[0].number === res.results[0].number){
-            //   return;
-            // }
-            this.setState({
-                transactions: res.results,
-                pages: Math.ceil(res.count/state.pageSize)
+        Fetch.GET(`/api/address/?account=${this.state.address}&page_size=${state.pageSize}&page=${state.page + 1}`, headers)
+            .then(res => {
+                //update안할때
+                // if(this.state.transactions.length !== 0 && this.state.transactions[0].number === res.results[0].number){
+                //   return;
+                // }
+                this.setState({
+                    transactions: res.results,
+                    pages: Math.ceil(res.count / state.pageSize)
+                })
             })
-        })
-        .catch(error => {
-            console.log(error);
-        })
-        .finally(() => {
-            this.setState({
-                loading: false
-            });
-        })
+            .catch(error => {
+                console.log(error);
+            })
+            .finally(() => {
+                this.setState({
+                    loading: false
+                });
+            })
     }
 
     //Tab toggle
@@ -139,207 +154,207 @@ class Address extends Component {
         }
     }
 
-  render() {
-    const { transactions, pages, loading, balance, transaction_count
-        , is_contract, contract_deployer, contract_deployed_at, byte_code } = this.state;
-    
-    //Table component
-    const renderTable = () => {
-        return (
-            <ReactTable
-                columns={[
-                    {
-                        Header: "TxHash",
-                        accessor: "transaction_hash",
-                        Cell: ({row}) => (<Link to={`/main/scanner/transaction/${row.transaction_hash}`}>{row.transaction_hash}</Link>),
-                        minWidth: 100
-                    },
-                    {
-                        Header: "Block",
-                        accessor: "related_block",
-                        Cell: ({row}) => (<Link to={`/main/scanner/block/${row.related_block.number}`}>{row.related_block.number}</Link>),
-                        minWidth: 50
-                    },
-                    {
-                        Header: "Age",
-                        accessor: "timestamp",
-                        minWidth: 50,
-                        Cell: ({row}) => {
-                            var age = moment(this.state.timestamp).diff(row.timestamp, 'seconds');
-                            if(age < 60) {
-                                age = age + ' sec';
-                            }
-                            else if(age < 3600) {
-                                age = Math.floor(age/60) + ' min';
-                            }
-                            else if(age < 84600) {
-                                age = Math.floor(age/3600) + ' hour';
-                            }
-                            else if(age < 2538000) {
-                                age = Math.floor(age/84600) + ' day';
-                            }
-                            else {
-                                return (<span>{row.timestamp}</span>)
-                            }
+    render() {
+        const { transactions, pages, loading, balance, transaction_count
+            , is_contract, contract_deployer, contract_deployed_at, byte_code } = this.state;
 
-                            return (
-                                <Fragment>
-                                    {/* <span data-tip={row.timestamp}>
+        //Table component
+        const renderTable = () => {
+            return (
+                <ReactTable
+                    columns={[
+                        {
+                            Header: "TxHash",
+                            accessor: "transaction_hash",
+                            Cell: ({ row }) => (<Link to={`/main/scanner/transaction/${row.transaction_hash}`}>{row.transaction_hash}</Link>),
+                            minWidth: 100
+                        },
+                        {
+                            Header: "Block",
+                            accessor: "related_block",
+                            Cell: ({ row }) => (<Link to={`/main/scanner/block/${row.related_block.number}`}>{row.related_block.number}</Link>),
+                            minWidth: 50
+                        },
+                        {
+                            Header: "Age",
+                            accessor: "timestamp",
+                            minWidth: 50,
+                            Cell: ({ row }) => {
+                                var age = moment(this.state.timestamp).diff(row.timestamp, 'seconds');
+                                if (age < 60) {
+                                    age = age + ' sec';
+                                }
+                                else if (age < 3600) {
+                                    age = Math.floor(age / 60) + ' min';
+                                }
+                                else if (age < 84600) {
+                                    age = Math.floor(age / 3600) + ' hour';
+                                }
+                                else if (age < 2538000) {
+                                    age = Math.floor(age / 84600) + ' day';
+                                }
+                                else {
+                                    return (<span>{row.timestamp}</span>)
+                                }
+
+                                return (
+                                    <Fragment>
+                                        {/* <span data-tip={row.timestamp}>
                                         {age}
                                         {(age.includes('hour') || age.includes('day')) &&
                                         <span style={{fontSize: '13px', color: '#C0C0C0'}}>s</span>} ago
                                     </span> */}
-                                    <span data-tip={row.timestamp}>{age} ago</span>
-                                    <ReactTooltip/>
-                                </Fragment>
-                            )
+                                        <span data-tip={row.timestamp}>{age} ago</span>
+                                        <ReactTooltip />
+                                    </Fragment>
+                                )
+                            }
+                        },
+                        {
+                            Header: "From",
+                            accessor: "transaction_from",
+                            Cell: ({ row }) => (
+                                row.transaction_from === this.state.address ?
+                                    row.transaction_from :
+                                    <Link to={`/main/scanner/address/${row.transaction_from}`}>{row.transaction_from}</Link>),
+                            minWidth: 100
+                        },
+                        {
+                            Header: "",
+                            minWidth: 30,
+                            Cell: ({ row }) => (
+                                row.transaction_from === this.state.address ?
+                                    <Badge color='danger' style={{ width: '50px' }}> Out </Badge> :
+                                    <Badge color='success' style={{ width: '50px' }}> in </Badge>
+                            ),
+                        },
+                        {
+                            Header: "To",
+                            accessor: "transaction_to",
+                            Cell: ({ row }) => (
+                                row.transaction_to === this.state.address ?
+                                    row.transaction_to :
+                                    <Link to={`/main/scanner/address/${row.transaction_to}`}>{row.transaction_to}</Link>),
+                            minWidth: 100
+                        },
+                        {
+                            Header: "Value",
+                            accessor: "value",
+                            minWidth: 90,
+                            Cell: ({ row }) => {
+                                return (
+                                    <Button disabled={true} className='eth'>
+                                        {Validation.noExponents(row.value)} Eth
+                              </Button>
+                                )
+                            }
+                        },
+                        {
+                            Header: "Tx Fee",
+                            accessor: "txFee",
+                            minWidth: 60,
+                            Cell: ({ row }) => {
+                                let gas = row._original.gas;
+                                let gas_price = row._original.gas_price;
+                                return (<span style={{ fontSize: '13px', color: '#C0C0C0' }}>{gas * gas_price}</span>)
+                            }
                         }
-                    },
-                    {
-                        Header: "From",
-                        accessor: "transaction_from",
-                        Cell: ({row}) => (
-                            row.transaction_from === this.state.address ?
-                            row.transaction_from :
-                            <Link to={`/main/scanner/address/${row.transaction_from}`}>{row.transaction_from}</Link>),
-                        minWidth: 100
-                    },
-                    {
-                        Header: "",
-                        minWidth: 30,
-                        Cell: ({row}) => (
-                            row.transaction_from === this.state.address ?
-                            <Badge color='danger' style ={{width: '50px'}}> Out </Badge>:
-                            <Badge color='success' style ={{width: '50px'}}> in </Badge>
-                        ),
-                    },
-                    {
-                        Header: "To",
-                        accessor: "transaction_to",
-                        Cell: ({row}) => (
-                            row.transaction_to === this.state.address ?
-                            row.transaction_to :
-                            <Link to={`/main/scanner/address/${row.transaction_to}`}>{row.transaction_to}</Link>),
-                        minWidth: 100
-                    },
-                    {
-                        Header: "Value",
-                        accessor: "value",
-                        minWidth: 90,
-                        Cell: ({row}) => {
-                          return (
-                              <Button disabled={true} className='eth'>
-                                  {Validation.noExponents(row.value)} Eth
-                              </Button> 
-                          )
-                        }
-                    },
-                    {
-                        Header: "Tx Fee",
-                        accessor: "txFee",
-                        minWidth: 60,
-                        Cell: ({row}) => {
-                            let gas = row._original.gas;
-                            let gas_price = row._original.gas_price;
-                            return (<span style={{fontSize: '13px', color: '#C0C0C0'}}>{gas*gas_price}</span>)
-                        }
-                    }
-                ]}
-                
-                manual // Forces table not to paginate or sort automatically, so we can handle it server-side
-                data={transactions}
-                pages={pages} // Display the total number of pages
-                loading={loading} // Display the loading overlay when we need it
-                onFetchData={this.getTransaction} // Request new data when things change
-                defaultPageSize={10}
-                showPageSizeOptions={false}
-                ref={(instance) => { this.table = instance; }}
-                sortable={false}
-                noDataText={'No Data found'}
-                getNoDataProps={() => {return {style: {backgroundColor: 'transparent', color: 'white'}}}}
-            />
-        );
-    }
-        
-    return (
-      <Fragment>
-          <ContentRow>
-              <ContentCol>
-                <ContentCard style={{padding: '0'}}>
-                    <Table style={{margin: '0'}}>
-                        <thead>
-                            <tr>
-                                <th colSpan='4' >Overview</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td style={{width: '10%'}}>Balance :</td>
-                                <td style={{width: '40%'}}>{balance} Ether</td>
-                                <td style={{width: '10%'}}>Transactions :</td>
-                                <td style={{width: '40%'}}>{transaction_count} txs</td>
-                            </tr>
-                            { is_contract && ( 
-                            <tr>
-                                <td>Deployer :</td>
-                                <td><Link to={`/main/scanner/address/${contract_deployer}`}>{contract_deployer}</Link></td>
-                                <td>Deployed at :</td>
-                                <td><Link to={`/main/scanner/transaction/${contract_deployed_at}`}>{contract_deployed_at}</Link></td>
-                            </tr>
-                            )}
-                        </tbody>
-                    </Table>
-                </ContentCard>
-              </ContentCol>
-          </ContentRow>
-          <ContentRow>
-              <ContentCol>
-                <Fragment> 
-                    <Nav tabs>
-                        <NavItem style={{ width: '33%' }}>
-                            <NavLink
-                            className={classnames({ active: this.state.activeTab === '1' })}
-                            onClick={() => { this.toggle('1'); }}>
-                                Transactions
+                    ]}
+
+                    manual // Forces table not to paginate or sort automatically, so we can handle it server-side
+                    data={transactions}
+                    pages={pages} // Display the total number of pages
+                    loading={loading} // Display the loading overlay when we need it
+                    onFetchData={this.getTransaction} // Request new data when things change
+                    defaultPageSize={10}
+                    showPageSizeOptions={false}
+                    ref={(instance) => { this.table = instance; }}
+                    sortable={false}
+                    noDataText={'No Data found'}
+                    getNoDataProps={() => { return { style: { backgroundColor: 'transparent', color: 'white' } } }}
+                />
+            );
+        }
+
+        return (
+            <Fragment>
+                <ContentRow>
+                    <ContentCol>
+                        <ContentCard style={{ padding: '0' }}>
+                            <Table style={{ margin: '0' }}>
+                                <thead>
+                                    <tr>
+                                        <th colSpan='4' >Overview</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td style={{ width: '10%' }}>Balance :</td>
+                                        <td style={{ width: '40%' }}>{balance} Ether</td>
+                                        <td style={{ width: '10%' }}>Transactions :</td>
+                                        <td style={{ width: '40%' }}>{transaction_count} txs</td>
+                                    </tr>
+                                    {is_contract && (
+                                        <tr>
+                                            <td>Deployer :</td>
+                                            <td><Link to={`/main/scanner/address/${contract_deployer}`}>{contract_deployer}</Link></td>
+                                            <td>Deployed at :</td>
+                                            <td><Link to={`/main/scanner/transaction/${contract_deployed_at}`}>{contract_deployed_at}</Link></td>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </Table>
+                        </ContentCard>
+                    </ContentCol>
+                </ContentRow>
+                <ContentRow>
+                    <ContentCol>
+                        <Fragment>
+                            <Nav tabs>
+                                <NavItem style={{ width: '33%' }}>
+                                    <NavLink
+                                        className={classnames({ active: this.state.activeTab === '1' })}
+                                        onClick={() => { this.toggle('1'); }}>
+                                        Transactions
                             </NavLink>
-                        </NavItem>
-                        {is_contract ?
-                        <Fragment>
-                            <NavItem style={{ width: '33%' }}>
-                                <NavLink
-                                className={classnames({ active: this.state.activeTab === '2' })}
-                                onClick={() => { this.toggle('2'); }}>
-                                    Code
+                                </NavItem>
+                                {is_contract ?
+                                    <Fragment>
+                                        <NavItem style={{ width: '33%' }}>
+                                            <NavLink
+                                                className={classnames({ active: this.state.activeTab === '2' })}
+                                                onClick={() => { this.toggle('2'); }}>
+                                                Code
                                 </NavLink>
-                            </NavItem>
-                            <NavItem style={{ width: '34%' }}>
-                                <NavLink
-                                className={classnames({ active: this.state.activeTab === '3' })}
-                                onClick={() => { this.toggle('3'); }}>
-                                    Events
+                                        </NavItem>
+                                        <NavItem style={{ width: '34%' }}>
+                                            <NavLink
+                                                className={classnames({ active: this.state.activeTab === '3' })}
+                                                onClick={() => { this.toggle('3'); }}>
+                                                Events
                                 </NavLink>
-                            </NavItem>
+                                        </NavItem>
+                                    </Fragment>
+                                    : null
+                                }
+                            </Nav>
+                            <TabContent activeTab={this.state.activeTab} style={{ height: '522px' }}>
+                                <TabPane tabId='1'>
+                                    <ContentCard style={{ margin: '0', border: 0, height: '520px' }}> {renderTable()}</ContentCard>
+                                </TabPane>
+                                {is_contract ?
+                                    <Fragment>
+                                        <TabPane tabId='2'><Code byteCode={byte_code} /></TabPane>
+                                        <TabPane tabId='3'><Event /></TabPane>
+                                    </Fragment>
+                                    : null}
+                            </TabContent>
                         </Fragment>
-                        : null
-                        }
-                    </Nav>
-                    <TabContent activeTab={this.state.activeTab} style={{ height: '522px'}}>
-                        <TabPane tabId='1'>
-                            <ContentCard style={{margin: '0', border: 0, height: '520px'}}> {renderTable()}</ContentCard>
-                        </TabPane>
-                        {is_contract ? 
-                        <Fragment>
-                            <TabPane tabId='2'><Code byteCode={byte_code}/></TabPane>
-                            <TabPane tabId='3'><Event/></TabPane>
-                        </Fragment>
-                        : null }
-                    </TabContent>
-                </Fragment>
-              </ContentCol>
-          </ContentRow>
-      </Fragment>
-    )
-  }
+                    </ContentCol>
+                </ContentRow>
+            </Fragment>
+        )
+    }
 }
 
 export default connect(null)(Address);

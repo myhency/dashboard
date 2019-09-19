@@ -75,7 +75,8 @@ class SignIn extends Component {
                 console.log(res);
                 sessionStorage.setItem('token', res.token);
                 sessionStorage.setItem('account', params.account);
-                this.props.dispatch(signIn(params.account));
+                sessionStorage.setItem('role', res.role);
+                this.props.dispatch(signIn(params.account, res.role));
                 this.props.history.push('/main/dashboard/');
             })
             .catch(error => {

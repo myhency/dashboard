@@ -20,11 +20,19 @@ export default class BlockList extends Component {
     }
 
     getBlock = (state) => {
+        const headers = {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+            }
+        }
+
         this.setState({
             loading: true
         });
 
-        Fetch.GET(`/api/block/?page_size=${state.pageSize}&page=${state.page + 1}`)
+        Fetch.GET(`/api/block/?page_size=${state.pageSize}&page=${state.page + 1}`, headers)
             .then(res => {
                 this.setState({
                     blocks: res.results,

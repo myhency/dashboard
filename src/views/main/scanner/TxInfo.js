@@ -11,6 +11,7 @@ import moment from 'moment'
 import Validation from 'utils/Validation';
 import Decimal from 'decimal.js';
 
+
 export default class TxInfo extends Component {
 
   constructor(props) {
@@ -38,7 +39,15 @@ export default class TxInfo extends Component {
   }
 
   getTxInfo = () => {
-    Fetch.GET('/api/transaction/' + this.state.TxHash)
+    const headers = {
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+      }
+    }
+
+    Fetch.GET('/api/transaction/' + this.state.TxHash, headers)
       .then(res => {
         //update 안할 때
         if (res === undefined) {

@@ -5,10 +5,13 @@ const SIGN_IN = 'auth/SIGN_IN';
 const SIGN_OUT = 'auth/SIGN_OUT';
 
 // **** 액션 생섬함수 정의
-export const signIn = (userId) => dispatch => {
+export const signIn = (userId, role) => dispatch => {
     dispatch({
         type: SIGN_IN,
-        payload: userId
+        payload: {
+            userId,
+            role
+        }
     })
     return Promise.resolve();
 };
@@ -22,17 +25,20 @@ export const signOut = () => dispatch => {
 
 // **** 초기상태 정의
 const initialState = {
-    userId: undefined
+    userId: undefined,
+    role: undefined
 };
 
 // **** 리듀서 작성
 export default handleActions({
     [SIGN_IN]: (state, action) => ({
         ...state,
-        userId: action.payload
+        userId: action.payload.userId,
+        role: action.payload.role
     }),
     [SIGN_OUT]: (state, action) => ({
         ...state,
-        userId: undefined
+        userId: undefined,
+        role: undefined
     })
 }, initialState);

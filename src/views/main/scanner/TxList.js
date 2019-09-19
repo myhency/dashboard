@@ -21,11 +21,19 @@ export default class TxList extends Component {
 
 
   getTransaction = (state, instance) => {
+    const headers = {
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+      }
+    }
+
     this.setState({
       loading: true
     });
 
-    Fetch.GET(`/api/transaction/?page_size=${state.pageSize}&page=${state.page + 1}`)
+    Fetch.GET(`/api/transaction/?page_size=${state.pageSize}&page=${state.page + 1}`, headers)
       .then(res => {
 
         this.setState({
