@@ -1,8 +1,8 @@
 import SignIn from 'views/auth/SignIn';
 import SignUp from 'views/auth/SignUp';
-import InitAdmin from 'views/auth/InitAdmin';
-import FindHost from 'views/auth/FindHost';
-import TempSignIn from 'views/auth/TempSignIn';
+// import InitAdmin from 'views/auth/InitAdmin';
+// import FindHost from 'views/auth/FindHost';
+// import TempSignIn from 'views/auth/TempSignIn';
 
 const contextPath = '/auth/';
 
@@ -17,21 +17,21 @@ const authRoutes = [
         name: 'Sign Up',
         component: SignUp
     },
-    {
-        path: contextPath + 'initAdmin',
-        name: 'Init Admin',
-        component: InitAdmin
-    },
-    {
-        path: contextPath + 'findHost',
-        name: 'Find Host',
-        component: FindHost
-    },
-    {
-        path: contextPath + 'tempSignIn',
-        name: 'Temp Sign In',
-        component: TempSignIn
-    },
+    // {
+    //     path: contextPath + 'initAdmin',
+    //     name: 'Init Admin',
+    //     component: InitAdmin
+    // },
+    // {
+    //     path: contextPath + 'findHost',
+    //     name: 'Find Host',
+    //     component: FindHost
+    // },
+    // {
+    //     path: contextPath + 'tempSignIn',
+    //     name: 'Temp Sign In',
+    //     component: TempSignIn
+    // },
 ]
 // import SignIn from 'views/auth/SignIn';
 // import InitAdmin from 'views/auth/InitAdmin';

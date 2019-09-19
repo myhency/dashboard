@@ -1,19 +1,17 @@
 import React, { Component, Fragment } from 'react';
-import ReactDOM from 'react-dom';
+// import ReactDOM from 'react-dom';
 import ContentRow from 'components/ContentRow';
 import ContentCol from 'components/ContentCol';
 import ContentCard from 'components/ContentCard';
 import {
-    Form, Input, InputGroup, InputGroupAddon,
-    Button, Table, Badge,
     Card, CardBody, CardHeader, CardFooter
 } from 'reactstrap';
 import ReactTable from 'react-table';
 
 class AdminMain extends Component {
-    constructor(props) {
-        super(props);
-    }
+    // constructor(props) {
+    //     super(props);
+    // }
     render() {
         return (
             <Fragment>
@@ -163,23 +161,3 @@ class AdminMain extends Component {
 }
 export default AdminMain;
 
-{/* <ContentRow>
-    <ContentCard>
-        <ContentRow>
-            <ContentCol>
-                <h3 style={{ color: "#FFFFFF" }}>Hosts</h3>
-            </ContentCol>
-        </ContentRow>
-        <ContentRow>
-            <ContentCol>
-                <ContentCard>aa</ContentCard>
-            </ContentCol>
-            <ContentCol>
-                <ContentCard>aa</ContentCard>
-            </ContentCol>
-            <ContentCol>
-                <ContentCard>aa</ContentCard>
-            </ContentCol>
-        </ContentRow>
-    </ContentCard>
-</ContentRow> */}

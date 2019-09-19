@@ -25,7 +25,7 @@ import { FaBook } from 'react-icons/fa';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import ReactTooltip from 'react-tooltip';
 import jQuery from "jquery";
-import { callbackify } from 'util';
+// import { callbackify } from 'util';
 
 window.$ = window.jQuery = jQuery;
 
@@ -190,7 +190,7 @@ class AdminLayout extends Component {
     }
 
     myProfile = () => {
-        this.props.history.push('/main/myprofile');
+        // this.props.history.push('/main/myprofile');
     }
 
     render() {
@@ -323,7 +323,7 @@ class AdminLayout extends Component {
                                     )
                                 }
                             })}
-                            <Redirect to="/main/dashboard" />
+                            <Redirect to="/admin/home" />
                         </Switch>
                     </div >
 

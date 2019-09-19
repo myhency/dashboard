@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { TabContent, TabPane, Nav, NavItem, NavLink, Card, Button, CardTitle, CardText, Row, Col } from 'reactstrap';
+import { TabContent, TabPane, Nav, NavItem, NavLink, Button } from 'reactstrap';
 import classnames from 'classnames';
 import ContentRow from 'components/ContentRow';
 import ContentCol from 'components/ContentCol';

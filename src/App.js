@@ -13,6 +13,7 @@ import NotFound from 'views/common/NotFound';
 import PrivateRoute from 'components/PrivateRoute';
 import AuthLayout from './layouts/auth/AuthLayout';
 import { signIn } from 'store/modules/auth';
+// import { connectableObservableDescriptor } from 'rxjs/internal/observable/ConnectableObservable';
 
 class App extends Component {
     constructor(props) {
@@ -56,6 +57,7 @@ class App extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
+        console.log(nextProps);
         let { isLoading, userId, role, isAuthenticated, isAuthenticatedAdmin } = prevState;
 
         if (nextProps.userId !== undefined) {
@@ -84,6 +86,9 @@ class App extends Component {
         // } else {
         //     isAuthenticated = true;
         // }
+        console.log(prevState);
+        console.log(isAuthenticated);
+        console.log(isAuthenticatedAdmin);
 
         return {
             isLoading,
@@ -100,8 +105,9 @@ class App extends Component {
         console.log(this.state);
 
         let renderstring = isAuthenticated ? ('<Redirect to="/main" />') :
-            isAuthenticatedAdmin ? <Redirect to="/main/admin" /> :
-                <Redirect to="/auth" />
+            isAuthenticatedAdmin ? ('<Redirect to="/admin" />') :
+                ('<Redirect to="/auth" />')
+        console.log(renderstring);
 
         return (
             <Router>
@@ -109,7 +115,7 @@ class App extends Component {
                     <Switch>
                         <Route exact path="/" render={() =>
                             isAuthenticated ? <Redirect to="/main" /> :
-                                isAuthenticatedAdmin ? <Redirect to="/main/admin" /> :
+                                isAuthenticatedAdmin ? <Redirect to="/admin" /> :
                                     <Redirect to="/auth" />
 
                         } />

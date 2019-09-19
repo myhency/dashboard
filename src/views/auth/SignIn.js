@@ -77,7 +77,18 @@ class SignIn extends Component {
                 sessionStorage.setItem('account', params.account);
                 sessionStorage.setItem('role', res.role);
                 this.props.dispatch(signIn(params.account, res.role));
-                this.props.history.push('/main/dashboard/');
+                // this.props.history.push('/main/dashboard/');
+
+                switch (res.role) {
+                    case "normal":
+                        this.props.history.push('/main');
+                        return;
+                    case "admin":
+                        this.props.history.push('/admin');
+                        break;
+                    default:
+                        break;
+                }
             })
             .catch(error => {
                 swal.fire(

@@ -10,7 +10,7 @@ import Address from 'views/main/scanner/Address.js';
 
 import { FaChartBar, FaSearch, FaUserTie } from 'react-icons/fa';
 
-const contextPath = '/main/';
+const contextPath = '/admin/';
 
 const adminRoutes = [
     // {
@@ -37,7 +37,7 @@ const adminRoutes = [
         name: 'Admin',
         icon: FaUserTie,
         sidebar: true,
-        path: contextPath + 'admin',
+        path: contextPath + 'home',
         component: AdminMain
     },
     {
