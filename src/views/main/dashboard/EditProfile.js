@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { TabContent, TabPane, Nav, NavItem, NavLink, Button } from 'reactstrap';
+import { TabContent, TabPane, Nav, NavItem, NavLink, Button, Input, InputGroup, FormFeedback } from 'reactstrap';
 import classnames from 'classnames';
 import ContentRow from 'components/ContentRow';
 import ContentCol from 'components/ContentCol';
@@ -7,12 +7,17 @@ import ContentCard from 'components/ContentCard';
 
 
 
-class MyProfile extends Component {
+class EditProfile extends Component {
     constructor(props) {
         super(props);
         this.toggle = this.toggle.bind(this);
         this.state = {
-            activeTab: '1'
+            activeTab: '1',
+
+            password: '',
+
+            isInvalidPassword: false,
+            isValidPassword: false
         };
     }
 
@@ -23,11 +28,22 @@ class MyProfile extends Component {
             });
         }
     }
-    onclickEdit = () => {
-        this.props.history.push('/main/editprofile' );
+
+    onChangePassword = (event) => {
+        this.setState({
+            password: event.target.value
+        })
     }
 
+    onChangePasswordCheck = (event) => {
+        this.setState({
+            passwordCheck: event.target.value
+        })
+    }
+    
+
     render() {
+        const { password, passwordCheck, isInvalidPassword, isValidPassword } = this.state;
         return (
             <Fragment>
                 <ContentRow>
@@ -40,7 +56,7 @@ class MyProfile extends Component {
                         </ContentRow>
                         <ContentRow style={{ marginTop: "10px", marginBottom: "10px" }}>
                             <Button 
-                                onClick={this.onclickEdit}>Edit Password
+                                onClick={this.onclickEdit}>Save
                             </Button>
                         </ContentRow>
                     </ContentCol>
@@ -77,6 +93,36 @@ class MyProfile extends Component {
                                             <br></br>
                                             <h5 style={{ color: 'white' }}>Email</h5>
                                             <p style={{ color: 'lightyellow' }}>james@gmail.com</p>
+                                            <br></br>
+                                            <h5 style={{ color: 'white' }}>Password</h5>
+                                            {/* <p style={{ color: 'lightyellow' }}>james@gmail.com</p> */}
+                                            <InputGroup>
+                                                <Input
+                                                    id="password"
+                                                    type="text"
+                                                    value={password}
+                                                    onChange={this.onChangePassword}    
+                                                    />
+                                            </InputGroup>
+                                            <br></br>
+                                            <h5 style={{ color: 'white' }}>Confirm Password</h5>
+                                            {/* <p style={{ color: 'lightyellow' }}>james@gmail.com</p> */}
+                                            <InputGroup>
+                                                <Input
+                                                    id="password"
+                                                    type="text"
+                                                    value={passwordCheck}
+                                                    valid={isValidPassword}
+                                                    invalid={isInvalidPassword}
+                                                    onChange={this.onChangePasswordCheck}    
+                                                    />
+                                                {/* <FormFeedback valid>
+                                                    
+                                                </FormFeedback>
+                                                <FormFeedback invalid>
+
+                                                </FormFeedback> */}
+                                            </InputGroup>
 
                                         </ContentCol>
                                     </ContentRow>
@@ -89,4 +135,4 @@ class MyProfile extends Component {
         )
     }
 }
-export default MyProfile;
+export default EditProfile;
