@@ -122,7 +122,6 @@ class Monitoring extends Component {
             this.setState({
                 nodeState: changeState
             })
-            // console.log(data);
             this.updateNode();
         });
 
@@ -145,9 +144,7 @@ class Monitoring extends Component {
         });
 
         socket.on('blockMiner', (data) => {
-            // console.log(data);
             this.miningNode(data);
-            // this.getDashboardInfo();
         });
 
         socket.on('uncle', (data) => {
@@ -163,7 +160,6 @@ class Monitoring extends Component {
             this.setState({
                 nodeState: changeState
             });
-            // console.log(data);
             this.updateNode();
         });
 
@@ -172,7 +168,6 @@ class Monitoring extends Component {
         this.intervalId_getInfo = setInterval(this.updateDashboardInfo, 3000);
         this.intervalId_getCurrentTime = setInterval(this.getCurrentTime, 1000);
         this.intervalId_getPendingTx = setInterval(() => socket.emit("requestPendingTx"), 1000);
-        // this.intervalId_logsocket = setInterval(() => console.log(socket), 1000);
 
         this.setState({
             cardPosition: ReactDOM.findDOMNode(this.svgCard).getBoundingClientRect()
@@ -188,7 +183,6 @@ class Monitoring extends Component {
         socket.disconnect();
         clearInterval(this.intervalId_getInfo);
         clearInterval(this.intervalId_getCurrentTime);
-        clearInterval(this.getPendingTx);
         clearInterval(this.intervalId_getPendingTx);
         window.removeEventListener('resize', this.updatePosition);
     }
@@ -238,6 +232,10 @@ class Monitoring extends Component {
 
     // 두번째 부터는 하나씩 값 갖고오기
     updateDashboardInfo = () => {
+        if(this.state.timePass.length < 10) {
+            this.getFirstInfo();
+            return;
+        }
         const headers = {
             headers: {
                 'Accept': 'application/json',
@@ -248,7 +246,6 @@ class Monitoring extends Component {
 
         Fetch.GET('/api/block/?page_size=2&page=1', headers)
             .then(res => {
-                // console.log(res.results[0]);
                 let bestBlock = res.results[0];
                 // update 안할 때
                 if (this.state.blockNo === bestBlock.number) {
@@ -259,7 +256,6 @@ class Monitoring extends Component {
                 let txPerBlock = this.state.txPerBlock.slice();
                 let tbpLabels = this.state.tbpLabels.slice();
 
-                // console.log(newTime);
                 if (this.state.timePass.length >= 60) {
                     timePass.splice(0, 1);
                     txPerBlock.splice(0, 1);
