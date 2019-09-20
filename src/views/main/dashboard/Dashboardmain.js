@@ -66,8 +66,6 @@ class Monitoring extends Component {
     componentDidMount() {
         this.getCurrentTime();
 
-
-
         // web socket 연결 
         socket.on('connect', () => {
             socket.emit("requestNodeList")
@@ -191,6 +189,7 @@ class Monitoring extends Component {
         clearInterval(this.intervalId_getInfo);
         clearInterval(this.intervalId_getCurrentTime);
         clearInterval(this.getPendingTx);
+        clearInterval(this.intervalId_getPendingTx);
         window.removeEventListener('resize', this.updatePosition);
     }
 
