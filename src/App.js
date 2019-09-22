@@ -21,7 +21,7 @@ class App extends Component {
         // Login Check
         let isAuthenticated = false;
         let isAuthenticatedAdmin = false;
-        let userId = sessionStorage.getItem('account') === undefined ? '' : sessionStorage.getItem('account');
+        let userId = sessionStorage.getItem('id') === undefined ? '' : sessionStorage.getItem('id');
         let role = sessionStorage.getItem('role') === undefined ? '' : sessionStorage.getItem('role');
 
         console.log('userid:' + userId);
