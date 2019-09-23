@@ -378,6 +378,21 @@ class SignIn extends Component {
         this._isMounted = false;
     }
 
+    // enter키로 검색
+    handleKeyPress = (event) => {
+        if (event.key === 'Enter' && !(this.state.userId.length > 0 && this.state.password.length > 0)) {
+            swal.fire(
+                'Check your ID/PassWord',
+                'Fill the all input',
+                'warning'
+            )
+            return;
+        } 
+        else if (event.key === 'Enter') {
+          event.preventDefault();
+          this.onClickSignIn();
+        }
+    }
 
     render() {
         const { isInvalidUserId, isInvalidPassword } = this.state;
@@ -396,6 +411,7 @@ class SignIn extends Component {
                                 invalid={isInvalidUserId}
                                 placeholder="ID"
                                 onChange={this.onChangeUserId}
+                                onKeyPress={this.handleKeyPress}
                             />
                             <FormFeedback invalid={"true"}>ID is required.</FormFeedback>
                         </FormGroup>
@@ -405,6 +421,7 @@ class SignIn extends Component {
                                 type="password"
                                 placeholder="Password"
                                 onChange={this.onChangePassword}
+                                onKeyPress={this.handleKeyPress}
                             />
                             <FormFeedback invalid={"true"}>Password is required.</FormFeedback>
                         </FormGroup>
