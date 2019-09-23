@@ -323,7 +323,7 @@ class AdminLayout extends Component {
                                     )
                                 }
                             })}
-                            <Redirect to="/admin/home" />
+                            <Redirect to="/admin/dashboard" />
                         </Switch>
                     </div >
 

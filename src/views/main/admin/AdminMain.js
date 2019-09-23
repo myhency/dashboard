@@ -6,16 +6,46 @@ import ContentCard from 'components/ContentCard';
 import {
     Card, CardBody, CardHeader, CardFooter
 } from 'reactstrap';
+import Fetch from 'utils/Fetch';
 import ReactTable from 'react-table';
 
 class AdminMain extends Component {
-    // constructor(props) {
-    //     super(props);
-    // }
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            data: [],
+            loading: false
+        };
+
+        this.fetchData();
+    }
+
+    fetchData = () => {
+        this.setState({ loading: true });
+        Fetch.GET(`/node/admin/users`)
+        .then(res => {
+            console.log(res);
+            this.setState({
+                data: res
+            })
+        })
+        .catch(error => {
+            console.log(error);
+        })
+        .finally(() => {
+            this.setState({
+                loading: false
+            })
+        })
+    }
+
+
     render() {
+        const { data, loading } = this.state;
         return (
             <Fragment>
-                <ContentRow>
+                {/* <ContentRow>
                     <ContentCol>
                         <Card>
                             <CardHeader tag="h3">#Hosts</CardHeader>
@@ -46,7 +76,7 @@ class AdminMain extends Component {
                             </CardFooter>
                         </Card>
                     </ContentCol>
-                </ContentRow>
+                </ContentRow> */}
                 <ContentRow>
                     <ContentCol>
                         <ContentCard table>
@@ -75,11 +105,21 @@ class AdminMain extends Component {
                                     },
 
                                 ]}
-                                manual // Forces table not to paginate or sort automatically, so we can handle it server-side
-                                // data={blocks}
+                                getTdProps = {(state, rowInfo, column, instance) => {
+                                    return {
+                                        onClick: e => {
+                                            console.log(rowInfo);
+                                            if (rowInfo !== undefined){
+                                                console.log(rowInfo);
+                                                this.props.history.push(`/admin/userDetail/${rowInfo.original.id}`)
+                                            }
+                                        }
+                                    };
+                                }}
+                                data={data}
                                 // pages={pages} // Display the total number of pages
-                                // loading={loading} // Display the loading overlay when we need it
-                                // onFetchData={this.getBlock} // Request new data when things change
+                                loading={loading} // Display the loading overlay when we need it
+                                // onFetchData={this.fetchData} // Request new data when things change
                                 pageSizeOptions={[5, 10, 15, 20]}
                                 defaultPageSize={10}
                                 noDataText={'No Data found'}

@@ -1,6 +1,8 @@
 import Dashboardmain from 'views/main/dashboard/Dashboardmain';
 import AdminMain from 'views/main/admin/AdminMain';
+import UserDetail from 'views/main/admin/UserDetail';
 import MyProfile from 'views/main/dashboard/MyProfile';
+
 import Scanner from 'views/main/scanner/Scannermain';
 import BlockList from 'views/main/scanner/BlockList';
 import BlockInfo from 'views/main/scanner/BlockInfo';
@@ -37,8 +39,14 @@ const adminRoutes = [
         name: 'Admin',
         icon: FaUserTie,
         sidebar: true,
-        path: contextPath + 'home',
+        path: contextPath + 'userList',
         component: AdminMain
+    },
+    {
+        name: 'User Detail',
+        sidebar: false,
+        path: contextPath + 'userDetail/:id',
+        component: UserDetail
     },
     {
         path: contextPath + 'myprofile',
