@@ -274,8 +274,8 @@ class MainLayout extends Component {
                     </NavbarBrand>
 
                     <Nav className="ml-auto">
-                        <Navbar>
-                        </Navbar>
+                        {/* <Navbar>
+                        </Navbar> */}
                         <UncontrolledDropdown>
                             <DropdownToggle nav style={{ color: 'black' }}>
                                 <IoMdContact color='#0F9EDB' size={30} />{' '}
@@ -297,7 +297,7 @@ class MainLayout extends Component {
                                     </DropdownItem>
                             </DropdownMenu>
                         </UncontrolledDropdown>
-                    </Nav> * /}
+                    </Nav>
                 </Navbar >
 
                 {/* Content */}
