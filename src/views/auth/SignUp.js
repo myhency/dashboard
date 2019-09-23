@@ -92,14 +92,15 @@ class SignUp extends Component {
                 <ContentCard>
                     <ContentRow>
                         <ContentCol>
-                            <p>
+                            <div>
                                 <h1 style={{ color: 'white' }}>Built for Developers</h1>
-                            </p>
-                            <p>
+                            </div>
+                            <div>
                                 <h6 style={{ color: 'lightGrey' }}>
                                     GitHub is a development platform inspired by the way you work. From open source to business, you can host and review code, manage projects, and build software alongside 36 million developers.
                             </h6>
-                            </p>
+                            </div>
+
                         </ContentCol>
 
                         <ContentCol>

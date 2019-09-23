@@ -85,8 +85,19 @@ class SignIn extends Component {
                 sessionStorage.setItem('token', res.token);
                 sessionStorage.setItem('id', params.id);
                 sessionStorage.setItem('role', res.role);
-                this.props.dispatch(signIn(params.id, res.role));
-                this.props.history.push('/main/dashboard/');
+                this.props.dispatch(signIn(params.account, res.role));
+                // this.props.history.push('/main/dashboard/');
+
+                switch (res.role) {
+                    case "normal":
+                        this.props.history.push('/main');
+                        return;
+                    case "admin":
+                        this.props.history.push('/admin');
+                        break;
+                    default:
+                        break;
+                }
             })
             .catch(error => {
                 switch(error.status) {
