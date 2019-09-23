@@ -73,7 +73,6 @@ export default class Scannermain extends Component {
   }
 
   search = (item) => {
-    console.log('aaaaa');
     const headers = {
       headers: {
         'Accept': 'application/json',
@@ -103,6 +102,7 @@ export default class Scannermain extends Component {
     this.props.history.push('/main/scanner/' + string);
   }
 
+  // 엔터키로 검색
   handleKeyPress = (event) => {
     if (event.key === 'Enter' && this.state.searchTxt.length > 0) {
       event.preventDefault();
