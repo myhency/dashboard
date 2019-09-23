@@ -15,6 +15,7 @@ class EditProfile extends Component {
             activeTab: '1',
 
             password: '',
+            passwordCheck:'',
 
             isInvalidPassword: false,
             isValidPassword: false
@@ -36,19 +37,27 @@ class EditProfile extends Component {
     }
 
     onChangePasswordCheck = (event) => {
+        let isInvalidPassword = false;
+        if (EventTarget.target.value !== this.state.password){
+            isInvalidPassword = true;
+        }
         this.setState({
-            passwordCheck: event.target.value
+            passwordCheck: event.target.value,
+            isInvalidPassword,
+            isValidPassword:false,
+            isInvalidPasswordMessage: "password mismatch!"
         })
     }
 
     onclickSave = () => {
         // 여기에 받은 비번 값 api에 넘기는거 작성
+        
         this.props.history.push('/main/myprofile' );
     }
     
 
     render() {
-        const { password, passwordCheck, isInvalidPassword, isValidPassword } = this.state;
+        const { password, passwordCheck, isInvalidPassword, isValidPassword, isInvalidPasswordMessage } = this.state;
         return (
             <Fragment>
                 <ContentRow>
@@ -122,10 +131,10 @@ class EditProfile extends Component {
                                                     onChange={this.onChangePasswordCheck}    
                                                     />
                                                 <FormFeedback valid>
-                                                    
+                                                    password match!
                                                 </FormFeedback>
                                                 <FormFeedback invalid>
-
+                                                    {isInvalidPasswordMessage}
                                                 </FormFeedback>
                                             </InputGroup>
 
