@@ -166,13 +166,13 @@ class Address extends Component {
                         {
                             Header: "TxHash",
                             accessor: "transaction_hash",
-                            Cell: ({ row }) => (<Link to={`/main/scanner/transaction/${row.transaction_hash}`}>{row.transaction_hash}</Link>),
+                            Cell: ({ row }) => (<Link to={`../transaction/${row.transaction_hash}`}>{row.transaction_hash}</Link>),
                             minWidth: 100
                         },
                         {
                             Header: "Block",
                             accessor: "related_block",
-                            Cell: ({ row }) => (<Link to={`/main/scanner/block/${row.related_block.number}`}>{row.related_block.number}</Link>),
+                            Cell: ({ row }) => (<Link to={`../block/${row.related_block.number}`}>{row.related_block.number}</Link>),
                             minWidth: 50
                         },
                         {
@@ -216,7 +216,7 @@ class Address extends Component {
                             Cell: ({ row }) => (
                                 row.transaction_from === this.state.address ?
                                     row.transaction_from :
-                                    <Link to={`/main/scanner/address/${row.transaction_from}`}>{row.transaction_from}</Link>),
+                                    <Link to={`address/${row.transaction_from}`}>{row.transaction_from}</Link>),
                             minWidth: 100
                         },
                         {
@@ -234,7 +234,7 @@ class Address extends Component {
                             Cell: ({ row }) => (
                                 row.transaction_to === this.state.address ?
                                     row.transaction_to :
-                                    <Link to={`/main/scanner/address/${row.transaction_to}`}>{row.transaction_to}</Link>),
+                                    <Link to={`address/${row.transaction_to}`}>{row.transaction_to}</Link>),
                             minWidth: 100
                         },
                         {
@@ -297,9 +297,9 @@ class Address extends Component {
                                     {is_contract && (
                                         <tr>
                                             <td>Deployer :</td>
-                                            <td><Link to={`/main/scanner/address/${contract_deployer}`}>{contract_deployer}</Link></td>
+                                            <td><Link to={`address/${contract_deployer}`}>{contract_deployer}</Link></td>
                                             <td>Deployed at :</td>
-                                            <td><Link to={`/main/scanner/transaction/${contract_deployed_at}`}>{contract_deployed_at}</Link></td>
+                                            <td><Link to={`transaction/${contract_deployed_at}`}>{contract_deployed_at}</Link></td>
                                         </tr>
                                     )}
                                 </tbody>

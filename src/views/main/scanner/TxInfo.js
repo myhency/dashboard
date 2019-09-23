@@ -104,7 +104,7 @@ export default class TxInfo extends Component {
         <ContentCard detailCard={true} noMarginBottom={true}>
           <ContentRow>
             <ContentCol style={{ textAlign: 'right' }}>
-              <Button onClick={() => this.props.history.push('/main/scanner/transaction')} className='btn-outline-primary'>
+              <Button onClick={() => this.props.history.goBack()} className='btn-outline-primary'>
                 To List
               </Button>
             </ContentCol>

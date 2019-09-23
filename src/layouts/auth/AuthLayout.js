@@ -30,7 +30,7 @@ class AuthLayout extends Component {
                     </Nav>
                 </Navbar> */}
                 <ContentRow className='authContent bg'>
-                    <ContentCol xl={4} lg={5} md={6} sm={10} xs={11}>
+                    <ContentCol>
                         <Switch>
                             {authRoutes.map((route, key) => {
                                 return (
