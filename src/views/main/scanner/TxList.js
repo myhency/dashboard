@@ -66,7 +66,7 @@ export default class TxList extends Component {
                 Header: "Block",
                 accessor: "related_block",
                 minWidth: 50,
-                Cell: ({ row }) => (<Link to={`scanner/Block/${row.related_block}`}>{row.related_block.number}</Link>)
+                Cell: ({ row }) => (<Link to={`block/${row.related_block}`}>{row.related_block.number}</Link>)
               },
               {
                 Header: "Age",
@@ -102,13 +102,13 @@ export default class TxList extends Component {
                 Header: "From",
                 accessor: "transaction_from",
                 minWidth: 100,
-                Cell: ({ row }) => (<Link to={`scanner/address/${row.transaction_from}`}>{row.transaction_from}</Link>),
+                Cell: ({ row }) => (<Link to={`address/${row.transaction_from}`}>{row.transaction_from}</Link>),
               },
               {
                 Header: "To",
                 accessor: "transaction_to",
                 minWidth: 100,
-                Cell: ({ row }) => (<Link to={`scanner/address/${row.transaction_to}`}>{row.transaction_to}</Link>),
+                Cell: ({ row }) => (<Link to={`address/${row.transaction_to}`}>{row.transaction_to}</Link>),
               },
               {
                 Header: "Value",
