@@ -92,14 +92,14 @@ export default class Scannermain extends Component {
           );
         }
         else {
-          this.props.history.push(`/main/scanner/${res.kinds}/${item}`);
+          this.props.history.push(`scanner/${res.kinds}/${item}`);
         }
 
       })
   }
 
   onClickAll = (string) => {
-    this.props.history.push('/main/scanner/' + string);
+    this.props.history.push('scanner/' + string);
   }
 
   // 엔터키로 검색
@@ -117,8 +117,8 @@ export default class Scannermain extends Component {
     // latest block table
     var brows = [];
     blocks.forEach((block) => {
-      let block_link = `/main/scanner/block/${block.number}`;
-      let miner_link = `/main/scanner/address/${block.miner}`;
+      let block_link = `scanner/block/${block.number}`;
+      let miner_link = `scanner/address/${block.miner}`;
       brows.push(
         <tr key={block.id}>
           <td><img alt='block' src='/img/bk.png' height='50px' />&nbsp;&nbsp;&nbsp;<Link to={block_link}>{block.number}</Link></td>
@@ -135,9 +135,9 @@ export default class Scannermain extends Component {
     // latest transaction table
     var trows = [];
     transactions.forEach((tx) => {
-      let block_link = `/main/scanner/transaction/${tx.transaction_hash}`;
-      let from_link = `/main/scanner/address/${tx.transaction_from}`;
-      let to_link = `/main/scanner/address/${tx.transaction_to}`;
+      let block_link = `scanner/transaction/${tx.transaction_hash}`;
+      let from_link = `scanner/address/${tx.transaction_from}`;
+      let to_link = `scanner/address/${tx.transaction_to}`;
       trows.push(
         <tr key={tx.id}>
           <td className="ellipsis"><img alt='transaction' src='/img/tx.png' height='50px' />&nbsp;&nbsp;&nbsp;<Link to={block_link}>{tx.transaction_hash}</Link></td>

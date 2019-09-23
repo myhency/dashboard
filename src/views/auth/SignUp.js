@@ -134,91 +134,89 @@ class SignUp extends Component {
     render() {
         const {loading} = this.state;
         return (
-            <Fragment>
-                <ContentCard>
-                    <AvForm
-                        onValidSubmit={this.handleValidSubmit}
-                        onInvalidSubmit={this.handleInvalidSubmit}
-                    >
-                    <ContentRow>
-                        <ContentCol>
-                            <div>
-                                <h1 style={{ color: 'white' }}>Built for Developers</h1>
-                            </div>
-                            <div>
-                                <h6 style={{ color: 'lightGrey' }}>
-                                    GitHub is a development platform inspired by the way you work. From open source to business, you can host and review code, manage projects, and build software alongside 36 million developers.
-                            </h6>
-                            </div>
+            <ContentRow style={{display:'flex', alignItems: 'center', justifyContent:'center'}}>
+                <ContentCol xl={6} lg={8} md={10} sm={12} xs={12}>
+                    <ContentCard>
+                        <AvForm onValidSubmit={this.handleValidSubmit} onInvalidSubmit={this.handleInvalidSubmit}>
+                            <ContentRow>
+                                <ContentCol>
+                                    <div>
+                                        <h1 style={{ color: 'white' }}>Built for Developers</h1>
+                                    </div>
+                                    <div>
+                                        <h6 style={{ color: 'lightGrey' }}>
+                                            GitHub is a development platform inspired by the way you work. From open source to business, you can host and review code, manage projects, and build software alongside 36 million developers.
+                                    </h6>
+                                    </div>
 
-                        </ContentCol>
+                                </ContentCol>
 
-                        <ContentCol>
-                                <label style={{ color: 'white' }}>ID</label>
-                                <AvField
-                                    type="text"
-                                    name="id"
-                                    errorMessage="Id is already taken"
-                                    validate={{
-                                        required: { value: true, errorMessage: 'this field is required' },
-                                        custom: this.validateUserId
-                                    }}
-                                    onChange={this.onChangeUserId} 
-                                />
-                                <label style={{ color: 'white' }}>Password</label>
-                                <AvField
-                                    type="password"
-                                    name="password"
-                                    errorMessage="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters"
-                                    validate={{
-                                        required: { value: true, errorMessage: 'this field is required' },
-                                        custom: this.validatePassword
-                                    }}
-                                    onChange={this.onChangePassword} />
-                                <label style={{ color: 'white' }}>Name</label>
-                                <AvField
-                                    type="text"
-                                    name="name"
-                                    validate={{
-                                        required: { value: true, errorMessage: 'this field is required' },
-                                        pattern: { value: '^[a-z0-9_-]{3,24}$', errorMessage: 'Must have 3~24 characters (alphabets, numbers only)' }
-                                    }}
-                                    onChange={this.onChangeName} />
-                                <label style={{ color: 'white' }}>Email</label>
-                                <AvField
-                                    type="email"
-                                    name="email"
-                                    validate={{ 
-                                        required: { value: true, errorMessage: 'this field is required' },
-                                        email: { value: true, errorMessage: 'please enter email'}
-                                    }}
-                                    onChange={this.onChangeEmail} />
-                        </ContentCol>
-                    </ContentRow>
-                    <ContentRow className={'signUpRow'}>
-                        <ContentCol className={'signUpCol'}>
-                            <Button className={'signUpButton'} disabled={loading}>
-                                {loading && (
-                                    <Fragment>
-                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<Spinner size="sm" color="light" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                    </Fragment>
-                                )}
-                                {!loading && (
-                                    <Fragment>
-                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sign up&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                    </Fragment>
-                                )}
-                                
-                            </Button>
-                            <Button className={'backButton'} onClick={() => this.props.history.goBack()}>
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Back&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            </Button>
-                        </ContentCol>
-                    </ContentRow>
-                    </AvForm>
-                </ContentCard>
-            </Fragment>
-
+                                <ContentCol>
+                                        <label style={{ color: 'white' }}>ID</label>
+                                        <AvField
+                                            type="text"
+                                            name="id"
+                                            errorMessage="Id is already taken"
+                                            validate={{
+                                                required: { value: true, errorMessage: 'this field is required' },
+                                                custom: this.validateUserId
+                                            }}
+                                            onChange={this.onChangeUserId} 
+                                        />
+                                        <label style={{ color: 'white' }}>Password</label>
+                                        <AvField
+                                            type="password"
+                                            name="password"
+                                            errorMessage="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters"
+                                            validate={{
+                                                required: { value: true, errorMessage: 'this field is required' },
+                                                custom: this.validatePassword
+                                            }}
+                                            onChange={this.onChangePassword} />
+                                        <label style={{ color: 'white' }}>Name</label>
+                                        <AvField
+                                            type="text"
+                                            name="name"
+                                            validate={{
+                                                required: { value: true, errorMessage: 'this field is required' },
+                                                pattern: { value: '^[a-z0-9_-]{3,24}$', errorMessage: 'Must have 3~24 characters (alphabets, numbers only)' }
+                                            }}
+                                            onChange={this.onChangeName} />
+                                        <label style={{ color: 'white' }}>Email</label>
+                                        <AvField
+                                            type="email"
+                                            name="email"
+                                            validate={{ 
+                                                required: { value: true, errorMessage: 'this field is required' },
+                                                email: { value: true, errorMessage: 'please enter email'}
+                                            }}
+                                            onChange={this.onChangeEmail} />
+                                </ContentCol>
+                            </ContentRow>
+                            <ContentRow className={'signUpRow'}>
+                                <ContentCol className={'signUpCol'}>
+                                    <Button className={'signUpButton'} disabled={loading}>
+                                        {loading && (
+                                            <Fragment>
+                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<Spinner size="sm" color="light" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            </Fragment>
+                                        )}
+                                        {!loading && (
+                                            <Fragment>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sign up&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            </Fragment>
+                                        )}
+                                        
+                                    </Button>
+                                    <Button className={'backButton'} onClick={() => this.props.history.goBack()}>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Back&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    </Button>
+                                </ContentCol>
+                            </ContentRow>
+                        </AvForm>
+                    </ContentCard>
+                </ContentCol>
+            </ContentRow>
         );
     }
 }

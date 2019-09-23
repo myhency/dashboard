@@ -398,42 +398,44 @@ class SignIn extends Component {
         const { isInvalidUserId, isInvalidPassword } = this.state;
 
         return (
-            <Fragment>
-                <ContentCard>
-                    <ContentRow>
-                        <ContentCol>
-                            <h3 style={{ color: 'white' }}>HMG BaaS</h3>
-                        </ContentCol>
-                    </ContentRow>
-                    <Form style={{ marginBottom: '1rem' }}>
-                        <FormGroup>
-                            <Input
-                                invalid={isInvalidUserId}
-                                placeholder="ID"
-                                onChange={this.onChangeUserId}
-                                onKeyPress={this.handleKeyPress}
-                            />
-                            <FormFeedback invalid={"true"}>ID is required.</FormFeedback>
-                        </FormGroup>
-                        <FormGroup>
-                            <Input
-                                invalid={isInvalidPassword}
-                                type="password"
-                                placeholder="Password"
-                                onChange={this.onChangePassword}
-                                onKeyPress={this.handleKeyPress}
-                            />
-                            <FormFeedback invalid={"true"}>Password is required.</FormFeedback>
-                        </FormGroup>
-                    </Form>
-                    <ContentRow>
-                        <ContentCol>
-                            <Button className={'authButton'} onClick={this.onClickSignIn}>Sign in</Button>
-                            <Button className={'signUpButton'} onClick={this.onClickSignUp}>Sign up for HMG BaaS</Button>
-                        </ContentCol>
-                    </ContentRow>
-                </ContentCard>
-            </Fragment>
+            <ContentRow style={{display:'flex', alignItems: 'center', justifyContent:'center'}}>
+                <ContentCol xl={4} lg={5} md={6} sm={8} xs={12}>
+                    <ContentCard>
+                        <ContentRow>
+                            <ContentCol>
+                                <h3 style={{ color: 'white' }}>HMG BaaS</h3>
+                            </ContentCol>
+                        </ContentRow>
+                        <Form style={{ marginBottom: '1rem' }}>
+                            <FormGroup>
+                                <Input
+                                    invalid={isInvalidUserId}
+                                    placeholder="ID"
+                                    onChange={this.onChangeUserId}
+                                    onKeyPress={this.handleKeyPress}
+                                />
+                                <FormFeedback invalid={"true"}>ID is required.</FormFeedback>
+                            </FormGroup>
+                            <FormGroup>
+                                <Input
+                                    invalid={isInvalidPassword}
+                                    type="password"
+                                    placeholder="Password"
+                                    onChange={this.onChangePassword}
+                                    onKeyPress={this.handleKeyPress}
+                                />
+                                <FormFeedback invalid={"true"}>Password is required.</FormFeedback>
+                            </FormGroup>
+                        </Form>
+                        <ContentRow>
+                            <ContentCol>
+                                <Button className={'authButton'} onClick={this.onClickSignIn}>Sign in</Button>
+                                <Button className={'signUpButton'} onClick={this.onClickSignUp}>Sign up for HMG BaaS</Button>
+                            </ContentCol>
+                        </ContentRow>
+                    </ContentCard>
+                </ContentCol>
+            </ContentRow>
         );
     }
 }
