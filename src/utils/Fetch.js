@@ -8,11 +8,12 @@ const onUnauthenticated = () => {
 };
 
 const onGatewayTimeout = () => {
-    Swal.fire({
-        type: 'error',
-        title: 'Server Connection Error',
-        allowOutsideClick: false
-    });
+    console.log('Server Connection Error');
+    // Swal.fire({
+    //     type: 'error',
+    //     title: 'Server Connection Error',
+    //     allowOutsideClick: false
+    // });
 };
 
 
