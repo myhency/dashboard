@@ -40,6 +40,11 @@ class EditProfile extends Component {
             passwordCheck: event.target.value
         })
     }
+
+    onclickSave = () => {
+        // 여기에 받은 비번 값 api에 넘기는거 작성
+        this.props.history.push('/main/myprofile' );
+    }
     
 
     render() {
@@ -56,7 +61,7 @@ class EditProfile extends Component {
                         </ContentRow>
                         <ContentRow style={{ marginTop: "10px", marginBottom: "10px" }}>
                             <Button 
-                                onClick={this.onclickEdit}>Save
+                                onClick={this.onclickSave}>Save
                             </Button>
                         </ContentRow>
                     </ContentCol>
@@ -116,12 +121,12 @@ class EditProfile extends Component {
                                                     invalid={isInvalidPassword}
                                                     onChange={this.onChangePasswordCheck}    
                                                     />
-                                                {/* <FormFeedback valid>
+                                                <FormFeedback valid>
                                                     
                                                 </FormFeedback>
                                                 <FormFeedback invalid>
 
-                                                </FormFeedback> */}
+                                                </FormFeedback>
                                             </InputGroup>
 
                                         </ContentCol>
