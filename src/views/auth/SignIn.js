@@ -6,7 +6,8 @@ import {
     Form,
     FormGroup,
     Input,
-    FormFeedback
+    FormFeedback,
+    Spinner
 } from "reactstrap";
 import ContentRow from 'components/ContentRow';
 import ContentCol from 'components/ContentCol';
@@ -35,7 +36,9 @@ class SignIn extends Component {
             userId: '',
             password: '',
             isInvalidUserId: false,
-            isInvalidPassword: false
+            isInvalidPassword: false,
+
+            loading: false
         }
     }
 
@@ -79,6 +82,10 @@ class SignIn extends Component {
         // this.props.dispatch(loadingStart())
         // .then(() => {
         // post에 param 전달
+        this.setState({
+            loading:true
+        });
+
         Fetch.POST('/node/auth/signIn', params, headers)
             .then((res) => {
                 console.log(res);
@@ -108,6 +115,13 @@ class SignIn extends Component {
                             'error'
                         );
                         break;
+                    case 440: // 로그인 5회 실패. 계정 잠김
+                        swal.fire(
+                            'Login Denied!',
+                            'User is locked. Please ask to admin for unlock',
+                            'warning'
+                        );
+                        break;       
                     case 441: // 미접속 3개월 이상된 사용자일 시
                         swal.fire(
                             'Login Denied!',
@@ -355,7 +369,12 @@ class SignIn extends Component {
                         );
                         break;
                 }
-            });
+            })
+            .finally(() => {
+                this.setState({
+                    loading:false
+                });
+            })
     }
 
     onClickSignUp = () => {
@@ -395,7 +414,7 @@ class SignIn extends Component {
     }
 
     render() {
-        const { isInvalidUserId, isInvalidPassword } = this.state;
+        const { isInvalidUserId, isInvalidPassword, loading } = this.state;
 
         return (
             <ContentRow style={{display:'flex', alignItems: 'center', justifyContent:'center'}}>
@@ -429,7 +448,15 @@ class SignIn extends Component {
                         </Form>
                         <ContentRow>
                             <ContentCol>
-                                <Button className={'authButton'} onClick={this.onClickSignIn}>Sign in</Button>
+                                <Button className={'authButton'} onClick={this.onClickSignIn} disabled={loading}>
+                                    Sign in
+                                    {loading && (
+                                        <Fragment>
+                                            &nbsp;&nbsp;
+                                            <Spinner size="sm" color="light" style={{marginBottom:'3px'}}/>
+                                        </Fragment>
+                                    )}
+                                </Button>
                                 <Button className={'signUpButton'} onClick={this.onClickSignUp}>Sign up for HMG BaaS</Button>
                             </ContentCol>
                         </ContentRow>
