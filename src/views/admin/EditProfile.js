@@ -51,7 +51,7 @@ class EditProfile extends Component {
         this.setState({ 
             loading: true 
         });
-        Fetch.GET(`/node/normal/profile`)
+        Fetch.GET(`/node/admin/profile`)
         .then(res => {
             this.setState({
                 id: res.id,
@@ -119,6 +119,7 @@ class EditProfile extends Component {
         })
     }
 
+
     handleValidSubmit = (event, values) => {
         console.log(values);
         const { password, originPassword } = this.state;
@@ -138,7 +139,7 @@ class EditProfile extends Component {
         this.setState({
             loading: true
         });
-        Fetch.PUT('/node/normal/password', params, headers)
+        Fetch.PUT('/node/admin/password', params, headers)
         .then((res) => {
             swal.fire(
                 'Password Chaneged!',

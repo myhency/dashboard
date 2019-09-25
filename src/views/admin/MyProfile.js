@@ -31,14 +31,14 @@ class MyProfile extends Component {
         }
     }
     onclickEdit = () => {
-        this.props.history.push('/main/editprofile' );
+        this.props.history.push('/admin/editprofile' );
     }
 
     fetchData = () => {
         this.setState({ 
             loading: true 
         });
-        Fetch.GET(`/node/normal/profile`)
+        Fetch.GET(`/node/admin/profile`)
         .then(res => {
             this.setState({
                 id: res.id,

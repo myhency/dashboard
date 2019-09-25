@@ -190,7 +190,7 @@ class AdminLayout extends Component {
     }
 
     myProfile = () => {
-        // this.props.history.push('/main/myprofile');
+        this.props.history.push('/admin/myprofile');
     }
 
     render() {

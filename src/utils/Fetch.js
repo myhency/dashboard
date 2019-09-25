@@ -3,8 +3,8 @@ import Swal from "sweetalert2";
 const FETCH_TIMEOUT = 10000;
 
 const onUnauthenticated = () => {
-    // sessionStorage.clear();
-    // window.location.href = '/auth/signIn';
+    sessionStorage.clear();
+    window.location.href = '/auth/signIn';
 };
 
 const onGatewayTimeout = () => {
@@ -145,7 +145,7 @@ const PUT = (url, params, options) => {
                 clearTimeout(timeout);
                 if (!didTimeout) {
                     if (response.ok) {
-                        resolve(response.json());
+                        resolve(response);
                     } else {
                         if (response.status === 401) {
                             onUnauthenticated();
