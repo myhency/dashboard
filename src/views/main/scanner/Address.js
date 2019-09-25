@@ -216,7 +216,7 @@ class Address extends Component {
                             Cell: ({ row }) => (
                                 row.transaction_from === this.state.address ?
                                     row.transaction_from :
-                                    <Link to={`address/${row.transaction_from}`}>{row.transaction_from}</Link>),
+                                    <Link to={`${row.transaction_from}`}>{row.transaction_from}</Link>),
                             minWidth: 100
                         },
                         {
@@ -234,7 +234,7 @@ class Address extends Component {
                             Cell: ({ row }) => (
                                 row.transaction_to === this.state.address ?
                                     row.transaction_to :
-                                    <Link to={`address/${row.transaction_to}`}>{row.transaction_to}</Link>),
+                                    <Link to={`${row.transaction_to}`}>{row.transaction_to}</Link>),
                             minWidth: 100
                         },
                         {

@@ -54,7 +54,6 @@ const GET = (url, options) => {
                         }
                         if (response.status === 504) {
                             onGatewayTimeout();
-                            return;
                         }
                         reject(response);
                     }
@@ -106,7 +105,6 @@ const POST = (url, params, options) => {
                         }
                         if (response.status === 504) {
                             onGatewayTimeout();
-                            return;
                         }
                         reject(response);
                     }
@@ -153,7 +151,6 @@ const PUT = (url, params, options) => {
                         }
                         if (response.status === 504) {
                             onGatewayTimeout();
-                            return;
                         }
                         reject(response);
                     }
@@ -202,7 +199,6 @@ const DELETE = (url, params, options) => {
                         }
                         if (response.status === 504) {
                             onGatewayTimeout();
-                            return;
                         }
                         reject(response);
                     }

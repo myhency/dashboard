@@ -196,17 +196,15 @@ class SignUp extends Component {
                             <ContentRow className={'signUpRow'}>
                                 <ContentCol className={'signUpCol'}>
                                     <Button className={'signUpButton'} disabled={loading}>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        Sign up
                                         {loading && (
                                             <Fragment>
-                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<Spinner size="sm" color="light" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                &nbsp;&nbsp;
+                                                <Spinner size="sm" color="light" style={{marginBottom:'3px'}}/>
                                             </Fragment>
                                         )}
-                                        {!loading && (
-                                            <Fragment>
-                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sign up&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                            </Fragment>
-                                        )}
-                                        
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                     </Button>
                                     <Button className={'backButton'} onClick={() => this.props.history.goBack()}>
                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Back&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
