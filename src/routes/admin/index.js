@@ -1,6 +1,10 @@
 import Dashboardmain from 'views/main/dashboard/Dashboardmain';
-import MyProfile from 'views/main/dashboard/MyProfile';
-import EditProfile from 'views/main/dashboard/EditProfile';
+import AdminMain from 'views/admin/AdminMain';
+import UserDetail from 'views/admin/UserDetail';
+import UserModify from 'views/admin/UserModify';
+import MyProfile from 'views/admin/MyProfile';
+import EditProfile from 'views/admin/EditProfile';
+
 import Scanner from 'views/main/scanner/Scannermain';
 import BlockList from 'views/main/scanner/BlockList';
 import BlockInfo from 'views/main/scanner/BlockInfo';
@@ -8,11 +12,11 @@ import TxList from 'views/main/scanner/TxList';
 import TxInfo from 'views/main/scanner/TxInfo';
 import Address from 'views/main/scanner/Address.js';
 
-import { FaChartBar, FaSearch } from 'react-icons/fa';
+import { FaChartBar, FaSearch, FaUserTie } from 'react-icons/fa';
 
-const contextPath = '/main/';
+const contextPath = '/admin/';
 
-const mainRoutes = [
+const adminRoutes = [
     // {
     //     path: contextPath +'home',
     //     name: 'Home',
@@ -32,6 +36,25 @@ const mainRoutes = [
         sidebar: true,
         path: contextPath + 'scanner',
         component: Scanner
+    },
+    {
+        name: 'Admin',
+        icon: FaUserTie,
+        sidebar: true,
+        path: contextPath + 'userList',
+        component: AdminMain
+    },
+    {
+        name: 'User Detail',
+        sidebar: false,
+        path: contextPath + 'userDetail/:id',
+        component: UserDetail
+    },
+    {
+        name: 'User Modify',
+        sidebar: false,
+        path: contextPath + 'userModify/:id',
+        component: UserModify
     },
     {
         path: contextPath + 'myprofile',
@@ -77,4 +100,4 @@ const mainRoutes = [
     },
 ]
 
-export default mainRoutes;
+export default adminRoutes;

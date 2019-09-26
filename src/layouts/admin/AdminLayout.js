@@ -7,12 +7,18 @@ import {
     Nav,
     NavLink,
     UncontrolledCollapse,
+    UncontrolledDropdown,
+    DropdownToggle,
+    DropdownItem,
+    DropdownMenu
 } from "reactstrap";
 import windowSize from 'react-window-size';
 import { IoIosCloud, IoMdContact } from 'react-icons/io';
 import { FiChevronDown, FiAlignLeft } from 'react-icons/fi';
-import mainRoutes from 'routes/main';
+import adminRoutes from 'routes/admin';
 import UrlPattern from "url-pattern";
+import { signOut } from 'store/modules/auth';
+import Fetch from 'utils/Fetch';
 import { setInfo } from 'store/modules/currentInfo';
 import { setPage } from 'store/modules/tempPageName';
 import { FaBook } from 'react-icons/fa';
@@ -23,7 +29,7 @@ import jQuery from "jquery";
 
 window.$ = window.jQuery = jQuery;
 
-class MainLayout extends Component {
+class AdminLayout extends Component {
     constructor(props) {
         super(props);
 
@@ -61,21 +67,22 @@ class MainLayout extends Component {
             isWindowSmall = true;
         }
 
-        if (userId !== props.auth.userId) {
-            userId = props.auth.userId;
+        if (userId !== props.userId) {
+            userId = props.userId;
         }
 
         return {
             currentPath,
             isWindowSmall,
+            userId,
             currentInfo,
             tempPageName
         }
     }
 
     getCurrentPageName = (currentPath) => {
-        for (var i = 0; i < mainRoutes.length; i++) {
-            const route = mainRoutes[i];
+        for (var i = 0; i < adminRoutes.length; i++) {
+            const route = adminRoutes[i];
 
             if (this.state.tempPageName !== undefined) {
                 return this.state.tempPageName;
@@ -183,11 +190,11 @@ class MainLayout extends Component {
     }
 
     myProfile = () => {
-        this.props.history.push('/main/myprofile');
+        this.props.history.push('/admin/myprofile');
     }
 
     render() {
-        const { active, currentPath, currentInfo, isWindowSmall } = this.state;
+        const { active, currentPath, currentInfo, isWindowSmall, userId } = this.state;
         return (
             <Fragment>
                 {/* Sidebar */}
@@ -200,7 +207,7 @@ class MainLayout extends Component {
                             </span>
                         </NavLink>
 
-                        {mainRoutes.map((route, key) => {
+                        {adminRoutes.map((route, key) => {
                             if (route.sidebar) {
                                 if (route.subRoutes) {
                                     return (
@@ -298,8 +305,8 @@ class MainLayout extends Component {
                     {/* Inner Content */}
                     < div id="innerContent" >
                         <Switch>
-                            {/* {console.log(mainRoutes)} */}
-                            {mainRoutes.map((route, key) => {
+                            {/* {console.log(adminRoutes)} */}
+                            {adminRoutes.map((route, key) => {
                                 if (route.subRoutes) {
                                     let subRoutes = [];
                                     route.subRoutes.map((subRoute, subKey) => {
@@ -316,7 +323,7 @@ class MainLayout extends Component {
                                     )
                                 }
                             })}
-                            <Redirect to="/main/dashboard" />
+                            <Redirect to="/admin/dashboard" />
                         </Switch>
                     </div >
 
@@ -341,8 +348,8 @@ class MainLayout extends Component {
 
 export default connect(
     state => ({
-        auth: state.auth,
+        userId: state.auth.userId,
         currentInfo: state.currentInfo.info,
         tempPageName: state.tempPageName.pageName
     })
-)(withRouter(windowSize(MainLayout)))
+)(withRouter(windowSize(AdminLayout)))

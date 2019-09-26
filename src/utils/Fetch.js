@@ -8,19 +8,20 @@ const onUnauthenticated = () => {
 };
 
 const onGatewayTimeout = () => {
-    Swal.fire({
-        type: 'error',
-        title: 'Server Connection Error',
-        allowOutsideClick: false
-    });
+    console.log('Server Connection Error');
+    // Swal.fire({
+    //     type: 'error',
+    //     title: 'Server Connection Error',
+    //     allowOutsideClick: false
+    // });
 };
 
 
 const GET = (url, options) => {
-    
+
     let headers = {};
-    if(options !== undefined) {
-        if(options.headers !== undefined) {
+    if (options !== undefined) {
+        if (options.headers !== undefined) {
             headers = options.headers;
         }
     }
@@ -37,44 +38,43 @@ const GET = (url, options) => {
             method: 'GET',
             headers: headers
         })
-        .then((response) => {
-            clearTimeout(timeout);
-            if(!didTimeout) {
-                if(response.ok) {
-                    if(response.status === 204) {
-                        resolve(response);
-                        return;
+            .then((response) => {
+                clearTimeout(timeout);
+                if (!didTimeout) {
+                    if (response.ok) {
+                        if (response.status === 204) {
+                            resolve(response);
+                            return;
+                        }
+                        resolve(response.json());
+                    } else {
+                        if (response.status === 401) {
+                            onUnauthenticated();
+                            return;
+                        }
+                        if (response.status === 504) {
+                            onGatewayTimeout();
+                        }
+                        reject(response);
                     }
-                    resolve(response.json());
-                }else {
-                    if(response.status === 401) {
-                        onUnauthenticated();
-                        return;
-                    }
-                    if(response.status === 504) {
-                        onGatewayTimeout();
-                        return;
-                    }
-                    reject(response);
-                }
 
-            }
-        })
-        .catch((error) => {
-            reject(error);
-        })
+                }
+            })
+            .catch((error) => {
+                reject(error);
+            })
     });
 }
 
 const POST = (url, params, options) => {
-    
+
     let headers = {};
-    if(options !== undefined) {
-        if(options.headers !== undefined) {
+    if (options !== undefined) {
+        if (options.headers !== undefined) {
             headers = options.headers;
         }
     }
-    
+
     let didTimeout = false;
     console.log(headers);
 
@@ -89,40 +89,39 @@ const POST = (url, params, options) => {
             headers: headers,
             body: JSON.stringify(params)
         })
-        .then((response) => {
-            clearTimeout(timeout);
-            if(!didTimeout) {
-                if(response.ok) {
-                    if(response.status === 204) {
-                        resolve(response);
-                        return;
+            .then((response) => {
+                clearTimeout(timeout);
+                if (!didTimeout) {
+                    if (response.ok) {
+                        if (response.status === 204) {
+                            resolve(response);
+                            return;
+                        }
+                        resolve(response.json());
+                    } else {
+                        if (response.status === 401) {
+                            onUnauthenticated();
+                            return;
+                        }
+                        if (response.status === 504) {
+                            onGatewayTimeout();
+                        }
+                        reject(response);
                     }
-                    resolve(response.json());
-                }else {
-                    if(response.status === 401) {
-                        onUnauthenticated();
-                        return;
-                    }
-                    if(response.status === 504) {
-                        onGatewayTimeout();
-                        return;
-                    }
-                    reject(response);
-                }
 
-            }
-        })
-        .catch((error) => {
-            reject(error);
-        })
+                }
+            })
+            .catch((error) => {
+                reject(error);
+            })
     });
 }
 
 const PUT = (url, params, options) => {
-    
+
     let headers = {};
-    if(options !== undefined) {
-        if(options.headers !== undefined) {
+    if (options !== undefined) {
+        if (options.headers !== undefined) {
             headers = options.headers;
         }
     }
@@ -134,34 +133,33 @@ const PUT = (url, params, options) => {
             didTimeout = true;
             reject(new Error('Request timed out'));
         }, FETCH_TIMEOUT);
-        
+
         fetch(url, {
             method: 'PUT',
             headers: headers,
             body: JSON.stringify(params)
         })
-        .then((response) => {
-            clearTimeout(timeout);
-            if(!didTimeout) {
-                if(response.ok) {
-                    resolve(response.json());
-                }else {
-                    if(response.status === 401) {
-                        onUnauthenticated();
-                        return;
+            .then((response) => {
+                clearTimeout(timeout);
+                if (!didTimeout) {
+                    if (response.ok) {
+                        resolve(response);
+                    } else {
+                        if (response.status === 401) {
+                            onUnauthenticated();
+                            return;
+                        }
+                        if (response.status === 504) {
+                            onGatewayTimeout();
+                        }
+                        reject(response);
                     }
-                    if(response.status === 504) {
-                        onGatewayTimeout();
-                        return;
-                    }
-                    reject(response);
-                }
 
-            }
-        })
-        .catch((error) => {
-            reject(error);
-        })
+                }
+            })
+            .catch((error) => {
+                reject(error);
+            })
     });
 
 }
@@ -169,8 +167,8 @@ const PUT = (url, params, options) => {
 const DELETE = (url, params, options) => {
 
     let headers = {};
-    if(options !== undefined) {
-        if(options.headers !== undefined) {
+    if (options !== undefined) {
+        if (options.headers !== undefined) {
             headers = options.headers;
         }
     }
@@ -188,29 +186,28 @@ const DELETE = (url, params, options) => {
             headers: headers,
             body: JSON.stringify(params)
         })
-        .then((response) => {
-            clearTimeout(timeout);
-            if(!didTimeout) {
-                // 일단 삭제는 되는데 status 코드 이상하게 먹음. 물어볼 것
-                if(response.ok) {
-                    resolve(response);
-                }else {
-                    if(response.status === 401) {
-                        onUnauthenticated();
-                        return;
+            .then((response) => {
+                clearTimeout(timeout);
+                if (!didTimeout) {
+                    // 일단 삭제는 되는데 status 코드 이상하게 먹음. 물어볼 것
+                    if (response.ok) {
+                        resolve(response);
+                    } else {
+                        if (response.status === 401) {
+                            onUnauthenticated();
+                            return;
+                        }
+                        if (response.status === 504) {
+                            onGatewayTimeout();
+                        }
+                        reject(response);
                     }
-                    if(response.status === 504) {
-                        onGatewayTimeout();
-                        return;
-                    }
-                    reject(response);
-                }
 
-            }
-        })
-        .catch((error) => {
-            reject(error);
-        })
+                }
+            })
+            .catch((error) => {
+                reject(error);
+            })
     });
 }
 
@@ -224,7 +221,7 @@ export default {
 
 /*
 .then((data) => {
-    
+
 })
 .catch((error) => {
     switch(error.status) {

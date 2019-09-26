@@ -20,6 +20,7 @@ window.$ = window.jQuery = jQuery;
 
 let socket;
 
+
 class Monitoring extends Component {
 
     constructor(props) {
@@ -50,7 +51,12 @@ class Monitoring extends Component {
             socketError: false
         };
 
-        socket = io.connect('/socket');
+        // socket = io.connect('/socket');
+
+        socket = io.connect('/socket', {
+            query: { token: sessionStorage.getItem("token") }
+        });
+
         window.addEventListener('resize', this.updatePosition);
 
 
@@ -176,13 +182,21 @@ class Monitoring extends Component {
         socket.disconnect();
         clearInterval(this.intervalId_getInfo);
         clearInterval(this.intervalId_getCurrentTime);
-        clearInterval(this.getPendingTx);
+        clearInterval(this.intervalId_getPendingTx);
         window.removeEventListener('resize', this.updatePosition);
     }
 
     // 첫번째는 최대 60개까지 불러옴
     getFirstInfo = () => {
-        Fetch.GET('/api/block/?page_size=61&page=1')
+        const headers = {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+            }
+        }
+
+        Fetch.GET('/api/block/?page_size=31&page=1', headers)
             .then(res => {
                 let newTime = [];
                 let tpb = [];
@@ -217,7 +231,19 @@ class Monitoring extends Component {
 
     // 두번째 부터는 하나씩 값 갖고오기
     updateDashboardInfo = () => {
-        Fetch.GET('/api/block/?page_size=2&page=1')
+        if (this.state.timePass.length < 10) {
+            this.getFirstInfo();
+            return;
+        }
+        const headers = {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+            }
+        }
+
+        Fetch.GET('/api/block/?page_size=2&page=1', headers)
             .then(res => {
                 let bestBlock = res.results[0];
                 // update 안할 때
@@ -452,7 +478,10 @@ class Monitoring extends Component {
 
         function tooltipText(d, stateParam) {
             let info;
+<<<<<<< HEAD
+=======
             // let myNode = stateParam.node[d.id - 1];
+>>>>>>> a24f5c7dd9b925cb1ad0de08a18a7cdf6a26eea6
             let myNode = stateParam.node[d.id];
             let myStatus = stateParam.nodeState[d.id];
 
@@ -615,27 +644,32 @@ class Monitoring extends Component {
                                     <Col style={{ textAlign: 'left', marginBottom: '10px' }}>
                                         <span className='dash-upper-line-card-title'>Pending Transactions</span>
                                     </Col>
-                                    <div style={{ maxHeight: '230px', overflowY: 'auto', width: '100%' }}>
-                                        <Table striped style={{ width: '100%', tableLayout: 'fixed' }}>
-                                            <thead style={{ textAlign: 'center' }}>
-                                                <tr>
-                                                    <th style={{ width: '15%' }}>Pending..</th>
-                                                    <th style={{ width: '85%' }}>txHash</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {rows}
-                                            </tbody>
-                                        </Table>
-                                        {pendingTx.length === 0 &&
-                                            <div style={{
-                                                display: 'block',
-                                                position: 'absolute',
-                                                left: '38%',
-                                                top: '50%',
-                                                color: 'white'
-                                            }}>No Pending Transactions</div>}
-                                    </div>
+                                    <Col>
+                                        <Scrollbars style={{ width: '100%', height: '100%' }}
+                                            renderView={() => {
+                                                return <span>Write</span>
+                                            }}>
+                                            <Table bordered>
+                                                <thead style={{ textAlign: 'center' }}>
+                                                    <tr>
+                                                        <th style={{ width: '15%' }}>Pending..</th>
+                                                        <th style={{ width: '85%' }}>txHash</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {rows}
+                                                </tbody>
+                                            </Table>
+                                            {pendingTx.length === 0 &&
+                                                <div style={{
+                                                    display: 'block',
+                                                    position: 'absolute',
+                                                    left: '38%',
+                                                    top: '44%',
+                                                    color: 'white'
+                                                }}>No Pending Transactions</div>}
+                                        </Scrollbars>
+                                    </Col>
                                 </ContentCard>
                             </ContentCol>
                         </ContentRow>
