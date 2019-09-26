@@ -3,8 +3,8 @@ import Swal from "sweetalert2";
 const FETCH_TIMEOUT = 10000;
 
 const onUnauthenticated = () => {
-    // sessionStorage.clear();
-    // window.location.href = '/auth/signIn';
+    sessionStorage.clear();
+    window.location.href = '/auth/signIn';
 };
 
 const onGatewayTimeout = () => {
@@ -54,7 +54,6 @@ const GET = (url, options) => {
                         }
                         if (response.status === 504) {
                             onGatewayTimeout();
-                            return;
                         }
                         reject(response);
                     }
@@ -106,7 +105,6 @@ const POST = (url, params, options) => {
                         }
                         if (response.status === 504) {
                             onGatewayTimeout();
-                            return;
                         }
                         reject(response);
                     }
@@ -145,7 +143,7 @@ const PUT = (url, params, options) => {
                 clearTimeout(timeout);
                 if (!didTimeout) {
                     if (response.ok) {
-                        resolve(response.json());
+                        resolve(response);
                     } else {
                         if (response.status === 401) {
                             onUnauthenticated();
@@ -153,7 +151,6 @@ const PUT = (url, params, options) => {
                         }
                         if (response.status === 504) {
                             onGatewayTimeout();
-                            return;
                         }
                         reject(response);
                     }
@@ -202,7 +199,6 @@ const DELETE = (url, params, options) => {
                         }
                         if (response.status === 504) {
                             onGatewayTimeout();
-                            return;
                         }
                         reject(response);
                     }

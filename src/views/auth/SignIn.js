@@ -6,7 +6,8 @@ import {
     Form,
     FormGroup,
     Input,
-    FormFeedback
+    FormFeedback,
+    Spinner
 } from "reactstrap";
 import ContentRow from 'components/ContentRow';
 import ContentCol from 'components/ContentCol';
@@ -35,7 +36,9 @@ class SignIn extends Component {
             userId: '',
             password: '',
             isInvalidUserId: false,
-            isInvalidPassword: false
+            isInvalidPassword: false,
+
+            loading: false
         }
     }
 
@@ -79,13 +82,17 @@ class SignIn extends Component {
         // this.props.dispatch(loadingStart())
         // .then(() => {
         // post에 param 전달
+        this.setState({
+            loading:true
+        });
+
         Fetch.POST('/node/auth/signIn', params, headers)
             .then((res) => {
                 console.log(res);
                 sessionStorage.setItem('token', res.token);
                 sessionStorage.setItem('id', params.id);
                 sessionStorage.setItem('role', res.role);
-                this.props.dispatch(signIn(params.account, res.role));
+                this.props.dispatch(signIn(params.id, res.role));
                 // this.props.history.push('/main/dashboard/');
 
                 switch (res.role) {
@@ -108,6 +115,13 @@ class SignIn extends Component {
                             'error'
                         );
                         break;
+                    case 440: // 로그인 5회 실패. 계정 잠김
+                        swal.fire(
+                            'Login Denied!',
+                            'User is locked. Please ask to admin for unlock',
+                            'warning'
+                        );
+                        break;       
                     case 441: // 미접속 3개월 이상된 사용자일 시
                         swal.fire(
                             'Login Denied!',
@@ -355,7 +369,12 @@ class SignIn extends Component {
                         );
                         break;
                 }
-            });
+            })
+            .finally(() => {
+                this.setState({
+                    loading:false
+                });
+            })
     }
 
     onClickSignUp = () => {
@@ -395,45 +414,55 @@ class SignIn extends Component {
     }
 
     render() {
-        const { isInvalidUserId, isInvalidPassword } = this.state;
+        const { isInvalidUserId, isInvalidPassword, loading } = this.state;
 
         return (
-            <Fragment>
-                <ContentCard>
-                    <ContentRow>
-                        <ContentCol>
-                            <h3 style={{ color: 'white' }}>HMG BaaS</h3>
-                        </ContentCol>
-                    </ContentRow>
-                    <Form style={{ marginBottom: '1rem' }}>
-                        <FormGroup>
-                            <Input
-                                invalid={isInvalidUserId}
-                                placeholder="ID"
-                                onChange={this.onChangeUserId}
-                                onKeyPress={this.handleKeyPress}
-                            />
-                            <FormFeedback invalid={"true"}>ID is required.</FormFeedback>
-                        </FormGroup>
-                        <FormGroup>
-                            <Input
-                                invalid={isInvalidPassword}
-                                type="password"
-                                placeholder="Password"
-                                onChange={this.onChangePassword}
-                                onKeyPress={this.handleKeyPress}
-                            />
-                            <FormFeedback invalid={"true"}>Password is required.</FormFeedback>
-                        </FormGroup>
-                    </Form>
-                    <ContentRow>
-                        <ContentCol>
-                            <Button className={'authButton'} onClick={this.onClickSignIn}>Sign in</Button>
-                            <Button className={'signUpButton'} onClick={this.onClickSignUp}>Sign up for HMG BaaS</Button>
-                        </ContentCol>
-                    </ContentRow>
-                </ContentCard>
-            </Fragment>
+            <ContentRow style={{display:'flex', alignItems: 'center', justifyContent:'center'}}>
+                <ContentCol xl={4} lg={5} md={6} sm={8} xs={12}>
+                    <ContentCard>
+                        <ContentRow>
+                            <ContentCol>
+                                <h3 style={{ color: 'white' }}>HMG BaaS</h3>
+                            </ContentCol>
+                        </ContentRow>
+                        <Form style={{ marginBottom: '1rem' }}>
+                            <FormGroup>
+                                <Input
+                                    invalid={isInvalidUserId}
+                                    placeholder="ID"
+                                    onChange={this.onChangeUserId}
+                                    onKeyPress={this.handleKeyPress}
+                                />
+                                <FormFeedback invalid={"true"}>ID is required.</FormFeedback>
+                            </FormGroup>
+                            <FormGroup>
+                                <Input
+                                    invalid={isInvalidPassword}
+                                    type="password"
+                                    placeholder="Password"
+                                    onChange={this.onChangePassword}
+                                    onKeyPress={this.handleKeyPress}
+                                />
+                                <FormFeedback invalid={"true"}>Password is required.</FormFeedback>
+                            </FormGroup>
+                        </Form>
+                        <ContentRow>
+                            <ContentCol>
+                                <Button className={'authButton'} onClick={this.onClickSignIn} disabled={loading}>
+                                    Sign in
+                                    {loading && (
+                                        <Fragment>
+                                            &nbsp;&nbsp;
+                                            <Spinner size="sm" color="light" style={{marginBottom:'3px'}}/>
+                                        </Fragment>
+                                    )}
+                                </Button>
+                                <Button className={'signUpButton'} onClick={this.onClickSignUp}>Sign up for HMG BaaS</Button>
+                            </ContentCol>
+                        </ContentRow>
+                    </ContentCard>
+                </ContentCol>
+            </ContentRow>
         );
     }
 }

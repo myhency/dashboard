@@ -1,5 +1,4 @@
 import Dashboardmain from 'views/main/dashboard/Dashboardmain';
-// import AdminMain from 'views/main/admin/AdminMain';
 import MyProfile from 'views/main/dashboard/MyProfile';
 import EditProfile from 'views/main/dashboard/EditProfile';
 import Scanner from 'views/main/scanner/Scannermain';
@@ -34,13 +33,6 @@ const mainRoutes = [
         path: contextPath + 'scanner',
         component: Scanner
     },
-    // {
-    //     name: 'Admin',
-    //     icon: FaUserTie,
-    //     sidebar: true,
-    //     path: '/admin',
-    //     component: AdminMain
-    // },
     {
         path: contextPath + 'myprofile',
         name: 'My profile',
