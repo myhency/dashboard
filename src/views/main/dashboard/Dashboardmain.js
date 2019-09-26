@@ -197,7 +197,7 @@ class Monitoring extends Component {
             }
         }
 
-        Fetch.GET('/api/block/?page_size=61&page=1', headers)
+        Fetch.GET('/api/block/?page_size=31&page=1', headers)
             .then(res => {
                 let newTime = [];
                 let tpb = [];
@@ -232,7 +232,7 @@ class Monitoring extends Component {
 
     // 두번째 부터는 하나씩 값 갖고오기
     updateDashboardInfo = () => {
-        if(this.state.timePass.length < 10) {
+        if (this.state.timePass.length < 10) {
             this.getFirstInfo();
             return;
         }
