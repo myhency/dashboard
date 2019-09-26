@@ -13,10 +13,10 @@ import { createBrotliCompress } from 'zlib';
 import owasp from 'owasp-password-strength-test';
 
 owasp.config({
-    allowPassphrases       : false,
-    maxLength              : 20,
-    minLength              : 8,
-    minOptionalTestsToPass : 2,
+    allowPassphrases: false,
+    maxLength: 20,
+    minLength: 8,
+    minOptionalTestsToPass: 2,
 });
 
 class SignUp extends Component {
@@ -42,14 +42,14 @@ class SignUp extends Component {
             name: name,
             email: email
         };
-    
+
         const headers = {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             }
         }
-    
+
         this.setState({
             loading: true
         });
@@ -61,7 +61,7 @@ class SignUp extends Component {
                     'success'
                 );
                 this.props.history.push('/auth/signIn');
-    
+
             }).catch(error => {
                 swal.fire(
                     'Sign-Up Denied!',
@@ -83,26 +83,26 @@ class SignUp extends Component {
     }
 
     validateUserId = (value, ctx, input, cb) => {
-        if(value === '') {
+        if (value === '') {
             cb(true);
             return;
         }
 
         Fetch.GET(`/node/auth/users/${value}/exists`)
-        .then(res => {
-            cb(res.exists === false);
-        })
-        .catch(err => {
-            console.log(err);
-        })
+            .then(res => {
+                cb(res.exists === false);
+            })
+            .catch(err => {
+                console.log(err);
+            })
     };
 
     validatePassword = (value, ctx, input, cb) => {
-        if(value === '') {
+        if (value === '') {
             cb(true);
             return;
         }
-        
+
         cb(owasp.test(value).strong === true || value === '');
     };
 
@@ -132,65 +132,65 @@ class SignUp extends Component {
 
 
     render() {
-        const {loading} = this.state;
+        const { loading } = this.state;
         return (
-            <ContentRow style={{display:'flex', alignItems: 'center', justifyContent:'center'}}>
+            <ContentRow style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <ContentCol xl={6} lg={8} md={10} sm={12} xs={12}>
                     <ContentCard>
                         <AvForm onValidSubmit={this.handleValidSubmit} onInvalidSubmit={this.handleInvalidSubmit}>
                             <ContentRow>
                                 <ContentCol>
                                     <div>
-                                        <h1 style={{ color: 'white' }}>Built for Developers</h1>
+                                        <h1 style={{ color: 'white' }}>Built for your Business</h1>
                                     </div>
                                     <div>
                                         <h6 style={{ color: 'lightGrey' }}>
-                                            GitHub is a development platform inspired by the way you work. From open source to business, you can host and review code, manage projects, and build software alongside 36 million developers.
+                                            HMG BaaS is a blockchain platform inspired by the way we easily build blockchain network. From very beginning of your business, you can have your own private blockchain network, see what's going on by the dashboard, and build blockchain software alongside convenient features.
                                     </h6>
                                     </div>
 
                                 </ContentCol>
 
                                 <ContentCol>
-                                        <label style={{ color: 'white' }}>ID</label>
-                                        <AvField
-                                            type="text"
-                                            name="id"
-                                            errorMessage="Id is already taken"
-                                            validate={{
-                                                required: { value: true, errorMessage: 'this field is required' },
-                                                custom: this.validateUserId
-                                            }}
-                                            onChange={this.onChangeUserId} 
-                                        />
-                                        <label style={{ color: 'white' }}>Password</label>
-                                        <AvField
-                                            type="password"
-                                            name="password"
-                                            errorMessage="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters"
-                                            validate={{
-                                                required: { value: true, errorMessage: 'this field is required' },
-                                                custom: this.validatePassword
-                                            }}
-                                            onChange={this.onChangePassword} />
-                                        <label style={{ color: 'white' }}>Name</label>
-                                        <AvField
-                                            type="text"
-                                            name="name"
-                                            validate={{
-                                                required: { value: true, errorMessage: 'this field is required' },
-                                                pattern: { value: '^[a-z0-9_-]{3,24}$', errorMessage: 'Must have 3~24 characters (alphabets, numbers only)' }
-                                            }}
-                                            onChange={this.onChangeName} />
-                                        <label style={{ color: 'white' }}>Email</label>
-                                        <AvField
-                                            type="email"
-                                            name="email"
-                                            validate={{ 
-                                                required: { value: true, errorMessage: 'this field is required' },
-                                                email: { value: true, errorMessage: 'please enter email'}
-                                            }}
-                                            onChange={this.onChangeEmail} />
+                                    <label style={{ color: 'white' }}>ID</label>
+                                    <AvField
+                                        type="text"
+                                        name="id"
+                                        errorMessage="Id is already taken"
+                                        validate={{
+                                            required: { value: true, errorMessage: 'this field is required' },
+                                            custom: this.validateUserId
+                                        }}
+                                        onChange={this.onChangeUserId}
+                                    />
+                                    <label style={{ color: 'white' }}>Password</label>
+                                    <AvField
+                                        type="password"
+                                        name="password"
+                                        errorMessage="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters"
+                                        validate={{
+                                            required: { value: true, errorMessage: 'this field is required' },
+                                            custom: this.validatePassword
+                                        }}
+                                        onChange={this.onChangePassword} />
+                                    <label style={{ color: 'white' }}>Name</label>
+                                    <AvField
+                                        type="text"
+                                        name="name"
+                                        validate={{
+                                            required: { value: true, errorMessage: 'this field is required' },
+                                            pattern: { value: '^[a-z0-9_-]{3,24}$', errorMessage: 'Must have 3~24 characters (alphabets, numbers only)' }
+                                        }}
+                                        onChange={this.onChangeName} />
+                                    <label style={{ color: 'white' }}>Email</label>
+                                    <AvField
+                                        type="email"
+                                        name="email"
+                                        validate={{
+                                            required: { value: true, errorMessage: 'this field is required' },
+                                            email: { value: true, errorMessage: 'please enter email' }
+                                        }}
+                                        onChange={this.onChangeEmail} />
                                 </ContentCol>
                             </ContentRow>
                             <ContentRow className={'signUpRow'}>
@@ -201,7 +201,7 @@ class SignUp extends Component {
                                         {loading && (
                                             <Fragment>
                                                 &nbsp;&nbsp;
-                                                <Spinner size="sm" color="light" style={{marginBottom:'3px'}}/>
+                                                <Spinner size="sm" color="light" style={{ marginBottom: '3px' }} />
                                             </Fragment>
                                         )}
                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
