@@ -223,7 +223,7 @@ class BlockInfo extends Component {
                   <ReactTooltip id='totalDifficulty' multiline={true} />
                   &nbsp; Total Difficulty:
                 </td>
-                <td>{parseInt(totalDifficulty)}</td>
+                <td>{totalDifficulty}</td>
               </tr>
               <tr>
                 <td>
@@ -234,7 +234,7 @@ class BlockInfo extends Component {
                   <ReactTooltip id='size' multiline={true} />
                   &nbsp; Size:
                 </td>
-                <td>{parseInt(size)}</td>
+                <td>{size}</td>
               </tr>
               <tr>
                 <td>
