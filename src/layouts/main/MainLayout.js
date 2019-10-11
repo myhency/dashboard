@@ -7,12 +7,18 @@ import {
     Nav,
     NavLink,
     UncontrolledCollapse,
+    UncontrolledDropdown,
+    DropdownToggle,
+    DropdownItem,
+    DropdownMenu
 } from "reactstrap";
 import windowSize from 'react-window-size';
 import { IoIosCloud, IoMdContact } from 'react-icons/io';
 import { FiChevronDown, FiAlignLeft } from 'react-icons/fi';
 import mainRoutes from 'routes/main';
 import UrlPattern from "url-pattern";
+import { signOut } from 'store/modules/auth';
+import Fetch from 'utils/Fetch';
 import { setInfo } from 'store/modules/currentInfo';
 import { setPage } from 'store/modules/tempPageName';
 import { FaBook } from 'react-icons/fa';
@@ -20,6 +26,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import ReactTooltip from 'react-tooltip';
 import jQuery from "jquery";
 // import { callbackify } from 'util';
+
 
 window.$ = window.jQuery = jQuery;
 
@@ -187,7 +194,7 @@ class MainLayout extends Component {
     }
 
     render() {
-        const { active, currentPath, currentInfo, isWindowSmall } = this.state;
+        const { active, currentPath, currentInfo, isWindowSmall, userId } = this.state;
         return (
             <Fragment>
                 {/* Sidebar */}
