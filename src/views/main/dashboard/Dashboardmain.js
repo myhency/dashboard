@@ -9,7 +9,9 @@ import _ from 'lodash';
 import moment from 'moment';
 import io from 'socket.io-client';
 import * as d3 from "d3";
+import { Scrollbars } from 'react-custom-scrollbars';
 import swal from 'sweetalert2';
+
 
 
 import Fetch from 'utils/Fetch.js';
