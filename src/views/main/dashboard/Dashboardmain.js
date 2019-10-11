@@ -478,10 +478,7 @@ class Monitoring extends Component {
 
         function tooltipText(d, stateParam) {
             let info;
-<<<<<<< HEAD
-=======
             // let myNode = stateParam.node[d.id - 1];
->>>>>>> a24f5c7dd9b925cb1ad0de08a18a7cdf6a26eea6
             let myNode = stateParam.node[d.id];
             let myStatus = stateParam.nodeState[d.id];
 
