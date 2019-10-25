@@ -175,7 +175,7 @@ class MainLayout extends Component {
             }
         }
 
-        Fetch.POST('/node/auth/singOut/', {}, options)
+        Fetch.GET('/node/auth/singOut/', {}, options)
             .then(res => {
                 console.log('logout');
             })
