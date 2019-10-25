@@ -17,13 +17,13 @@ class UserModify extends Component {
         this.state = {
             id: this.props.match.params.id,
 
-            
+
             name: '',
             role: '',
             email: '',
             createdAt: '',
             updatedAt: '',
-            
+
             loading: false
         };
     }
@@ -38,28 +38,28 @@ class UserModify extends Component {
 
         let url = `/node/admin/users/${id}`;
         console.log(url);
-        this.setState({ 
-            loading: true 
+        this.setState({
+            loading: true
         });
         Fetch.GET(url)
-        .then(res => {
-            console.log(res);
-            this.setState({
-                id: res.id,
-                name: res.name,
-                role: res.role,
-                email: res.email,
-                createdAt: res.createdAt,
-                updatedAt: res.updatedAt
+            .then(res => {
+                console.log(res);
+                this.setState({
+                    id: res.id,
+                    name: res.name,
+                    role: res.role,
+                    email: res.email,
+                    createdAt: res.createdAt,
+                    updatedAt: res.updatedAt
+                })
             })
-        })
-        .catch(error => {
-        })
-        .finally(() => {
-            this.setState({
-                loading: false
+            .catch(error => {
             })
-        })
+            .finally(() => {
+                this.setState({
+                    loading: false
+                })
+            })
     }
 
     onChangeRole = (event) => {
@@ -68,7 +68,7 @@ class UserModify extends Component {
         })
     }
 
-    
+
     onClickSave = () => {
         const { role, id } = this.state;
 
@@ -83,12 +83,12 @@ class UserModify extends Component {
 
         }).then((result) => {
             if (result.value) {
-                
+
                 let url = `/node/admin/users/${id}/role`;
                 console.log(url);
                 const options = {
                     headers: {
-                        'Content-Type':'application/json'
+                        'Content-Type': 'application/json'
                     }
                 };
 
@@ -99,29 +99,29 @@ class UserModify extends Component {
                 this.setState({
                     loading: true
                 });
-                Fetch.PUT(url,params,options)
-                .then(res => {
-                    Swal.fire(
-                        'Modified!',
-                        '',
-                        'success'
-                    ).then(() => {
-                        
+                Fetch.POST(url, params, options)
+                    .then(res => {
+                        Swal.fire(
+                            'Modified!',
+                            '',
+                            'success'
+                        ).then(() => {
+
+                        })
                     })
-                })
-                .catch(error => {
-                    Swal.fire({
-                        type: 'error',
-                        title: 'Unknown Error Occurred',
-                        confirmButtonText: 'Close'
-                    });
-                })
-                .finally(() => {
-                    this.setState({
-                        loading: false
-                    });
-                    this.props.history.push(`/admin/userDetail/${id}`);
-                })
+                    .catch(error => {
+                        Swal.fire({
+                            type: 'error',
+                            title: 'Unknown Error Occurred',
+                            confirmButtonText: 'Close'
+                        });
+                    })
+                    .finally(() => {
+                        this.setState({
+                            loading: false
+                        });
+                        this.props.history.push(`/admin/userDetail/${id}`);
+                    })
             }
         })
     }
@@ -147,8 +147,7 @@ class UserModify extends Component {
                                         <Input id="role" type="select" value={role} onChange={this.onChangeRole} >
                                             <option value="admin">admin</option>
                                             <option value="normal">normal</option>
-                                            <option value="monitoring">monitoring</option>
-                                        </Input>                                      
+                                        </Input>
                                     </InputGroup>
                                     <br></br>
                                     <h5 style={{ color: 'white' }}>Email</h5>
@@ -165,7 +164,7 @@ class UserModify extends Component {
                         </ContentCard>
                         <ContentRow>
                             <ContentCol>
-                                <Button color = "success" onClick={this.onClickSave} disabled={loading}>
+                                <Button color="success" onClick={this.onClickSave} disabled={loading}>
                                     Save
                                 </Button>
                             </ContentCol>

@@ -97,7 +97,8 @@ const POST = (url, params, options) => {
                             resolve(response);
                             return;
                         }
-                        resolve(response.json());
+                        resolve(response);
+                        // resolve(response.json());
                     } else {
                         if (response.status === 401) {
                             onUnauthenticated();

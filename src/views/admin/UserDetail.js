@@ -148,7 +148,7 @@ class UserDetail extends Component {
                 this.setState({
                     loading: true
                 });
-                Fetch.PUT(url,{},{})
+                Fetch.POST(url,{},{})
                 .then(res => {
                     Swal.fire(
                         'Reset Password!',

@@ -26,20 +26,20 @@ class AdminMain extends Component {
     fetchData = (state) => {
         this.setState({ loading: true });
         Fetch.GET(`/node/admin/users`)
-        .then(res => {
-            console.log(res);
-            this.setState({
-                data: res
+            .then(res => {
+                console.log(res);
+                this.setState({
+                    data: res
+                })
             })
-        })
-        .catch(error => {
-            console.log(error);
-        })
-        .finally(() => {
-            this.setState({
-                loading: false
+            .catch(error => {
+                console.log(error);
             })
-        })
+            .finally(() => {
+                this.setState({
+                    loading: false
+                })
+            })
     }
 
     onClickUnlock = (e, row) => {
@@ -57,35 +57,36 @@ class AdminMain extends Component {
         }).then((result) => {
             if (result.value) {
                 console.log("yes");
-                
+
                 let url = `/node/admin/users/${row.id}/unlock`;
 
                 this.setState({
                     loading: true
                 });
-                Fetch.PUT(url,{},{})
-                .then(res => {
-                    Swal.fire(
-                        'Unlock Account!',
-                        '',
-                        'success'
-                    ).then(() => {
+                Fetch.POST(url, {}, {})
+
+                    .then(res => {
+                        Swal.fire(
+                            'Unlock Account!',
+                            '',
+                            'success'
+                        ).then(() => {
+                        })
                     })
-                })
-                .catch(error => {
-                    Swal.fire({
-                        type: 'error',
-                        title: 'Unknown Error Occurred',
-                        confirmButtonText: 'Close'
-                    });
-                })
-                .finally(() => {
-                    this.setState({
-                        loading: false
-                    });
-                    // this.props.history.push(`/admin/userList`);
-                    this.table.fireFetchData();
-                })
+                    .catch(error => {
+                        Swal.fire({
+                            type: 'error',
+                            title: 'Unknown Error Occurred',
+                            confirmButtonText: 'Close'
+                        });
+                    })
+                    .finally(() => {
+                        this.setState({
+                            loading: false
+                        });
+                        // this.props.history.push(`/admin/userList`);
+                        this.table.fireFetchData();
+                    })
             }
         })
     }
@@ -157,31 +158,31 @@ class AdminMain extends Component {
                                         minWidth: 50,
                                         id: 'unlock',
                                         Cell: ({ row }) => {
-                                            return(
+                                            return (
                                                 <div>
-                                                    {row._original.isLocked  ?
-                                                        <Button outline color="warning" size="sm" onClick={(e) => this.onClickUnlock(e ,row)}>
+                                                    {row._original.isLocked ?
+                                                        <Button outline color="warning" size="sm" onClick={(e) => this.onClickUnlock(e, row)}>
                                                             <FaLockOpen size={15} />
                                                             &nbsp;
                                                             Unlock
                                                         </Button>
-                                                    : null }
+                                                        : null}
                                                 </div>
                                             );
                                         },
                                     }
 
                                 ]}
-                                getTdProps = {(state, rowInfo, column, instance) => {
+                                getTdProps={(state, rowInfo, column, instance) => {
                                     return {
                                         onClick: e => {
                                             console.log(rowInfo);
                                             console.log(column);
                                             //계정이 잠겨 있으면 계정 락 해제 버튼 눌렀을때 행클릭 안 먹히게..
-                                            if(column.id === 'unlock' && rowInfo.original.isLocked) {
+                                            if (column.id === 'unlock' && rowInfo.original.isLocked) {
                                                 return;
                                             }
-                                            if (rowInfo !== undefined){
+                                            if (rowInfo !== undefined) {
                                                 console.log(rowInfo);
                                                 this.props.history.push(`/admin/userDetail/${rowInfo.original.id}`)
                                             }
