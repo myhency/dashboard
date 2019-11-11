@@ -175,7 +175,7 @@ class AdminLayout extends Component {
             }
         }
 
-        Fetch.GET('/node/auth/singOut/', {}, options)
+        Fetch.GET('/node/auth/signOut/', {}, options)
             .then(res => {
                 console.log('logout');
             })
