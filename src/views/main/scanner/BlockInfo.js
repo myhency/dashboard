@@ -189,7 +189,7 @@ class BlockInfo extends Component {
                   &nbsp; Mined by:
                 </td>
                 {/* <td><Link to={`scanner/address/${miner}`}>{miner}</Link></td> */}
-                <td><Link to={`../${miner}`}>{miner}</Link></td>
+                <td><Link to={`../address/${miner}`}>{miner}</Link></td>
               </tr>
               <tr>
                 <td>
