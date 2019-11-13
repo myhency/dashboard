@@ -297,9 +297,11 @@ class Address extends Component {
                                     {is_contract && (
                                         <tr>
                                             <td>Deployer :</td>
-                                            <td><Link to={`address/${contract_deployer}`}>{contract_deployer}</Link></td>
+                                            {/* <td><Link to={`address/${contract_deployer}`}>{contract_deployer}</Link></td> */}
+                                            <td><Link to={`./${contract_deployer}`}>{contract_deployer}</Link></td>
                                             <td>Deployed at :</td>
-                                            <td><Link to={`transaction/${contract_deployed_at}`}>{contract_deployed_at}</Link></td>
+                                            {/* <td><Link to={`transaction/${contract_deployed_at}`}>{contract_deployed_at}</Link></td> */}
+                                            <td><Link to={`../transaction/${contract_deployed_at}`}>{contract_deployed_at}</Link></td>
                                         </tr>
                                     )}
                                 </tbody>

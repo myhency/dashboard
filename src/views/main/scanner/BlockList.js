@@ -99,7 +99,8 @@ export default class BlockList extends Component {
                                 Header: "Miner",
                                 accessor: "miner",
                                 minWidth: 150,
-                                Cell: ({ row }) => (<Link to={`address/${row.miner}`}>{row.miner}</Link>)
+                                // Cell: ({ row }) => (<Link to={`address/${row.miner}`}>{row.miner}</Link>)
+                                Cell: ({ row }) => (<Link to={`./address/${row.miner}`}>{row.miner}</Link>)
                             },
                             {
                                 Header: "Gas Used",

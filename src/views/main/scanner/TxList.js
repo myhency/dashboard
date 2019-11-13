@@ -60,13 +60,15 @@ export default class TxList extends Component {
                 Header: "TxHash",
                 accessor: "transaction_hash",
                 minWidth: 100,
-                Cell: ({ row }) => (<Link to={this.props.location.pathname + '/' + row.transaction_hash}>{row.transaction_hash}</Link>)
+                // Cell: ({ row }) => (<Link to={this.props.location.pathname + '/' + row.transaction_hash}>{row.transaction_hash}</Link>)
+                Cell: ({ row }) => (<Link to={`transaction/${row.transaction_hash}`}>{row.transaction_hash}</Link>)
               },
               {
                 Header: "Block",
                 accessor: "related_block",
                 minWidth: 50,
-                Cell: ({ row }) => (<Link to={`block/${row.related_block}`}>{row.related_block.number}</Link>)
+                // Cell: ({ row }) => (<Link to={`block/${row.related_block}`}>{row.related_block.number}</Link>)
+                Cell: ({ row }) => (<Link to={`./block/${row.related_block}`}>{row.related_block.number}</Link>)
               },
               {
                 Header: "Age",
@@ -102,13 +104,15 @@ export default class TxList extends Component {
                 Header: "From",
                 accessor: "transaction_from",
                 minWidth: 100,
-                Cell: ({ row }) => (<Link to={`address/${row.transaction_from}`}>{row.transaction_from}</Link>),
+                // Cell: ({ row }) => (<Link to={`address/${row.transaction_from}`}>{row.transaction_from}</Link>),
+                Cell: ({ row }) => (<Link to={`./address/${row.transaction_from}`}>{row.transaction_from}</Link>),
               },
               {
                 Header: "To",
                 accessor: "transaction_to",
                 minWidth: 100,
-                Cell: ({ row }) => (<Link to={`address/${row.transaction_to}`}>{row.transaction_to}</Link>),
+                // Cell: ({ row }) => (<Link to={`address/${row.transaction_to}`}>{row.transaction_to}</Link>),
+                Cell: ({ row }) => (<Link to={`./address/${row.transaction_to}`}>{row.transaction_to}</Link>),
               },
               {
                 Header: "Value",

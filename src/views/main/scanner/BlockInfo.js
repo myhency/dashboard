@@ -106,7 +106,8 @@ class BlockInfo extends Component {
 
   mvBlock = (string) => {
     let nBlockNo = string === 'next' ? Number(this.state.blockNo) + 1 : Number(this.state.blockNo) - 1;
-    this.props.history.push('scanner/block/' + nBlockNo);
+    // this.props.history.push('scanner/block/' + nBlockNo);
+    this.props.history.push('./' + nBlockNo);
   }
 
 
@@ -137,7 +138,8 @@ class BlockInfo extends Component {
                 </Button>}
             </ContentCol>
             <ContentCol style={{ textAlign: 'right' }}>
-              <Button onClick={() => this.props.history.goBack()} className='btn-outline-primary'>
+              {/* <Button onClick={() => this.props.history.goBack()} className='btn-outline-primary'> */}
+              <Button onClick={() => this.props.history.push(`./`)} className='btn-outline-primary'>
                 To List
               </Button>
             </ContentCol>
@@ -186,7 +188,8 @@ class BlockInfo extends Component {
                   <ReactTooltip id='miner' multiline={true} />
                   &nbsp; Mined by:
                 </td>
-                <td><Link to={`scanner/address/${miner}`}>{miner}</Link></td>
+                {/* <td><Link to={`scanner/address/${miner}`}>{miner}</Link></td> */}
+                <td><Link to={`../${miner}`}>{miner}</Link></td>
               </tr>
               <tr>
                 <td>

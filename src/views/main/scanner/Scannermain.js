@@ -92,6 +92,7 @@ export default class Scannermain extends Component {
           );
         }
         else {
+          // this.props.history.push(`scanner/${res.kinds}/${item}`);
           this.props.history.push(`scanner/${res.kinds}/${item}`);
         }
 
@@ -99,6 +100,7 @@ export default class Scannermain extends Component {
   }
 
   onClickAll = (string) => {
+    // this.props.history.push('scanner/' + string);
     this.props.history.push('scanner/' + string);
   }
 
