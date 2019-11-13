@@ -110,7 +110,7 @@ class App extends Component {
         console.log(renderstring);
 
         return (
-            <Router basename="delphine">
+            <Router>
                 <ScrollToTop>
                     <Switch>
                         <Route exact path="/" render={() =>
