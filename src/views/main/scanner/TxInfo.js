@@ -104,7 +104,8 @@ export default class TxInfo extends Component {
         <ContentCard detailCard={true} noMarginBottom={true}>
           <ContentRow>
             <ContentCol style={{ textAlign: 'right' }}>
-              <Button onClick={() => this.props.history.goBack()} className='btn-outline-primary'>
+              {/* <Button onClick={() => this.props.history.goBack()} className='btn-outline-primary'> */}
+              <Button onClick={() => this.props.history.push(`./`)} className='btn-outline-primary'>
                 To List
               </Button>
             </ContentCol>
@@ -150,7 +151,8 @@ export default class TxInfo extends Component {
                   <ReactTooltip id='relatedBlock' multiline={true} />
                   &nbsp; Block:
                 </td>
-                <td><Link to={`/main/scanner/block/${relatedBlock}`}>{relatedBlock}</Link></td>
+                {/* <td><Link to={`/main/scanner/block/${relatedBlock}`}>{relatedBlock}</Link></td> */}
+                <td><Link to={`../block/${relatedBlock}`}>{relatedBlock}</Link></td>
               </tr>
               <tr>
                 <td>
@@ -173,7 +175,8 @@ export default class TxInfo extends Component {
                   &nbsp; From:
                 </td>
                 <td>
-                  <Link to={`/main/scanner/address/${txFrom}`}>{txFrom}</Link>
+                  {/* <Link to={`/main/scanner/address/${txFrom}`}>{txFrom}</Link> */}
+                  <Link to={`../address/${txFrom}`}>{txFrom}</Link>
                   <span data-tip='Copy' className="copyicon" data-for='fromCopy' >
                     <CopyToClipboard text={txFrom} onCopy={() => { this.setState({ copied: true }) }}>
                       <img alt="copy" src={CopyImg} height='18px' style={{ marginLeft: '10px' }} />
@@ -192,7 +195,8 @@ export default class TxInfo extends Component {
                   &nbsp; To:
                 </td>
                 <td>
-                  <Link to={`/main/scanner/address/${txTo}`}>{txTo}</Link>
+                  {/* <Link to={`/main/scanner/address/${txTo}`}>{txTo}</Link> */}
+                  <Link to={`../address/${txTo}`}>{txTo}</Link>
                   <span data-tip='Copy' className="copyicon" data-for='toCopy'>
                     <CopyToClipboard text={txTo} onCopy={() => { this.setState({ copied: true }) }}>
                       <img alt="copy" src={CopyImg} height='18px' style={{ marginLeft: '10px' }} />
