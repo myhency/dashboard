@@ -54,9 +54,7 @@ const GET = (url, options) => {
                         }
                         if (response.status === 504) {
                             onGatewayTimeout();
-                        } else if(response.status === 500) {
-                            return;
-                        }
+                        } 
                         reject(response);
                     }
 
