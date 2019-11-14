@@ -59,7 +59,7 @@ export default class BlockList extends Component {
                                 accessor: "number",
                                 minWidth: 50,
                                 // Cell: ({ row }) => (<Link to={this.props.location.pathname + '/' + row.number}>{row.number}</Link>)
-                                Cell: ({ row }) => (<Link to={`./${row.number}`}>{row.number}</Link>)
+                                Cell: ({ row }) => (<Link to={`block/${row.number}`}>{row.number}</Link>)
                             },
                             {
                                 Header: "Age",

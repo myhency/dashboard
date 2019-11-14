@@ -139,7 +139,7 @@ class BlockInfo extends Component {
             </ContentCol>
             <ContentCol style={{ textAlign: 'right' }}>
               {/* <Button onClick={() => this.props.history.goBack()} className='btn-outline-primary'> */}
-              <Button onClick={() => this.props.history.push(`./`)} className='btn-outline-primary'>
+              <Button onClick={() => this.props.history.push(`../block`)} className='btn-outline-primary'>
                 To List
               </Button>
             </ContentCol>
