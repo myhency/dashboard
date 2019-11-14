@@ -68,7 +68,7 @@ export default class TxList extends Component {
                 accessor: "related_block",
                 minWidth: 50,
                 // Cell: ({ row }) => (<Link to={`block/${row.related_block}`}>{row.related_block.number}</Link>)
-                Cell: ({ row }) => (<Link to={`./block/${row.related_block}`}>{row.related_block.number}</Link>)
+                Cell: ({ row }) => (<Link to={`./block/${row.related_block.number}`}>{row.related_block.number}</Link>)
               },
               {
                 Header: "Age",
