@@ -244,7 +244,7 @@ class AdminLayout extends Component {
                                 return null;
                             }
                         })}
-                        <a href="http://10.40.111.60:3001" className={'manualButton'} target="blank" >
+                        <a href="http://10.6.120.22:20080" className={'manualButton'} target="blank" >
                             <FaBook size={20} color={'#0F9EDB'} style={{ marginLeft: '.4rem', marginRight: '.75rem' }} />
                             User Guide
                         </a>

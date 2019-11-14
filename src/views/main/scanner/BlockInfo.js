@@ -45,15 +45,15 @@ class BlockInfo extends Component {
   getBlockInfo = () => {
     const headers = {
       headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + sessionStorage.getItem('token')
       }
-    }
+  }
 
     this.props.dispatch(setInfo('# ' + this.state.blockNo));
 
-    Fetch.GET('/api/block/' + this.state.blockNo, headers)
+    Fetch.GET('/api/block/' + this.state.blockNo+ '/', headers)
       .then(res => {
         //update 안할 때
         if (res === undefined) {

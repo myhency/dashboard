@@ -54,7 +54,7 @@ class Address extends Component {
             }
         }
 
-        Fetch.GET(`/api/address/${this.state.address}`, headers)
+        Fetch.GET(`/api/address/${this.state.address}/`, headers)
             .then(res => {
                 this.setState({
                     balance: res.balance,
