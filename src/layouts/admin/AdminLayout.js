@@ -199,7 +199,7 @@ class AdminLayout extends Component {
                 {/* Sidebar */}
                 < div id="sidebar" className={active ? 'active' : null} >
                     <Nav vertical style={{ minHeight: '100vh' }}>
-                        <NavLink to="/main/components/" className={'homeButton'} tag={Link} style={{ fontSize: '1rem', padding: '1.15rem 1.25rem', marginBottom: '1.5rem' }} onClick={isWindowSmall ? this.toggle : null}>
+                        <NavLink to="/admin/components/" className={'homeButton'} tag={Link} style={{ fontSize: '1rem', padding: '1.15rem 1.25rem', marginBottom: '1.5rem' }} onClick={isWindowSmall ? this.toggle : null}>
                             <span style={{ fontSize: '1.2rem', fontFamily: 'arial' }}>
                                 <IoIosCloud size={30} color={'white'} style={{ marginRight: '.75rem' }} />
                                 HMG BaaS Portal

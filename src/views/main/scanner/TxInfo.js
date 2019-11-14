@@ -105,7 +105,7 @@ export default class TxInfo extends Component {
           <ContentRow>
             <ContentCol style={{ textAlign: 'right' }}>
               {/* <Button onClick={() => this.props.history.goBack()} className='btn-outline-primary'> */}
-              <Button onClick={() => this.props.history.push(`./`)} className='btn-outline-primary'>
+              <Button onClick={() => this.props.history.push(`../transaction`)} className='btn-outline-primary'>
                 To List
               </Button>
             </ContentCol>
