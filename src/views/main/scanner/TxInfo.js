@@ -47,7 +47,7 @@ export default class TxInfo extends Component {
       }
     }
 
-    Fetch.GET('/api/transaction/' + this.state.TxHash, headers)
+    Fetch.GET('/api/transaction/' + this.state.TxHash+'/', headers)
       .then(res => {
         //update 안할 때
         if (res === undefined) {
